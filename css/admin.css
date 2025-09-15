@@ -1,0 +1,37 @@
+.admin-item {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.admin-item h3 {
+    margin: 0 0 10px;
+}
+
+.admin-item label {
+    display: block;
+    margin: 5px 0;
+}
+
+.admin-item input[type="text"],
+.admin-item input[type="number"] {
+    width: calc(100% - 22px);
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.admin-item button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.admin-item button:hover {
+    background-color: #218838;
+}

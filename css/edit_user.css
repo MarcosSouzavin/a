@@ -1,0 +1,106 @@
+/* Layout básico e estilo similar ao restante do projeto */
+:root{
+  --bg:#f6f8fb;
+  --card:#ffffff;
+  --accent:#3a86ff;
+  --text:#222;
+  --muted:#6b7280;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+
+.edit-container{
+  max-width:720px;
+  margin:36px auto;
+  padding:20px;
+}
+
+.edit-header h2{
+  margin:0 0 12px 0;
+  font-size:22px;
+  color:var(--accent);
+}
+
+.edit-form{
+  background:var(--card);
+  border:1px solid #e6e9ef;
+  border-radius:8px;
+  padding:20px;
+  box-shadow:0 6px 18px rgba(32,33,36,0.04);
+}
+
+.field{
+  margin-bottom:14px;
+}
+
+.label{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+}
+
+.value{
+  padding:10px 12px;
+  background:#fbfdff;
+  border:1px solid #eef2f6;
+  border-radius:6px;
+  color:var(--text);
+}
+
+input[type="text"],
+input[type="email"]{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #dfe6ef;
+  border-radius:6px;
+  font-size:14px;
+  background:#fff;
+  outline:none;
+}
+
+input:focus{box-shadow:0 0 0 3px rgba(58,134,255,0.08); border-color:var(--accent);}
+
+.actions{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:8px;
+}
+
+.btn{
+  text-decoration:none;
+  display:inline-block;
+  padding:10px 14px;
+  border-radius:6px;
+  font-weight:600;
+  font-size:14px;
+}
+
+.btn.primary{
+  background:var(--accent);
+  color:#fff;
+  border:1px solid rgba(0,0,0,0.04);
+}
+
+.btn.link{
+  background:transparent;
+  color:var(--accent);
+}
+
+.msg{
+  padding:10px 12px;
+  border-radius:6px;
+  margin-bottom:12px;
+  font-size:14px;
+}
+
+.msg.success{background:#eef9f3;color:#155724;border:1px solid #d4f5de;}
+.msg.error{background:#fff5f5;color:#721c24;border:1px solid #ffd6d6;}

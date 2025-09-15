@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Logs do Admin</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <h1>Logs do Admin</h1>
+    <pre id="logs"></pre>
+    <script>
+        const logs = JSON.parse(localStorage.getItem('adminLogs') || '[]');
+        document.getElementById('logs').textContent = JSON.stringify(logs, null, 2);
+    </script>
+</body>
+</html>
