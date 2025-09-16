@@ -1,6 +1,7 @@
 <?php
 session_start();
-if (!isset($_SESSION['usuario'])) {
+if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
+    // Se não estiver logado corretamente, redireciona para login
     header("Location: login.php");
     exit();
 }
