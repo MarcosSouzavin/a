@@ -1,4 +1,4 @@
--- Crie tabela e insira exemplos (execute no phpMyAdmin / CLI)
+
 CREATE TABLE IF NOT EXISTS produtos (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(191) NOT NULL,

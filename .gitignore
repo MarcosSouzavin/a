@@ -1,3 +1,5 @@
 tcc/
 /vendor/phpmailer/phpmailer
 source (leia sempre)
+senhas/recup.php
+sql/productos.sql

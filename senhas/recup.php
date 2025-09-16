@@ -3,17 +3,22 @@ session_start();
 
 include '../conexao.php';
 
+// Carrega o autoload do Composer
 $autoload = __DIR__ . '/../vendor/autoload.php';
 if (!file_exists($autoload)) {
     die('Dependências não instaladas. Rode no terminal: composer require phpmailer/phpmailer');
 }
-require $autoload; // PHPMailer autoload
+require $autoload;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-putenv('SMTP_USER=marcos2008campinas@gmail.com');
-putenv('SMTP_PASS=pdsljcbtoodfluho');
+// Em produção, configure as variáveis de ambiente SMTP_USER e SMTP_PASS no painel do servidor, .htaccess ou painel de hospedagem.
+// Nunca coloque as credenciais diretamente no código!
+// Exemplo para Apache (.htaccess na raiz):
+// SetEnv SMTP_USER seu@email.com
+// SetEnv SMTP_PASS sua_senha_de_app
+// No código, apenas use getenv como abaixo:
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -64,8 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         }
 
         // pega credenciais (trim para evitar espaços)
-        $smtpUser = trim(getenv('SMTP_USER') ?: '');
-        $smtpPass = trim(getenv('SMTP_PASS') ?: '');
+    $smtpUser = trim(getenv('SMTP_USER') ?: '');
+    $smtpPass = trim(getenv('SMTP_PASS') ?: '');
 
         if (empty($smtpUser) || empty($smtpPass)) {
             $msg = "<div class='error'>Credenciais SMTP não definidas. Defina SMTP_USER e SMTP_PASS e reinicie o Apache.</div>";
