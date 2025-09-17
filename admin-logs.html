@@ -3,14 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>Logs do Admin</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
     <h1>Logs do Admin</h1>
-    <pre id="logs"></pre>
+    <div id="logs" class="logs-list"></div>
     <script>
         const logs = JSON.parse(localStorage.getItem('adminLogs') || '[]');
-        document.getElementById('logs').textContent = JSON.stringify(logs, null, 2);
+        const logsDiv = document.getElementById('logs');
+        if (logs.length === 0) {
+            logsDiv.innerHTML = '<p style="color:#888">Nenhum log encontrado.</p>';
+        } else {
+            logsDiv.innerHTML = logs.map(log => `
+                <div class="log-entry">
+                    <div class="log-time">${log.time}</div>
+                    <div class="log-action">${log.action}</div>
+                    <pre class="log-details">${JSON.stringify(log.details, null, 2)}</pre>
+                </div>
+            `).join('');
+        }
     </script>
 </body>
 </html>

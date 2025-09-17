@@ -591,14 +591,12 @@ function finalizarCompra() {
         updateCart();
         window.toggleCart();
 }
-// --- MENU HAMBÚRGUER RESPONSIVO ---
 document.addEventListener('DOMContentLoaded', function () {
   const burger = document.querySelector('.menu-hamburguer');
   const nav = document.querySelector('.nav');
 
-  if (!burger || !nav) return; // se não existir, sai sem erro
+  if (!burger || !nav) return; 
 
-  // Acessibilidade / ids (se já existir, não quebra)
   if (!nav.id) nav.id = 'main-nav';
   burger.setAttribute('role', 'button');
   burger.setAttribute('aria-controls', nav.id);

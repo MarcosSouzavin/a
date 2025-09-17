@@ -1,3 +1,97 @@
+/* Botão X moderno para fechar modal */
+.modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  background: #fff;
+  border: 2px solid #b3ab3a;
+  border-radius: 50%;
+  color: #b3ab3a;
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #b3ab3a22;
+  transition: background 0.18s, color 0.18s, border 0.18s, box-shadow 0.18s;
+  z-index: 10;
+}
+.modal-close:hover {
+  background: #b3ab3a;
+  color: #fff;
+  border-color: #b3ab3a;
+  box-shadow: 0 4px 16px #b3ab3a44;
+}
+/* ===== Opções de tamanho e adicionais (modal) ===== */
+
+/* Opções de tamanho/adicionais - visual moderno */
+.options-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 16px 0 24px 0;
+  justify-content: flex-start;
+}
+.options-list label,
+.options-list .option-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 18px;
+  padding: 16px 28px;
+  font-size: 1.13rem;
+  color: #222;
+  cursor: pointer;
+  transition: background 0.18s, border 0.18s, color 0.18s, box-shadow 0.18s;
+  min-width: 120px;
+  min-height: 48px;
+  user-select: none;
+  font-weight: 500;
+  box-shadow: 0 2px 8px #0001;
+  text-align: center;
+}
+.options-list input[type="radio"],
+.options-list input[type="checkbox"] {
+  accent-color: #b3ab3a;
+  margin-right: 10px;
+  width: 22px;
+  height: 22px;
+}
+.options-list input[type="radio"]:focus + span,
+.options-list input[type="checkbox"]:focus + span {
+  outline: 2px solid #b3ab3a;
+}
+.options-list label.selected,
+.options-list .option-btn.selected {
+  background: linear-gradient(90deg, #f7e88a 0%, #fffbe6 100%);
+  border: 2.5px solid #b3ab3a;
+  color: #b3ab3a;
+  font-weight: 700;
+  box-shadow: 0 4px 16px #b3ab3a22;
+}
+.options-list label:hover,
+.options-list .option-btn:hover {
+  background: #f3f1d8;
+  border: 2px solid #b3ab3a;
+  color: #b3ab3a;
+}
+@media (max-width: 600px) {
+  .options-list {
+    gap: 10px;
+  }
+  .options-list label,
+  .options-list .option-btn {
+    padding: 10px 8px;
+    font-size: 1rem;
+    min-width: 80px;
+    min-height: 36px;
+  }
+}
 * {
     margin: 0;
     padding: 0;
@@ -480,13 +574,15 @@ body {
   width: 100%;
   max-width: 720px;
   background: var(--card-bg);
-  border-radius:12px;
+  border-radius:18px;
   overflow:hidden;
   box-shadow: 0 12px 35px rgba(0,0,0,0.25);
   animation: modalIn .15s ease-out;
   max-height: calc(100vh - 80px);
   display:flex;
   flex-direction:column;
+  align-items: center;
+  padding-bottom: 18px;
 }
 .modal-body{
   padding: 18px 20px;
@@ -590,8 +686,18 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    padding: 28px 20px 0 20px;
+    width: 100%;
 }
+  .modal-header h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 8px;
+    text-align: center;
+    width: 100%;
+  }
 
 .frete-container label {
     font-size: 1rem;
@@ -619,9 +725,74 @@ body {
     background-color: #007bff;
     color: #fff;
     font-size: 1rem;
-    padding: 10px 20px;
-    border: none;
+    padding: 18px 32px 0 32px;
+    overflow:auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     border-radius: 4px;
+  .modal-row {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .modal-label {
+    font-size: 1.08rem;
+    color: #444;
+    font-weight: 500;
+    margin-bottom: 6px;
+    text-align: center;
+    width: 100%;
+  }
+  .modal-price {
+    font-size: 1.25rem;
+    color: #b3ab3a;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-align: center;
+    width: 100%;
+  }
+  .options-list {
+    justify-content: center;
+  }
+  .cart-total, .cart-saldo, .cart-header h2, .cart-header {
+    text-align: center;
+  }
+  .modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .modal-actions .btn {
+    min-width: 160px;
+    font-size: 1.08rem;
+  }
+  .modal-body input[type="number"] {
+    text-align: center;
+    font-size: 1.08rem;
+    border-radius: 6px;
+    border: 1.5px solid #b3ab3a;
+    padding: 7px 0;
+    width: 90px;
+    margin-bottom: 6px;
+  }
+  .modal-body input[type="number"]:focus {
+    outline: 2px solid #b3ab3a;
+  }
+  .modal-row:last-child {
+    margin-bottom: 0;
+  }
+  @media (max-width: 600px) {
+    .modal-card { padding-bottom: 8px; }
+    .modal-body { padding: 12px 4vw 0 4vw; }
+    .modal-header h3 { font-size: 1.3rem; }
+    .modal-actions .btn { min-width: 110px; font-size: 1rem; }
+  }
     cursor: pointer;
     transition: background-color 0.3s ease;
 }

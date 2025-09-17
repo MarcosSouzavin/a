@@ -1,3 +1,192 @@
+
+/* Imagem de fundo apenas na tela de login admin */
+.admin-login-bg {
+    min-height: 100vh;
+    background: url('../img/gui.jpeg') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Sobreposição para legibilidade do conteúdo */
+#adminContainer, .admin-sections, .logs-list {
+    background: rgba(255,255,255,0.92);
+    border-radius: 10px;
+    box-shadow: 0 4px 24px #0002;
+}
+/* Login admin estilizado */
+.admin-login-box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px #0002;
+    padding: 40px 32px 32px 32px;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.admin-login-box h2 {
+    margin-bottom: 24px;
+    color: #007bff;
+}
+.admin-login-box input[type="password"] {
+    width: 100%;
+    padding: 12px 10px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+}
+.admin-login-box button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.2s;
+}
+.admin-login-box button:hover {
+    background: #0056b3;
+}
+.admin-login-msg {
+    color: #c0392b;
+    margin-top: 10px;
+    font-size: 1rem;
+    min-height: 22px;
+}
+
+.admin-logout-btn {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.admin-logout-btn:hover {
+    background: #b52a37;
+}
+
+/* Logs admin estilizados */
+.logs-list {
+    max-width: 700px;
+    margin: 32px auto;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #0001;
+    padding: 24px 20px 16px 20px;
+}
+.log-entry {
+    border-bottom: 1px solid #eee;
+    padding: 12px 0 8px 0;
+}
+.log-entry:last-child {
+    border-bottom: none;
+}
+.log-time {
+    color: #888;
+    font-size: 0.95rem;
+    margin-bottom: 2px;
+}
+.log-action {
+    color: #007bff;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+.log-details {
+    background: #f8f9fa;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 0.98rem;
+    color: #222;
+    margin: 0;
+    white-space: pre-wrap;
+}
+.admin-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.admin-form {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px #0001;
+    padding: 24px 20px 16px 20px;
+    margin-bottom: 0;
+}
+
+.admin-form h2 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.admin-form label {
+    display: block;
+    margin-bottom: 12px;
+    color: #444;
+}
+
+.admin-form input[type="text"],
+.admin-form input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 4px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.admin-form button {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+}
+.admin-form button:hover {
+    background: #0056b3;
+}
+
+.admin-item {
+    background: #f8f9fa;
+    border: 1px solid #e1e1e1;
+    border-radius: 6px;
+    padding: 16px 12px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 4px #0001;
+}
+.admin-item img {
+    max-width: 120px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+.admin-item button {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 4px;
+    margin-left: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: background 0.2s;
+}
+.admin-item button:hover {
+    background: #b52a37;
+}
 .admin-item {
     margin-bottom: 20px;
     padding: 10px;
