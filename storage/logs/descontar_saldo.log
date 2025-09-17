@@ -1,0 +1,9 @@
+[2025-09-17 17:12:12] [descontarSaldo] Saldo atual: 25.00, Valor a descontar: 1
+[2025-09-17 17:12:12] [descontarSaldo] Saldo depois: 24.00
+[2025-09-17 17:21:05] Sessão: {"erro":"Registro realizado com sucesso! Fa\u00e7a login.","usuario_id":"2","usuario":"admin","email":"a@admin"}
+[2025-09-17 17:21:05] Dados recebidos: {"valor":24,"descricao":"Compra realizada"}
+[2025-09-17 17:21:05] Saldo antes: 24.00
+[2025-09-17 17:21:05] [descontarSaldo] Saldo atual: 24.00, Valor a descontar: 24
+[2025-09-17 17:21:05] [descontarSaldo] Saldo depois: 0.00
+[2025-09-17 17:21:05] Sucesso: Saldo descontado
+[2025-09-17 17:21:05] Saldo depois: 0.00

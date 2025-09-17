@@ -389,27 +389,33 @@ function finalizarCompra() {
         alert(resumo);
 
         // Atualiza o saldo no servidor
-        fetch('balance/descontar_saldo.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                usuario_id: usuario_id, // Certifique-se de que esta variável está definida
-                valor: valorPagoComSaldo,
-                descricao: 'Compra realizada',
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Atualiza o saldo no frontend
-                atualizarSaldoUsuario();
-            } else {
-                alert('Erro ao atualizar saldo: ' + data.message);
-            }
-        })
-        .catch(error => console.error('Erro ao descontar saldo:', error));
+        if (valorPagoComSaldo > 0) {
+            fetch('balance/descontar_saldo.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    valor: parseFloat(valorPagoComSaldo),
+                    descricao: 'Compra realizada',
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    atualizarSaldoUsuario(() => {
+                        // Força atualização do saldo na tela
+                        const el = document.getElementById('saldoUsuario');
+                        if (el && typeof data.saldo_depois !== 'undefined') {
+                            el.textContent = Number(data.saldo_depois).toFixed(2).replace('.', ',');
+                        }
+                    });
+                } else {
+                    alert('Erro ao atualizar saldo: ' + data.message);
+                }
+            })
+            .catch(error => console.error('Erro ao descontar saldo:', error));
+        }
 
         cart = [];
         updateCart();
@@ -505,24 +511,23 @@ function atualizarSaldoUsuario(callback) {
     fetch('balance/saldo.php?' + Date.now()) // Adiciona timestamp para evitar cache
         .then(response => response.json())
         .then(data => {
-            if (data.saldo) {
-                const saldoStr = data.saldo;
-                document.getElementById('saldoUsuario').textContent = saldoStr;
-                saldoUsuario = parseFloat(saldoStr.replace('.', '').replace(',', '.'));
-                atualizarTotalComSaldo();
-                if (typeof callback === 'function') callback(saldoUsuario);
-            } else {
-                document.getElementById('saldoUsuario').textContent = '0.00';
-                saldoUsuario = 0;
-                atualizarTotalComSaldo();
-                if (typeof callback === 'function') callback(saldoUsuario);
+            let saldoStr = data.saldo;
+            let saldoNum = 0;
+            if (saldoStr) {
+                saldoNum = parseFloat(saldoStr.replace('.', '').replace(',', '.'));
             }
+            saldoUsuario = saldoNum;
+            const el = document.getElementById('saldoUsuario');
+            if (el) el.textContent = saldoNum.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            atualizarTotalComSaldo();
+            if (typeof callback === 'function') callback(saldoUsuario);
         })
         .catch(error => {
-            console.error('Erro ao buscar saldo:', error);
-            document.getElementById('saldoUsuario').textContent = '0.00';
+            const el = document.getElementById('saldoUsuario');
+            if (el) el.textContent = '0,00';
             saldoUsuario = 0;
             atualizarTotalComSaldo();
+            if (typeof callback === 'function') callback(saldoUsuario);
         });
 }
 
@@ -542,12 +547,10 @@ function finalizarCompra() {
         alert("Seu carrinho está vazio!");
         return;
     }
-    atualizarSaldoUsuario(function(saldoAtualizado) {
         const usarSaldo = document.getElementById('usarSaldo').checked;
         const totalPedido = cart.reduce((total, item) => total + calcItemTotal(item), 0);
-        const valorPagoComSaldo = usarSaldo ? Math.min(totalPedido, saldoAtualizado) : 0;
+        const valorPagoComSaldo = usarSaldo ? Math.min(totalPedido, saldoUsuario) : 0;
         const totalFinal = totalPedido - valorPagoComSaldo;
-
         let resumo = 'Pedido Finalizado!\n\nItens:\n';
         cart.forEach(item => {
             resumo += `- ${item.quantity}x ${item.name} (${item.size})\n`;
@@ -557,30 +560,36 @@ function finalizarCompra() {
             resumo += `\nSaldo Utilizado: - R$ ${formatPrice(valorPagoComSaldo)}`;
         }
         resumo += `\n\nTotal a Pagar: R$ ${formatPrice(totalFinal)}`;
-
         alert(resumo);
-
         addClientLog('Resumo do Pedido', { resumo });
-
-        cart = [];
-        if (usarSaldo) {
-            setSaldoUsuario(saldoAtualizado - valorPagoComSaldo); 
+        if (valorPagoComSaldo > 0) {
+            fetch('balance/descontar_saldo.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    valor: parseFloat(valorPagoComSaldo),
+                    descricao: 'Compra realizada',
+                }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                atualizarSaldoUsuario();
+                if (!data.success) {
+                    alert('Erro ao atualizar saldo: ' + data.message);
+                }
+            })
+            .catch(error => {
+                atualizarSaldoUsuario();
+                console.error('Erro ao descontar saldo:', error);
+            });
+        } else {
+            atualizarSaldoUsuario();
         }
+        cart = [];
         updateCart();
         window.toggleCart();
-
-        addClientLog('Finalizar pedido', {
-            itens: cart.map(item => ({
-                nome: item.name,
-                tamanho: item.size,
-                quantidade: item.quantity,
-                adicionais: item.adicionais
-            })),
-            total: totalPedido,
-            saldo_usado: valorPagoComSaldo,
-            total_final: totalFinal
-        });
-    });
 }
 // --- MENU HAMBÚRGUER RESPONSIVO ---
 document.addEventListener('DOMContentLoaded', function () {

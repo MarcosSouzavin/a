@@ -25,16 +25,19 @@ if (!isset($data['valor']) || $data['valor'] <= 0) {
     exit;
 }
 
+// Log do saldo antes
+$saldoAntes = buscarSaldo($pdo, $usuario_id);
+file_put_contents($logFile, date('[Y-m-d H:i:s]') . " Saldo antes: $saldoAntes\n", FILE_APPEND);
+
 try {
-    descontarSaldo($pdo, $usuario_id, $data['valor'], $data['descricao'] ?? 'Compra');
+    $valor = floatval($data['valor']);
+    if ($valor <= 0) throw new Exception('Valor inválido para desconto');
+    descontarSaldo($pdo, $usuario_id, $valor, $data['descricao'] ?? 'Compra');
+    $saldoDepois = buscarSaldo($pdo, $usuario_id);
     file_put_contents($logFile, date('[Y-m-d H:i:s]') . " Sucesso: Saldo descontado\n", FILE_APPEND);
-    echo json_encode(['success' => true]);
+    file_put_contents($logFile, date('[Y-m-d H:i:s]') . " Saldo depois: $saldoDepois\n", FILE_APPEND);
+    echo json_encode(['success' => true, 'saldo_antes' => $saldoAntes, 'saldo_depois' => $saldoDepois]);
 } catch (Exception $e) {
     file_put_contents($logFile, date('[Y-m-d H:i:s]') . " Erro: " . $e->getMessage() . "\n", FILE_APPEND);
-    echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => $e->getMessage(), 'saldo_antes' => $saldoAntes]);
 }
-
-// Após validar a sessão, adicione:
-$pdo->prepare("UPDATE usuarios SET saldo = saldo - 1 WHERE id = ?")->execute([$usuario_id]);
-echo json_encode(['success' => true, 'debug' => 'Descontou 1 real']);
-exit;
