@@ -1,4 +1,4 @@
-const ADMIN_PASSWORD = 'p'; 
+const ADMIN_PASSWORD = 'g'; 
 
 function isLoggedIn() {
     return sessionStorage.getItem('admin_logged') === '1';
@@ -26,25 +26,23 @@ function showLogin() {
     };
 }
 
-let menuItems = JSON.parse(localStorage.getItem('menuItems')) || [
-    {
-        id: 1,
-        name: '5 queijos',
-        image: 'img/pizzas/5_queijos.png',
-        descricao: 'Pizza de 5 queijos acompanha mussarela, parmesão, provolone, gorgonzola e catupiry.',
-        sizes: [
-            { name: 'Pequena', price: 37.00 },
-            { name: 'Média', price: 78.50 },
-            { name: 'Grande', price: 105.00 }
-        ]
-    },
-];
+let menuItems = [];
 
-function saveMenu() {
-    localStorage.setItem('menuItems', JSON.stringify(menuItems));
+async function fetchProdutosJson() {
+    return fetch('API/produtos.php?' + Date.now())
+        .then(r => r.ok ? r.json() : [])
+        .catch(() => []);
 }
 
-function renderAdmin() {
+async function saveMenu() {
+    await fetch('API/produtos.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(menuItems)
+    });
+}
+
+async function renderAdmin() {
     const container = document.getElementById('adminContainer');
     container.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
@@ -67,7 +65,8 @@ function renderAdmin() {
                 <h2>Adicionar Refrigerante</h2>
                 <label>Nome: <input type="text" id="addDrinkName" required></label>
                 <label>Preço: <input type="number" id="addDrinkPrice" required></label>
-                <button type="submit">Adicionar</button>
+                 <label>Imagem (URL): <input type="text" id="addDrinkImage" placeholder="Opcional"></label>
+                 <button type="submit">Adicionar</button>
             </form>
             <div id="drinksList"></div>
             <hr>
@@ -90,6 +89,9 @@ function renderAdmin() {
             };
         }
     }, 0);
+    // Carregar produtos do JSON
+    menuItems = await fetchProdutosJson();
+    if (!Array.isArray(menuItems)) menuItems = [];
     // Carregar dados extras
     let drinks = JSON.parse(localStorage.getItem('drinks')) || [];
     let adicionais = JSON.parse(localStorage.getItem('adicionais')) || [];
@@ -98,15 +100,30 @@ function renderAdmin() {
     function renderDrinks() {
         const list = document.getElementById('drinksList');
         list.innerHTML = '<h3>Refrigerantes</h3>';
-        drinks.forEach((drink, idx) => {
-            const div = document.createElement('div');
-            div.className = 'admin-item';
-            div.innerHTML = `
-                <strong>${drink.name}</strong> - R$ ${drink.price.toFixed(2)}
-                <button class="delete-drink" data-idx="${idx}">Excluir</button>
-            `;
-            list.appendChild(div);
-        });
+            drinks.forEach((drink, idx) => {
+                const div = document.createElement('div');
+                div.className = 'admin-item';
+                const imgUrl = typeof drink.image === 'string' ? drink.image : '';
+                div.innerHTML = `
+                    ${imgUrl ? `<img src="${imgUrl}" alt="${drink.name}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;vertical-align:middle;">` : ''}
+                    <strong>${drink.name}</strong> - R$ ${drink.price.toFixed(2)}
+                    <label style="margin-left:10px;">Imagem: <input type="text" value="${imgUrl}" data-idx="${idx}" class="drink-img-input" style="width:180px;"></label>
+                    <button class="save-drink" data-idx="${idx}">Salvar</button>
+                    <button class="delete-drink" data-idx="${idx}">Excluir</button>
+                `;
+                list.appendChild(div);
+            });
+            // Salvar imagem editada
+            document.querySelectorAll('.save-drink').forEach(btn => {
+                btn.onclick = function() {
+                    const idx = this.dataset.idx;
+                    const imgInput = document.querySelector(`.drink-img-input[data-idx="${idx}"]`);
+                    drinks[idx].image = imgInput.value ? imgInput.value : '';
+                    localStorage.setItem('drinks', JSON.stringify(drinks));
+                    addAdminLog('Editar imagem refrigerante', { name: drinks[idx].name, image: imgInput.value });
+                    renderDrinks();
+                };
+            });
         document.querySelectorAll('.delete-drink').forEach(btn => {
             btn.onclick = function() {
                 const idx = this.dataset.idx;
@@ -169,22 +186,29 @@ function renderAdmin() {
         this.reset();
     };
 
-    menuItems.forEach((item, idx) => {
+    if (menuItems.length === 0) {
         const div = document.createElement('div');
         div.className = 'admin-item';
-        div.innerHTML = `
-            <h3>${item.name}</h3>
-            <img src="${item.image}" alt="${item.name}">
-            <label>Imagem: <input type="text" value="${item.image}" data-idx="${idx}" class="img-input"></label>
-            <label>Descrição: <textarea data-idx="${idx}" class="desc-input" rows="2" style="width:100%;resize:vertical;">${item.descricao ? item.descricao : ''}</textarea></label>
-            <label>Pequena: <input type="number" value="${item.sizes[0].price}" data-idx="${idx}" data-size="0" class="price-input"></label>
-            <label>Média: <input type="number" value="${item.sizes[1].price}" data-idx="${idx}" data-size="1" class="price-input"></label>
-            <label>Grande: <input type="number" value="${item.sizes[2].price}" data-idx="${idx}" data-size="2" class="price-input"></label>
-            <button class="save-btn" data-idx="${idx}">Salvar</button>
-            <button class="delete-btn" data-idx="${idx}">Excluir</button>
-        `;
+        div.innerHTML = '<em>Nenhum produto cadastrado.</em>';
         container.appendChild(div);
-    });
+    } else {
+        menuItems.forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = 'admin-item';
+            div.innerHTML = `
+                <h3>${item.name}</h3>
+                <img src="${item.image}" alt="${item.name}">
+                <label>Imagem: <input type="text" value="${item.image}" data-idx="${idx}" class="img-input"></label>
+                <label>Descrição: <textarea data-idx="${idx}" class="desc-input" rows="2" style="width:100%;resize:vertical;">${item.descricao ? item.descricao : ''}</textarea></label>
+                <label>Pequena: <input type="number" value="${item.sizes[0].price}" data-idx="${idx}" data-size="0" class="price-input"></label>
+                <label>Média: <input type="number" value="${item.sizes[1].price}" data-idx="${idx}" data-size="1" class="price-input"></label>
+                <label>Grande: <input type="number" value="${item.sizes[2].price}" data-idx="${idx}" data-size="2" class="price-input"></label>
+                <button class="save-btn" data-idx="${idx}">Salvar</button>
+                <button class="delete-btn" data-idx="${idx}">Excluir</button>
+            `;
+            container.appendChild(div);
+        });
+    }
 
     // Adicionar produto
     document.getElementById('addProductForm').onsubmit = function(e) {
@@ -209,8 +233,7 @@ function renderAdmin() {
                 { name: 'Grande', price: g }
             ]
         });
-        saveMenu();
-        renderAdmin();
+        saveMenu().then(renderAdmin);
     };
 
     // Salvar edição

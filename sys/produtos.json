@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "name": "teste",
+        "image": "https:\/\/swiftbr.vteximg.com.br\/arquivos\/ids\/208740-450-450\/618283-pizza-artesanal-calabresa_inn.jpg?v=638870725352100000",
+        "descricao": "kakakakakak",
+        "sizes": [
+            {
+                "name": "Pequena",
+                "price": 1
+            },
+            {
+                "name": "Média",
+                "price": 2
+            },
+            {
+                "name": "Grande",
+                "price": 3
+            }
+        ]
+    }
+]

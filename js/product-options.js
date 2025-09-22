@@ -1,4 +1,4 @@
-// filepath: c:\wamp64\www\proyecto\js\product-options.js
+
 (function () {
     const modal = document.getElementById('productModal');
     const modalTitle = document.getElementById('modalTitle');
@@ -51,18 +51,38 @@
         // montar adicionais (checkbox)
         adicionaisContainer.innerHTML = '';
         const extras = product.adicionais && product.adicionais.length ? product.adicionais : [];
-        if (extras.length === 0) {
+        const drinks = product.refrigerantes && product.refrigerantes.length ? product.refrigerantes : [];
+        if (extras.length === 0 && drinks.length === 0) {
             adicionaisContainer.innerHTML = '<div class="muted">Nenhum adicional disponível</div>';
         } else {
             extras.forEach((a) => {
                 const price = Number(a.price || 0);
                 const label = document.createElement('label');
                 label.className = 'option-item';
-                // value use id if exists, fallback to name
                 const aid = a.id ?? a.name;
                 label.innerHTML = `<input type="checkbox" name="adicional" value="${aid}" data-price="${price}" data-name="${(a.name||'') }"> ${a.name} ${price ? `(+R$ ${formatPrice(price)})` : ''}`;
                 adicionaisContainer.appendChild(label);
             });
+            if (drinks.length > 0) {
+                const drinksTitle = document.createElement('div');
+                drinksTitle.className = 'muted';
+                drinksTitle.style.marginTop = '10px';
+                drinksTitle.textContent = 'Refrigerantes:';
+                adicionaisContainer.appendChild(drinksTitle);
+                drinks.forEach((d, idx) => {
+                    const price = Number(d.price || 0);
+                    const label = document.createElement('label');
+                    label.className = 'option-item';
+                    label.style.display = 'flex';
+                    label.style.alignItems = 'center';
+                    let imgHtml = '';
+                    if (d.image) {
+                        imgHtml = `<img src="${d.image}" alt="${d.name}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;">`;
+                    }
+                    label.innerHTML = `${imgHtml}<input type="checkbox" name="adicional" value="drink_${idx}" data-price="${price}" data-name="${(d.name||'') }"> ${d.name} ${price ? `(+R$ ${formatPrice(price)})` : ''}`;
+                    adicionaisContainer.appendChild(label);
+                });
+            }
         }
 
         // atualizar preço inicial
@@ -99,25 +119,62 @@
             .map(cb => ({
                 id: cb.value,
                 price: Number(cb.dataset.price || 0),
-                name: cb.dataset.name || ''
+                name: cb.dataset.name || '',
+                isDrink: cb.value.startsWith('drink_'),
+                image: cb.closest('label')?.querySelector('img')?.src || ''
             }));
 
         const qty = Number(modalQty.value) || 1;
 
-        const payload = {
-            id: currentProduct.id,
-            name: currentProduct.name,
-            basePrice: Number(sizeObj.price || 0),
-            size: sizeLabel,
-            adicionais: adicionaisChecked,
-            quantity: qty
-        };
-
-        // se existir função global addToCart, use-a; senão dispare evento customizado
-        if (typeof window.addToCart === 'function') {
-            window.addToCart(payload);
+        // Se houver refrigerantes selecionados, adiciona cada um como item próprio no carrinho
+        if (adicionaisChecked.some(a => a.isDrink)) {
+            adicionaisChecked.forEach(a => {
+                if (a.isDrink) {
+                    const drinkPayload = {
+                        id: a.id,
+                        name: a.name,
+                        basePrice: a.price,
+                        size: null,
+                        adicionais: [],
+                        quantity: 1,
+                        image: a.image
+                    };
+                    if (typeof window.addToCart === 'function') {
+                        window.addToCart(drinkPayload);
+                    } else {
+                        document.dispatchEvent(new CustomEvent('productAdd', { detail: drinkPayload }));
+                    }
+                }
+            });
+            // Remove os drinks dos adicionais do produto principal
+            const onlyAdicionais = adicionaisChecked.filter(a => !a.isDrink);
+            const payload = {
+                id: currentProduct.id,
+                name: currentProduct.name,
+                basePrice: Number(sizeObj.price || 0),
+                size: sizeLabel,
+                adicionais: onlyAdicionais,
+                quantity: qty
+            };
+            if (typeof window.addToCart === 'function') {
+                window.addToCart(payload);
+            } else {
+                document.dispatchEvent(new CustomEvent('productAdd', { detail: payload }));
+            }
         } else {
-            document.dispatchEvent(new CustomEvent('productAdd', { detail: payload }));
+            const payload = {
+                id: currentProduct.id,
+                name: currentProduct.name,
+                basePrice: Number(sizeObj.price || 0),
+                size: sizeLabel,
+                adicionais: adicionaisChecked,
+                quantity: qty
+            };
+            if (typeof window.addToCart === 'function') {
+                window.addToCart(payload);
+            } else {
+                document.dispatchEvent(new CustomEvent('productAdd', { detail: payload }));
+            }
         }
 
         closeProductModal();

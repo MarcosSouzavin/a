@@ -1,159 +1,10 @@
-// Dados do menu (incluindo adicionais, mesmo que vazios)
-let menuItems = [];
-try {
-    menuItems = JSON.parse(localStorage.getItem('menuItems')) || [];
-    if (!Array.isArray(menuItems) || menuItems.length === 0) throw 0;
-} catch {
-    // fallback para produtos fixos se localStorage estiver vazio
-    menuItems = [
-        {
-            id: 1,
-            name: '5 queijos',
-            description: 'Molho de tomate especial, mussarela ralada, provolone, parmessão, catupiry, cheddar, oregano e azeitonas',
-            image: 'img/pizzas/5_queijos.png',
-            sizes: [
-                { name: 'Pequena', price: 37.00 },
-                { name: 'Média', price: 78.50 },
-                { name: 'Grande', price: 105.00 }
-            ],
-            adicionais: [
-                { id: 'bacon', name: 'Bacon', price: 4.00 },
-                { id: 'catupiry', name: 'Catupiry', price: 5.00 }
-            ]
-        },
-        {
-            id: 2,
-            name: '3 Porquinhos',
-            description: 'Molho de tomate especial, mussarela, lombo canadense, calabresa fatiada, bacon, oregano e azeitonas',
-            image: 'img/pizzas/3_porcos.png',
-            sizes: [
-                { name: 'Pequena', price: 37.00 },
-                { name: 'Média', price: 78.50 },
-                { name: 'Grande', price: 105.00 }
-            ],
-            adicionais: [
-                { id: 'bacon', name: 'Bacon', price: 4.00 },
-                { id: 'azeitonas', name: 'Azeitonas', price: 2.00 }
-            ]
-        },
-        {
-            id: 3,
-            name: 'Bauru',
-            description: 'Molho de tomate especial, mussarela ralada, coxão mole em tiras, tomate em rodelas, orégano e azeitonas',
-            image: 'img/pizzas/bauru.png',
-            sizes: [
-                { name: 'Pequena', price: 40.00 },
-                { name: 'Média', price: 78.50 },
-                { name: 'Grande', price: 105.00 }
-            ],
-            adicionais: [
-                { id: 'extra_carne', name: 'Extra Carne', price: 6.00 }
-            ]
-        },
-        {
-            id: 4,
-            name: 'Brocolis Especial',
-            description: 'Molho de tomate especial, mussarela ralada, Brocolis refogado, bacon em cubos, catupiry, alho frito, orégano e azeitonas',
-            image: 'img/pizzas/brocolis.png',
-            sizes: [
-                { name: 'Pequena', price: 40.00 },
-                { name: 'Média', price: 78.50 },
-                { name: 'Grande', price: 105.00 }
-            ],
-            adicionais: [] // Sem adicionais, para exemplo
-        },
-        {
-            id: 5,
-            name: 'California',
-            description: 'Molho de tomate especial, mussarela ralada, calabresa fatiada, abacaxi cortado, catupiry, orégano e azeitonas',
-            image: 'img/pizzas/california.png',
-            sizes: [
-                { name: 'Pequena', price: 40.00 },
-                { name: 'Média', price: 78.50 },
-                { name: 'Grande', price: 105.00 }
-            ],
-            adicionais: [] // Sem adicionais, para exemplo
-        },
-    ];
-}
-
 let cart = [];
-let saldoUsuario = 0; // Inicializa o saldo como zero
-let _cartIdCounter = 1;
-
-// --- FUNÇÕES DO SISTEMA ---
-
+// Gera um identificador único para cada item do carrinho
 function makeUid() {
-    return 'c' + (_cartIdCounter++);
+    return 'uid_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
 }
 
-function calcItemTotal(item) {
-    const extras = (item.adicionais || []).reduce((s, a) => s + (a.price || 0), 0);
-    const single = (item.basePrice || 0) + extras;
-    return single * (item.quantity || 1);
-}
-
-function formatPrice(v) {
-    return Number(v).toFixed(2).replace('.', ',');
-}
-
-// --- LÓGICA DO CARRINHO ---
-
-function updateCart() {
-    const cartItems = document.getElementById('cartItems');
-    if (!cartItems) return;
-    cartItems.innerHTML = '';
-    let total = 0;
-
-    cart.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'cart-line';
-        const lineTotal = calcItemTotal(item);
-        total += lineTotal;
-
-        li.innerHTML = `
-            <div class="cart-line-left">
-                <strong>${item.name}</strong> ${item.size ? `<small>(${item.size})</small>` : ''}
-                ${(item.adicionais && item.adicionais.length) ? `<div class="cart-extras">${item.adicionais.map(a => `<span class="extra-item">+ ${a.name} R$ ${formatPrice(a.price)}</span>`).join('')}</div>` : ''}
-                <div class="cart-qty">Quantidade: <button class="qty-minus">−</button> ${item.quantity} <button class="qty-plus">+</button></div>
-            </div>
-            <div class="cart-line-right">
-                <div>R$ ${formatPrice(lineTotal)}</div>
-                <div><button class="remove-item">Remover</button></div>
-            </div>
-        `;
-        // Adiciona listeners após inserir no DOM
-        setTimeout(() => {
-            li.querySelector('.qty-minus').addEventListener('click', () => adjustQuantity(item.uid, -1));
-            li.querySelector('.qty-plus').addEventListener('click', () => adjustQuantity(item.uid, 1));
-            li.querySelector('.remove-item').addEventListener('click', () => removeItem(item.uid));
-        }, 0);
-
-        cartItems.appendChild(li);
-    });
-
-    const countEl = document.querySelector('.cart-count');
-    if (countEl) countEl.textContent = cart.reduce((acc, i) => acc + i.quantity, 0);
-
-    atualizarTotalComSaldo();
-}
-
-window.removeItem = function(uid) {
-    cart = cart.filter(item => item.uid !== uid);
-    updateCart();
-};
-
-window.adjustQuantity = function(uid, amount) {
-    const item = cart.find(i => i.uid === uid);
-    if (!item) return;
-    item.quantity += amount;
-    if (item.quantity <= 0) {
-        removeItem(uid);
-    } else {
-        updateCart();
-    }
-};
-
+// Adiciona um item ao carrinho
 window.addToCart = function(payload) {
     const item = {
         uid: makeUid(),
@@ -162,9 +13,11 @@ window.addToCart = function(payload) {
         basePrice: Number(payload.basePrice || 0),
         size: payload.size || null,
         adicionais: (payload.adicionais || []).map(x => ({ id: x.id, price: Number(x.price || 0), name: x.name || '' })),
-        quantity: Number(payload.quantity || 1)
+        quantity: Number(payload.quantity || 1),
+        image: payload.image || null
     };
 
+    // Verifica se já existe item igual (mesmo produto, tamanho e adicionais)
     const sameIndex = cart.findIndex(ci => {
         if (ci.productId && item.productId && ci.productId === item.productId && ci.size === item.size) {
             const aIds = (ci.adicionais || []).map(x => x.id).sort().join('|');
@@ -180,8 +33,46 @@ window.addToCart = function(payload) {
         cart.push(item);
     }
     updateCart();
-    toggleCart(); 
+    window.toggleCart();
 };
+
+// Remove item do carrinho
+window.removeItem = function(uid) {
+    cart = cart.filter(item => item.uid !== uid);
+    updateCart();
+};
+
+// Ajusta quantidade de um item
+window.adjustQuantity = function(uid, amount) {
+    const item = cart.find(i => i.uid === uid);
+    if (!item) return;
+    item.quantity += amount;
+    if (item.quantity <= 0) {
+        window.removeItem(uid);
+    } else {
+        updateCart();
+    }
+};
+
+let menuItems = [];
+
+// Carregar produtos do arquivo JSON do servidor
+function fetchProdutosJson() {
+    return fetch('API/produtos.php?' + Date.now())
+        .then(r => r.ok ? r.json() : [])
+        .catch(() => []);
+}
+
+// Inicialização principal
+document.addEventListener('DOMContentLoaded', async () => {
+    menuItems = await fetchProdutosJson();
+    if (!Array.isArray(menuItems)) menuItems = [];
+    console.log('[DEBUG] Produtos carregados do backend:', menuItems);
+    initMenu();
+    updateCart();
+    atualizarSaldoUsuario();
+    // ...restante do código de inicialização...
+// ...fim do arquivo
 
 
 
@@ -233,7 +124,10 @@ function initMenu() {
 
         const desc = document.createElement('p');
         desc.className = 'item-description';
-        desc.textContent = p.description;
+        // Garante que sempre mostra a descrição, seja descricao ou description
+        desc.textContent = (typeof p.descricao === 'string' && p.descricao)
+            || (typeof p.description === 'string' && p.description)
+            || '';
 
         const footer = document.createElement('div');
         footer.className = 'item-footer';
@@ -248,9 +142,19 @@ function initMenu() {
         btn.className = 'add-to-cart';
         btn.type = 'button';
         btn.textContent = 'Escolher opções';
-        
         btn.addEventListener('click', () => {
-            window.openProductOptions(p);
+            const produto = { ...p };
+            if (window.localStorage.getItem('adicionais')) {
+                try {
+                    produto.adicionais = JSON.parse(window.localStorage.getItem('adicionais'));
+                } catch {}
+            }
+            if (window.localStorage.getItem('drinks')) {
+                try {
+                    produto.refrigerantes = JSON.parse(window.localStorage.getItem('drinks'));
+                } catch {}
+            }
+            window.openProductOptions(produto);
         });
 
         footer.appendChild(price);
@@ -265,6 +169,52 @@ function initMenu() {
 
         menuContainer.appendChild(card);
     });
+
+    // Exibir refrigerantes como cards próprios
+    if (window.localStorage.getItem('drinks')) {
+        try {
+            const drinks = JSON.parse(window.localStorage.getItem('drinks'));
+            drinks.forEach((d, idx) => {
+                const card = document.createElement('article');
+                card.className = 'menu-item';
+                const img = document.createElement('div');
+                img.className = 'item-image';
+                img.style.backgroundImage = d.image ? `url(${d.image})` : '';
+                const content = document.createElement('div');
+                content.className = 'item-content';
+                const title = document.createElement('h3');
+                title.className = 'item-title';
+                title.textContent = d.name;
+                const price = document.createElement('div');
+                price.className = 'item-price';
+                price.textContent = `R$ ${formatPrice(d.price)}`;
+                const btn = document.createElement('button');
+                btn.className = 'add-to-cart';
+                btn.type = 'button';
+                btn.textContent = 'Adicionar';
+                btn.addEventListener('click', () => {
+                    const drinkPayload = {
+                        id: 'drink_' + idx,
+                        name: d.name,
+                        basePrice: d.price,
+                        size: null,
+                        adicionais: [],
+                        quantity: 1
+                    };
+                    if (d.image) drinkPayload.image = d.image;
+                    if (typeof window.addToCart === 'function') {
+                        window.addToCart(drinkPayload);
+                    }
+                });
+                content.appendChild(title);
+                content.appendChild(price);
+                content.appendChild(btn);
+                card.appendChild(img);
+                card.appendChild(content);
+                menuContainer.appendChild(card);
+            });
+        } catch {}
+    }
 }
 
 function renderMenu() {
@@ -424,6 +374,7 @@ function finalizarCompra() {
 }
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
     if (modal) {
         modal.querySelector('.close-button')?.addEventListener('click', closeProductModal);
@@ -470,7 +421,6 @@ document.addEventListener('DOMContentLoaded', () => {
         atualizarSaldoUsuario();
     });
 
-
     const cartButton = document.querySelector('.cart-button');
     if (cartButton) {
         cartButton.addEventListener('click', () => {
@@ -490,10 +440,71 @@ document.addEventListener('DOMContentLoaded', () => {
         checkoutButton.addEventListener('click', finalizarCompra);
     }
 
+    // --- PESQUISA EM TEMPO REAL ---
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            const filter = searchInput.value.toLowerCase();
+            const menuContainer = document.getElementById('menuContainer');
+            menuContainer.innerHTML = '';
+            menuItems.filter(item =>
+                item.name.toLowerCase().includes(filter) ||
+                (item.description && item.description.toLowerCase().includes(filter))
+            ).forEach(p => {
+                const card = document.createElement('article');
+                card.className = 'menu-item';
+
+                const img = document.createElement('div');
+                img.className = 'item-image';
+                img.style.backgroundImage = `url(${p.image})`;
+
+                const content = document.createElement('div');
+                content.className = 'item-content';
+
+                const title = document.createElement('h3');
+                title.className = 'item-title';
+                title.textContent = p.name;
+
+                const desc = document.createElement('p');
+                desc.className = 'item-description';
+                desc.textContent = p.description;
+
+                const footer = document.createElement('div');
+                footer.className = 'item-footer';
+
+                const basePrice = (p.sizes && p.sizes.length) ? Math.min(...p.sizes.map(s => Number(s.price || 0))) : 0;
+
+                const price = document.createElement('div');
+                price.className = 'item-price';
+                price.textContent = `A partir de R$ ${formatPrice(basePrice)}`;
+
+                const btn = document.createElement('button');
+                btn.className = 'add-to-cart';
+                btn.type = 'button';
+                btn.textContent = 'Escolher opções';
+                btn.addEventListener('click', () => {
+                    window.openProductOptions(p);
+                });
+
+                footer.appendChild(price);
+                footer.appendChild(btn);
+
+                content.appendChild(title);
+                content.appendChild(desc);
+                content.appendChild(footer);
+
+                card.appendChild(img);
+                card.appendChild(content);
+
+                menuContainer.appendChild(card);
+            });
+        });
+    }
+
     initMenu();
     updateCart();
     atualizarSaldoUsuario();
-});
+
 
 
 function addClientLog(action, details) {
@@ -681,3 +692,50 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('resize', onResize);
   onResize();
 });
+
+function formatPrice(valor) {
+    return Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function calcItemTotal(item) {
+    const base = Number(item.basePrice || 0);
+    const extras = (item.adicionais || []).reduce((s, a) => s + Number(a.price || 0), 0);
+    return (base + extras) * (item.quantity || 1);
+}
+
+function updateCart() {
+    const cartItems = document.getElementById('cartItems');
+    if (!cartItems) return;
+    cartItems.innerHTML = '';
+    let total = 0;
+    cart.forEach(item => {
+        const li = document.createElement('li');
+        li.className = 'cart-line';
+        const lineTotal = calcItemTotal(item);
+        total += lineTotal;
+        let drinkImg = '';
+        if (item.image) {
+            drinkImg = `<img src="${item.image}" alt="${item.name}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;vertical-align:middle;">`;
+        }
+        li.innerHTML = `
+            <div class="cart-line-left">
+                ${drinkImg}<strong>${item.name}</strong> ${item.size ? `<small>(${item.size})</small>` : ''}
+                ${(item.adicionais && item.adicionais.length) ? `<div class="cart-extras">${item.adicionais.map(a => `<span class="extra-item">+ ${a.name} R$ ${formatPrice(a.price)}</span>`).join('')}</div>` : ''}
+                <div class="cart-qty">Quantidade: <button class="qty-minus">−</button> ${item.quantity} <button class="qty-plus">+</button></div>
+            </div>
+            <div class="cart-line-right">
+                <div>R$ ${formatPrice(lineTotal)}</div>
+                <div><button class="remove-item">Remover</button></div>
+            </div>
+        `;
+        setTimeout(() => {
+            li.querySelector('.qty-minus').addEventListener('click', () => window.adjustQuantity(item.uid, -1));
+            li.querySelector('.qty-plus').addEventListener('click', () => window.adjustQuantity(item.uid, 1));
+            li.querySelector('.remove-item').addEventListener('click', () => window.removeItem(item.uid));
+        }, 0);
+        cartItems.appendChild(li);
+    });
+    const countEl = document.querySelector('.cart-count');
+    if (countEl) countEl.textContent = cart.reduce((acc, i) => acc + i.quantity, 0);
+    atualizarTotalComSaldo();
+}

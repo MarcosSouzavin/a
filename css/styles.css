@@ -721,81 +721,6 @@ body {
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
-.frete-container button[type="submit"] {
-    background-color: #007bff;
-    color: #fff;
-    font-size: 1rem;
-    padding: 18px 32px 0 32px;
-    overflow:auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border-radius: 4px;
-  .modal-row {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 18px;
-  }
-  .modal-label {
-    font-size: 1.08rem;
-    color: #444;
-    font-weight: 500;
-    margin-bottom: 6px;
-    text-align: center;
-    width: 100%;
-  }
-  .modal-price {
-    font-size: 1.25rem;
-    color: #b3ab3a;
-    font-weight: 700;
-    margin-bottom: 8px;
-    text-align: center;
-    width: 100%;
-  }
-  .options-list {
-    justify-content: center;
-  }
-  .cart-total, .cart-saldo, .cart-header h2, .cart-header {
-    text-align: center;
-  }
-  .modal-actions {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    width: 100%;
-    margin-top: 10px;
-  }
-  .modal-actions .btn {
-    min-width: 160px;
-    font-size: 1.08rem;
-  }
-  .modal-body input[type="number"] {
-    text-align: center;
-    font-size: 1.08rem;
-    border-radius: 6px;
-    border: 1.5px solid #b3ab3a;
-    padding: 7px 0;
-    width: 90px;
-    margin-bottom: 6px;
-  }
-  .modal-body input[type="number"]:focus {
-    outline: 2px solid #b3ab3a;
-  }
-  .modal-row:last-child {
-    margin-bottom: 0;
-  }
-  @media (max-width: 600px) {
-    .modal-card { padding-bottom: 8px; }
-    .modal-body { padding: 12px 4vw 0 4vw; }
-    .modal-header h3 { font-size: 1.3rem; }
-    .modal-actions .btn { min-width: 110px; font-size: 1rem; }
-  }
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
 
 .frete-container button[type="submit"]:hover {
     background-color: #0056b3;
@@ -812,4 +737,36 @@ body {
 
 .frete-container #freteResultado p {
     margin: 5px 0;
+}
+
+.frete-container button[type="submit"] {
+  width: 100%;
+  padding: 12px 14px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(27,27,27,0.08);
+  transition: background 0.3s, box-shadow 0.3s;
+  margin-top: 10px;
+}
+.frete-container button[type="submit"]:hover {
+  background: linear-gradient(90deg, var(--primary-dark), var(--primary));
+  box-shadow: 0 8px 24px rgba(27,27,27,0.12);
+}
+
+/* Mantém o resultado do frete estilizado */
+.frete-container #freteResultado {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #333;
+  text-align: left;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.5;
+}
+.frete-container #freteResultado p {
+  margin: 5px 0;
 }
