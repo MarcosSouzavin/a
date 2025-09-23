@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Santa Gula - Login</title>
+    <title>SquinaXV - Login</title>
     <script src="js/login.js"></script>
+    <link rel="icon" href="img/stg.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="css/estilo.css" media="screen" /> 
 </head>
 <body>

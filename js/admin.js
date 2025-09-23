@@ -30,7 +30,8 @@ let menuItems = [];
 
 async function fetchProdutosJson() {
     return fetch('API/produtos.php?' + Date.now())
-        .then(r => r.ok ? r.json() : [])
+        .then(r => r.ok ? r.json() : { produtos: [], adicionais: [] })
+        .then(data => Array.isArray(data.produtos) ? data.produtos : [])
         .catch(() => []);
 }
 
@@ -60,6 +61,8 @@ async function saveMenu() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
+    // Recarrega produtos do backend após salvar
+    menuItems = await fetchProdutosJson();
 }
 
 async function renderAdmin() {
@@ -253,7 +256,10 @@ async function renderAdmin() {
                 { name: 'Grande', price: g }
             ]
         });
-        saveMenu().then(renderAdmin);
+        saveMenu().then(async () => {
+            menuItems = await fetchProdutosJson();
+            renderAdmin();
+        });
     };
 
     // Salvar edição

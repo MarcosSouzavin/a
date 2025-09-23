@@ -26,6 +26,7 @@ use PHPMailer\PHPMailer\Exception;
     <meta charset="UTF-8">
     <title>Recuperar Senha</title>
     <link rel="stylesheet" href="../css/recup.css">
+    <link rel="icon" href="../img/stg.ico" type="image/x-icon">
 </head>
 <body>
     <header class="header">

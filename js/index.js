@@ -218,7 +218,8 @@ function atualizarTotalComSaldo() {
 /** Busca a lista de produtos do servidor. */
 function fetchProdutosJson() {
     return fetch('API/produtos.php?' + Date.now())
-        .then(r => r.ok ? r.json() : [])
+        .then(r => r.ok ? r.json() : { produtos: [], adicionais: [] })
+        .then(data => Array.isArray(data.produtos) ? data.produtos : [])
         .catch(() => {
             console.error("Falha ao carregar produtos do servidor.");
             return [];

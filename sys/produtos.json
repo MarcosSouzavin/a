@@ -2,9 +2,9 @@
     "produtos": [
         {
             "id": 1,
-            "name": "pizza de merda",
+            "name": "damn",
             "image": "https:\/\/static.vecteezy.com\/system\/resources\/previews\/022\/994\/042\/non_2x\/the-pepperoni-pizza-and-a-piece-of-streched-cheese-pizza-with-ai-generated-free-photo.jpg",
-            "descricao": "pizza de merda com catupiry e muita bosta, explosão de sabor de merda",
+            "descricao": "werfre",
             "sizes": [
                 {
                     "name": "Pequena",
@@ -19,19 +19,6 @@
                     "price": 30
                 }
             ]
-        },
-        {
-            "id": "drink_1",
-            "name": "coca",
-            "image": "https:\/\/st2.depositphotos.com\/1067820\/6227\/i\/950\/depositphotos_62277753-stock-photo-coca-cola.jpg",
-            "descricao": "",
-            "sizes": [
-                {
-                    "name": "Único",
-                    "price": 6
-                }
-            ],
-            "adicionais": []
         }
     ],
     "adicionais": [
