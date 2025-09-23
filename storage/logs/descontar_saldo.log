@@ -7,3 +7,10 @@
 [2025-09-17 17:21:05] [descontarSaldo] Saldo depois: 0.00
 [2025-09-17 17:21:05] Sucesso: Saldo descontado
 [2025-09-17 17:21:05] Saldo depois: 0.00
+[2025-09-23 10:52:16] Sessão: {"erro":"Registro realizado com sucesso! Fa\u00e7a login.","usuario_id":"2","usuario":"admin","email":"adm@gmail.com"}
+[2025-09-23 10:52:16] Dados recebidos: {"valor":9,"descricao":"Compra realizada no card\u00e1pio"}
+[2025-09-23 10:52:16] Saldo antes: 222.00
+[2025-09-23 10:52:16] [descontarSaldo] Saldo atual: 222.00, Valor a descontar: 9
+[2025-09-23 10:52:16] [descontarSaldo] Saldo depois: 213.00
+[2025-09-23 10:52:16] Sucesso: Saldo descontado
+[2025-09-23 10:52:16] Saldo depois: 213.00

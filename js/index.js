@@ -1,10 +1,102 @@
+// --- VARIÁVEIS GLOBAIS ---
 let cart = [];
-// Gera um identificador único para cada item do carrinho
+let menuItems = [];
+let saldoUsuario = 0;
+
+// --- FUNÇÕES UTILITÁRIAS ---
+
+/** Gera um identificador único para cada item do carrinho. */
 function makeUid() {
     return 'uid_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
 }
 
-// Adiciona um item ao carrinho
+/** Formata um número para o padrão de moeda brasileiro (R$). */
+function formatPrice(valor) {
+    return Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+/** Calcula o preço total de um item no carrinho (base + adicionais) * quantidade. */
+function calcItemTotal(item) {
+    const base = Number(item.basePrice || 0);
+    const extras = (item.adicionais || []).reduce((s, a) => s + Number(a.price || 0), 0);
+    return (base + extras) * (item.quantity || 1);
+}
+
+/** Adiciona logs de ações do cliente no localStorage para depuração. */
+function addClientLog(action, details) {
+    try {
+        const logs = JSON.parse(localStorage.getItem('clientLogs') || '[]');
+        logs.push({
+            time: new Date().toLocaleString(),
+            action,
+            details
+        });
+        localStorage.setItem('clientLogs', JSON.stringify(logs));
+    } catch (e) {
+        console.error("Erro ao salvar log do cliente:", e);
+    }
+}
+
+
+// --- LÓGICA DO CARRINHO ---
+
+/** Atualiza a interface do carrinho com os itens, totais e contadores. */
+function updateCart() {
+    const cartItems = document.getElementById('cartItems');
+    if (!cartItems) return;
+
+    cartItems.innerHTML = '';
+    let totalQuantity = 0;
+
+    if (cart.length === 0) {
+        cartItems.innerHTML = '<li class="cart-empty">Seu carrinho está vazio.</li>';
+    } else {
+        cart.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'cart-line';
+            const lineTotal = calcItemTotal(item);
+            totalQuantity += item.quantity;
+
+            const itemImage = item.image ? `<img src="${item.image}" alt="${item.name}" class="cart-item-image" style="width:80px;height:80px;object-fit:cover;border-radius:12px;display:block;margin-bottom:8px;">` : '';
+            const itemSize = item.size ? `<small>(${item.size})</small>` : '';
+            const itemAdicionais = (item.adicionais && item.adicionais.length)
+                ? `<div class="cart-extras">${item.adicionais.map(a => `<span class="extra-item">+ ${a.name}`).join('')}</div>`
+                : '';
+
+            li.innerHTML = `
+                <div class="cart-line-left">
+                    ${itemImage}
+                    <div class="cart-item-details">
+                        <strong>${item.name}</strong> ${itemSize}
+                        ${itemAdicionais}
+                        <div class="cart-qty">
+                            <button class="qty-minus" aria-label="Diminuir quantidade de ${item.name}">−</button>
+                            <span>${item.quantity}</span>
+                            <button class="qty-plus" aria-label="Aumentar quantidade de ${item.name}">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="cart-line-right">
+                    <div>R$ ${formatPrice(lineTotal)}</div>
+                    <button class="remove-item" aria-label="Remover ${item.name} do carrinho">Remover</button>
+                </div>
+            `;
+
+            li.querySelector('.qty-minus').addEventListener('click', () => window.adjustQuantity(item.uid, -1));
+            li.querySelector('.qty-plus').addEventListener('click', () => window.adjustQuantity(item.uid, 1));
+            li.querySelector('.remove-item').addEventListener('click', () => window.removeItem(item.uid));
+            
+            cartItems.appendChild(li);
+        });
+    }
+
+    const countEl = document.querySelector('.cart-count');
+    if (countEl) countEl.textContent = totalQuantity;
+
+    atualizarTotalComSaldo();
+}
+
+/** Adiciona um item ao carrinho ou incrementa a quantidade se já existir um item idêntico. */
 window.addToCart = function(payload) {
     const item = {
         uid: makeUid(),
@@ -17,9 +109,8 @@ window.addToCart = function(payload) {
         image: payload.image || null
     };
 
-    // Verifica se já existe item igual (mesmo produto, tamanho e adicionais)
     const sameIndex = cart.findIndex(ci => {
-        if (ci.productId && item.productId && ci.productId === item.productId && ci.size === item.size) {
+        if (ci.productId === item.productId && ci.size === item.size) {
             const aIds = (ci.adicionais || []).map(x => x.id).sort().join('|');
             const bIds = (item.adicionais || []).map(x => x.id).sort().join('|');
             return aIds === bIds;
@@ -33,20 +124,22 @@ window.addToCart = function(payload) {
         cart.push(item);
     }
     updateCart();
-    window.toggleCart();
+    window.toggleCart(true); // Abre o carrinho ao adicionar item
 };
 
-// Remove item do carrinho
+/** Remove um item do carrinho pelo seu UID. */
 window.removeItem = function(uid) {
     cart = cart.filter(item => item.uid !== uid);
     updateCart();
 };
 
-// Ajusta quantidade de um item
+/** Ajusta a quantidade de um item no carrinho. Remove se a quantidade for menor ou igual a zero. */
 window.adjustQuantity = function(uid, amount) {
     const item = cart.find(i => i.uid === uid);
     if (!item) return;
+    
     item.quantity += amount;
+    
     if (item.quantity <= 0) {
         window.removeItem(uid);
     } else {
@@ -54,187 +147,172 @@ window.adjustQuantity = function(uid, amount) {
     }
 };
 
-let menuItems = [];
+/** Abre ou fecha a barra lateral do carrinho. */
+window.toggleCart = function(forceOpen = false) {
+    const cartElement = document.querySelector('.cart-sidebar');
+    if (!cartElement) return;
 
-// Carregar produtos do arquivo JSON do servidor
-function fetchProdutosJson() {
-    return fetch('API/produtos.php?' + Date.now())
-        .then(r => r.ok ? r.json() : [])
-        .catch(() => []);
+    if (forceOpen === true) {
+        atualizarSaldoUsuario(() => {
+            cartElement.classList.add('active');
+        });
+    } else if (forceOpen === false) {
+        cartElement.classList.remove('active');
+    } else {
+        // Alterna o estado
+        if (cartElement.classList.contains('active')) {
+            cartElement.classList.remove('active');
+        } else {
+            atualizarSaldoUsuario(() => {
+                cartElement.classList.add('active');
+            });
+        }
+    }
 }
 
-// Inicialização principal
-document.addEventListener('DOMContentLoaded', async () => {
-    menuItems = await fetchProdutosJson();
-    if (!Array.isArray(menuItems)) menuItems = [];
-    console.log('[DEBUG] Produtos carregados do backend:', menuItems);
-    initMenu();
-    updateCart();
-    atualizarSaldoUsuario();
-    // ...restante do código de inicialização...
-// ...fim do arquivo
 
+// --- LÓGICA DE SALDO DO USUÁRIO ---
 
-
-
-function setSaldoUsuario(valor) {
-    saldoUsuario = Number(valor) || 0;
-    const el = document.getElementById('saldoUsuario');
-    if (el) el.textContent = formatPrice(saldoUsuario);
-    atualizarTotalComSaldo();
+/** Busca o saldo do usuário no servidor e atualiza a interface. */
+function atualizarSaldoUsuario(callback) {
+    fetch('balance/saldo.php?' + Date.now()) // Evita cache
+        .then(response => response.ok ? response.json() : { saldo: '0,00' })
+        .then(data => {
+            let saldoStr = data.saldo || '0,00';
+            let saldoNum = parseFloat(saldoStr.replace(/\./g, '').replace(',', '.')) || 0;
+            saldoUsuario = saldoNum;
+            
+            const el = document.getElementById('saldoUsuario');
+            if (el) el.textContent = formatPrice(saldoUsuario);
+            
+            atualizarTotalComSaldo();
+            if (typeof callback === 'function') callback(saldoUsuario);
+        })
+        .catch(error => {
+            console.error('Erro ao buscar saldo:', error);
+            saldoUsuario = 0;
+            const el = document.getElementById('saldoUsuario');
+            if (el) el.textContent = '0,00';
+            
+            atualizarTotalComSaldo();
+            if (typeof callback === 'function') callback(saldoUsuario);
+        });
 }
 
+/** Recalcula e exibe o total do carrinho, aplicando o desconto do saldo se aplicável. */
 function atualizarTotalComSaldo() {
     const usarSaldoEl = document.getElementById('usarSaldo');
-    const usarSaldo = !!(usarSaldoEl && usarSaldoEl.checked);
+    const usarSaldo = usarSaldoEl ? usarSaldoEl.checked : false;
     
-    const s = Number(saldoUsuario) || 0;
-    const t = cart.reduce((total, item) => total + calcItemTotal(item), 0);
-    
-    // Calcula o desconto real a ser aplicado, não podendo ser maior que o total
-    const desconto = usarSaldo ? Math.min(s, t) : 0;
-    
-    const totalFinal = t - desconto;
+    const subtotal = cart.reduce((total, item) => total + calcItemTotal(item), 0);
+    const desconto = usarSaldo ? Math.min(saldoUsuario, subtotal) : 0;
+    const totalFinal = subtotal - desconto;
     
     const el = document.getElementById('cartTotal');
     if (el) el.textContent = formatPrice(totalFinal);
 }
 
-// --- LÓGICA DO MENU ---
 
-function initMenu() {
+// --- LÓGICA DO MENU E PRODUTOS ---
+
+/** Busca a lista de produtos do servidor. */
+function fetchProdutosJson() {
+    return fetch('API/produtos.php?' + Date.now())
+        .then(r => r.ok ? r.json() : [])
+        .catch(() => {
+            console.error("Falha ao carregar produtos do servidor.");
+            return [];
+        });
+}
+
+/**
+ * Renderiza uma lista de itens no container do menu.
+ * @param {Array} itemsToRender - A lista de produtos a ser exibida.
+ */
+function renderMenuItems(itemsToRender) {
     const menuContainer = document.getElementById('menuContainer');
     if (!menuContainer) return;
     menuContainer.innerHTML = '';
-    
-    menuItems.forEach(p => {
+
+    if (itemsToRender.length === 0) {
+        menuContainer.innerHTML = '<p>Nenhum produto encontrado.</p>';
+        return;
+    }
+
+    itemsToRender.forEach(p => {
         const card = document.createElement('article');
         card.className = 'menu-item';
 
-        const img = document.createElement('div');
-        img.className = 'item-image';
-        img.style.backgroundImage = `url(${p.image})`;
+        // Descrição - garante que sempre usa um valor válido
+        const description = (p.descricao || p.description || '').toString();
+        
+        // Preço "A partir de"
+        const basePrice = (p.sizes && p.sizes.length) 
+            ? Math.min(...p.sizes.map(s => Number(s.price || 0))) 
+            : (Number(p.basePrice || p.price || 0));
+        const priceText = basePrice > 0 ? `A partir de R$ ${formatPrice(basePrice)}` : 'Consulte';
 
-        const content = document.createElement('div');
-        content.className = 'item-content';
-
-        const title = document.createElement('h3');
-        title.className = 'item-title';
-        title.textContent = p.name;
-
-        const desc = document.createElement('p');
-        desc.className = 'item-description';
-        // Garante que sempre mostra a descrição, seja descricao ou description
-        desc.textContent = (typeof p.descricao === 'string' && p.descricao)
-            || (typeof p.description === 'string' && p.description)
-            || '';
-
-        const footer = document.createElement('div');
-        footer.className = 'item-footer';
-
-        const basePrice = (p.sizes && p.sizes.length) ? Math.min(...p.sizes.map(s => Number(s.price || 0))) : 0;
-
-        const price = document.createElement('div');
-        price.className = 'item-price';
-        price.textContent = `A partir de R$ ${formatPrice(basePrice)}`;
-
-        const btn = document.createElement('button');
-        btn.className = 'add-to-cart';
-        btn.type = 'button';
-        btn.textContent = 'Escolher opções';
-        btn.addEventListener('click', () => {
-            const produto = { ...p };
-            if (window.localStorage.getItem('adicionais')) {
+        card.innerHTML = `
+            <div class="item-image" style="background-image: url('${p.image || ''}');"></div>
+            <div class="item-content">
+                <h3 class="item-title">${p.name}</h3>
+                <p class="item-description">${description}</p>
+                <div class="item-footer">
+                    <div class="item-price">${priceText}</div>
+                    <button class="add-to-cart" type="button">Escolher</button>
+                </div>
+            </div>
+        `;
+        
+        card.querySelector('.add-to-cart').addEventListener('click', () => {
+            // Se for bebida, não adiciona adicionais
+            const produtoParaModal = { ...p };
+            if (produtoParaModal.isDrink) {
+                produtoParaModal.adicionais = [];
+            } else {
                 try {
-                    produto.adicionais = JSON.parse(window.localStorage.getItem('adicionais'));
+                    if (window.localStorage.getItem('adicionais')) {
+                        produtoParaModal.adicionais = JSON.parse(window.localStorage.getItem('adicionais'));
+                    }
                 } catch {}
             }
-            if (window.localStorage.getItem('drinks')) {
-                try {
-                    produto.refrigerantes = JSON.parse(window.localStorage.getItem('drinks'));
-                } catch {}
-            }
-            window.openProductOptions(produto);
+            window.openProductOptions(produtoParaModal);
         });
 
-        footer.appendChild(price);
-        footer.appendChild(btn);
-
-        content.appendChild(title);
-        content.appendChild(desc);
-        content.appendChild(footer);
-
-        card.appendChild(img);
-        card.appendChild(content);
-
-        menuContainer.appendChild(card);
-    });
-
-    // Exibir refrigerantes como cards próprios
-    if (window.localStorage.getItem('drinks')) {
-        try {
-            const drinks = JSON.parse(window.localStorage.getItem('drinks'));
-            drinks.forEach((d, idx) => {
-                const card = document.createElement('article');
-                card.className = 'menu-item';
-                const img = document.createElement('div');
-                img.className = 'item-image';
-                img.style.backgroundImage = d.image ? `url(${d.image})` : '';
-                const content = document.createElement('div');
-                content.className = 'item-content';
-                const title = document.createElement('h3');
-                title.className = 'item-title';
-                title.textContent = d.name;
-                const price = document.createElement('div');
-                price.className = 'item-price';
-                price.textContent = `R$ ${formatPrice(d.price)}`;
-                const btn = document.createElement('button');
-                btn.className = 'add-to-cart';
-                btn.type = 'button';
-                btn.textContent = 'Adicionar';
-                btn.addEventListener('click', () => {
-                    const drinkPayload = {
-                        id: 'drink_' + idx,
-                        name: d.name,
-                        basePrice: d.price,
-                        size: null,
-                        adicionais: [],
-                        quantity: 1
-                    };
-                    if (d.image) drinkPayload.image = d.image;
-                    if (typeof window.addToCart === 'function') {
-                        window.addToCart(drinkPayload);
-                    }
-                });
-                content.appendChild(title);
-                content.appendChild(price);
-                content.appendChild(btn);
-                card.appendChild(img);
-                card.appendChild(content);
-                menuContainer.appendChild(card);
-            });
-        } catch {}
-    }
-}
-
-function renderMenu() {
-    const menuContainer = document.getElementById('menuContainer');
-    menuContainer.innerHTML = '';
-    menuItems.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'menu-card';
-        card.innerHTML = `
-            <img src="${item.image}" alt="${item.name}">
-            <h3>${item.name}</h3>
-            <button class="btn" onclick="openProductOptions(menuItems.find(i=>i.id==${item.id}))">Escolher opções</button>
-        `;
         menuContainer.appendChild(card);
     });
 }
 
 
-// --- LÓGICA DO MODAL DE OPÇÕES (integrado aqui) ---
+/** Carrega e inicializa o menu principal e as bebidas. */
+async function initMenu() {
+    let products = await fetchProdutosJson();
+    if (!Array.isArray(products)) products = [];
+    menuItems = products; // Armazena na variável global
 
+    // Adiciona "drinks" do localStorage como produtos normais, sem adicionais
+    try {
+        const drinks = JSON.parse(window.localStorage.getItem('drinks') || '[]');
+        if (Array.isArray(drinks) && drinks.length) {
+            const drinkItems = drinks.map((d, idx) => ({
+                id: `drink_${d.id || idx}`,
+                name: d.name,
+                image: d.image,
+                basePrice: d.price,
+                sizes: [{ name: 'Único', price: d.price }],
+                adicionais: [],
+                isDrink: true
+            }));
+            menuItems = [...menuItems, ...drinkItems];
+        }
+    } catch {}
+    renderMenuItems(menuItems);
+}
+
+
+// --- LÓGICA DO MODAL DE OPÇÕES ---
+
+let currentProduct = null;
 const modal = document.getElementById('productModal');
 const modalTitle = document.getElementById('modalTitle');
 const modalPrice = document.getElementById('modalPrice');
@@ -242,77 +320,75 @@ const sizesContainer = document.getElementById('sizesContainer');
 const adicionaisContainer = document.getElementById('adicionaisContainer');
 const modalForm = document.getElementById('modalForm');
 const modalQty = document.getElementById('modalQty');
-let currentProduct = null;
 
 function updateModalPrice() {
-    if (!currentProduct) return;
+    if (!currentProduct || !modalForm) return;
+    
     const sizeRadio = modalForm.querySelector('input[name="size"]:checked');
     const sizePrice = Number(sizeRadio?.dataset?.price || 0);
-    const adicionaisChecked = Array.from(modalForm.querySelectorAll('input[name="adicional"]:checked'))
-        .map(cb => Number(cb.dataset.price || 0));
-    const extras = adicionaisChecked.reduce((s, n) => s + n, 0);
+    
+    const adicionaisChecked = Array.from(modalForm.querySelectorAll('input[name="adicional"]:checked'));
+    const extrasPrice = adicionaisChecked.reduce((sum, cb) => sum + Number(cb.dataset.price || 0), 0);
+    
     const qty = Number(modalQty.value || 1);
-    const total = (sizePrice + extras) * qty;
+    const total = (sizePrice + extrasPrice) * qty;
+    
     modalPrice.textContent = formatPrice(total);
 }
 
 window.openProductOptions = function (product) {
-    currentProduct = product || {};
+    if (!modal || !product) return;
+    currentProduct = product;
+    
     modalTitle.textContent = product.name || 'Produto';
     modalQty.value = 1;
 
+    // Renderiza tamanhos
     sizesContainer.innerHTML = '';
-    const rawSizes = product.sizes && product.sizes.length ? product.sizes : (product.price ? [{ name: 'Único', price: product.price }] : [{ name: 'Único', price: 0 }]);
+    const rawSizes = product.sizes && product.sizes.length ? product.sizes : [{ name: 'Único', price: product.basePrice || product.price || 0 }];
     rawSizes.forEach((s, i) => {
-        const name = (typeof s === 'string') ? s : (s.name ?? 'Tamanho');
-        const price = (typeof s === 'string') ? (Number(product.price || 0)) : Number(s.price || 0);
+        const name = s.name ?? 'Tamanho';
+        const price = Number(s.price || 0);
         const label = document.createElement('label');
         label.className = 'option-item';
-        label.innerHTML = `<input type="radio" name="size" value="${i}" data-price="${price}" ${i === 0 ? 'checked' : ''}> ${name} ${Number(price) ? `– R$ ${formatPrice(price)}` : ''}`;
+        label.innerHTML = `<input type="radio" name="size" value="${i}" data-price="${price}" ${i === 0 ? 'checked' : ''}> ${name} ${price > 0 ? `– R$ ${formatPrice(price)}` : ''}`;
         sizesContainer.appendChild(label);
     });
 
+    // Renderiza adicionais (oculta se for bebida)
     adicionaisContainer.innerHTML = '';
-    const extras = product.adicionais && product.adicionais.length ? product.adicionais : [];
-    if (extras.length === 0) {
-        adicionaisContainer.innerHTML = '<div class="muted">Nenhum adicional disponível</div>';
+    if (product.isDrink) {
+        adicionaisContainer.innerHTML = '<div class="muted">Bebida não possui adicionais.</div>';
     } else {
-        extras.forEach((a) => {
-            const price = Number(a.price || 0);
-            const label = document.createElement('label');
-            label.className = 'option-item';
-            const aid = a.id ?? a.name;
-            label.innerHTML = `<input type="checkbox" name="adicional" value="${aid}" data-price="${price}" data-name="${(a.name||'') }"> ${a.name} ${price ? `(+R$ ${formatPrice(price)})` : ''}`;
-            adicionaisContainer.appendChild(label);
-        });
+        const extras = product.adicionais || [];
+        if (extras.length === 0) {
+            adicionaisContainer.innerHTML = '<div class="muted">Nenhum adicional disponível.</div>';
+        } else {
+            extras.forEach((a) => {
+                const price = Number(a.price || 0);
+                const aid = a.id ?? a.name;
+                const label = document.createElement('label');
+                label.className = 'option-item';
+                label.innerHTML = `<input type="checkbox" name="adicional" value="${aid}" data-price="${price}" data-name="${a.name || ''}"> ${a.name} ${price > 0 ? `(+R$ ${formatPrice(price)})` : ''}`;
+                adicionaisContainer.appendChild(label);
+            });
+        }
     }
 
     modal.classList.remove('hidden');
     modal.setAttribute('aria-hidden', 'false');
-    setTimeout(updateModalPrice, 20);
+    updateModalPrice();
 };
 
 window.closeProductModal = function () {
+    if (!modal) return;
     modal.classList.add('hidden');
     modal.setAttribute('aria-hidden', 'true');
     currentProduct = null;
 };
 
-// --- CONTROLE DE VISIBILIDADE DO CARRINHO ---
 
-window.toggleCart = function() {
-    const cartElement = document.querySelector('.cart-sidebar');
-    if (cartElement) {
-        if (!cartElement.classList.contains('active')) {
-            atualizarSaldoUsuario(() => {
-                cartElement.classList.add('active');
-            });
-        } else {
-            cartElement.classList.remove('active');
-        }
-    }
-}
-
+// --- LÓGICA DE FINALIZAÇÃO DA COMPRA ---
 
 function finalizarCompra() {
     if (cart.length === 0) {
@@ -320,72 +396,74 @@ function finalizarCompra() {
         return;
     }
 
-    atualizarSaldoUsuario(saldoAtualizado => {
-        const usarSaldo = document.getElementById('usarSaldo').checked;
-        const totalPedido = cart.reduce((total, item) => total + calcItemTotal(item), 0);
-        const valorPagoComSaldo = usarSaldo ? Math.min(totalPedido, saldoAtualizado) : 0;
-        const totalFinal = totalPedido - valorPagoComSaldo;
+    const usarSaldo = document.getElementById('usarSaldo')?.checked || false;
+    const totalPedido = cart.reduce((total, item) => total + calcItemTotal(item), 0);
+    const valorPagoComSaldo = usarSaldo ? Math.min(totalPedido, saldoUsuario) : 0;
+    const totalFinal = totalPedido - valorPagoComSaldo;
 
-        let resumo = 'Pedido Finalizado!\n\nItens:\n';
-        cart.forEach(item => {
-            resumo += `- ${item.quantity}x ${item.name} (${item.size})\n`;
-        });
-        resumo += `\nSubtotal: R$ ${formatPrice(totalPedido)}`;
-        if (usarSaldo && valorPagoComSaldo > 0) {
-            resumo += `\nSaldo Utilizado: - R$ ${formatPrice(valorPagoComSaldo)}`;
-        }
-        resumo += `\n\nTotal a Pagar: R$ ${formatPrice(totalFinal)}`;
-
-        alert(resumo);
-
-        // Atualiza o saldo no servidor
-        if (valorPagoComSaldo > 0) {
-            fetch('balance/descontar_saldo.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    valor: parseFloat(valorPagoComSaldo),
-                    descricao: 'Compra realizada',
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    atualizarSaldoUsuario(() => {
-                        // Força atualização do saldo na tela
-                        const el = document.getElementById('saldoUsuario');
-                        if (el && typeof data.saldo_depois !== 'undefined') {
-                            el.textContent = Number(data.saldo_depois).toFixed(2).replace('.', ',');
-                        }
-                    });
-                } else {
-                    alert('Erro ao atualizar saldo: ' + data.message);
-                }
-            })
-            .catch(error => console.error('Erro ao descontar saldo:', error));
-        }
-
-        cart = [];
-        updateCart();
-        toggleCart();
+    let resumo = 'Pedido Finalizado!\n\nItens:\n';
+    cart.forEach(item => {
+        resumo += `- ${item.quantity}x ${item.name} ${item.size ? `(${item.size})` : ''}\n`;
     });
+    resumo += `\nSubtotal: R$ ${formatPrice(totalPedido)}`;
+    if (usarSaldo && valorPagoComSaldo > 0) {
+        resumo += `\nSaldo Utilizado: - R$ ${formatPrice(valorPagoComSaldo)}`;
+    }
+    resumo += `\n\nTotal a Pagar: R$ ${formatPrice(totalFinal)}`;
+
+    alert(resumo);
+    addClientLog('Resumo do Pedido', { resumo });
+
+    if (valorPagoComSaldo > 0) {
+        fetch('balance/descontar_saldo.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                valor: parseFloat(valorPagoComSaldo),
+                descricao: 'Compra realizada no cardápio',
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                alert('Erro ao atualizar saldo: ' + data.message);
+            }
+            // Sempre atualiza o saldo na interface, mesmo se falhar
+            atualizarSaldoUsuario();
+        })
+        .catch(error => {
+            console.error('Erro ao descontar saldo:', error);
+            atualizarSaldoUsuario();
+        });
+    }
+    
+    cart = [];
+    updateCart();
+    toggleCart(false); // Fecha o carrinho
 }
 
-
+// --- INICIALIZAÇÃO E EVENT LISTENERS ---
 
 document.addEventListener('DOMContentLoaded', () => {
+    
+    // Inicialização principal
+    async function init() {
+        await initMenu();
+        updateCart();
+        atualizarSaldoUsuario();
+    }
+
+    init();
+    
+    // Listener do Modal de Produtos
     if (modal) {
         modal.querySelector('.close-button')?.addEventListener('click', closeProductModal);
         modal.querySelector('.modal-close')?.addEventListener('click', closeProductModal);
-    }
-    if (sizesContainer) sizesContainer.addEventListener('change', updateModalPrice);
-    if (adicionaisContainer) adicionaisContainer.addEventListener('change', updateModalPrice);
-    if (modalQty) modalQty.addEventListener('input', updateModalPrice);
-    
-    if (modalForm) {
-        modalForm.addEventListener('submit', function (e) {
+        sizesContainer?.addEventListener('change', updateModalPrice);
+        adicionaisContainer?.addEventListener('change', updateModalPrice);
+        modalQty?.addEventListener('input', updateModalPrice);
+
+        modalForm?.addEventListener('submit', (e) => {
             e.preventDefault();
             if (!currentProduct) return;
 
@@ -400,342 +478,54 @@ document.addEventListener('DOMContentLoaded', () => {
                     name: cb.dataset.name || ''
                 }));
 
-            const qty = Number(modalQty.value) || 1;
-
-            const payload = {
+            window.addToCart({
                 id: currentProduct.id,
                 name: currentProduct.name,
+                image: currentProduct.image,
                 basePrice: sizePrice,
                 size: sizeLabel,
                 adicionais: adicionaisChecked,
-                quantity: qty
-            };
-
-            window.addToCart(payload);
+                quantity: Number(modalQty.value) || 1
+            });
+            
             closeProductModal();
         });
     }
 
-    const usarSaldoEl = document.getElementById('usarSaldo');
-    if (usarSaldoEl) usarSaldoEl.addEventListener('change', () => {
-        atualizarSaldoUsuario();
-    });
-
-    const cartButton = document.querySelector('.cart-button');
-    if (cartButton) {
-        cartButton.addEventListener('click', () => {
-            document.querySelector('.cart-sidebar').classList.add('active');
-        });
-    }
-
-    const closeCartButton = document.querySelector('.close-cart');
-    if (closeCartButton) {
-        closeCartButton.addEventListener('click', () => {
-            document.querySelector('.cart-sidebar').classList.remove('active');
-        });
-    }
+    // Listeners do Carrinho
+    document.getElementById('usarSaldo')?.addEventListener('change', atualizarTotalComSaldo);
+    document.querySelector('.cart-button')?.addEventListener('click', () => window.toggleCart(true));
+    document.querySelector('.close-cart')?.addEventListener('click', () => window.toggleCart(false));
+    document.getElementById('checkoutButton')?.addEventListener('click', finalizarCompra);
     
-    const checkoutButton = document.getElementById('checkoutButton');
-    if (checkoutButton) {
-        checkoutButton.addEventListener('click', finalizarCompra);
-    }
-
-    // --- PESQUISA EM TEMPO REAL ---
+    // Listener da Barra de Pesquisa
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', function () {
-            const filter = searchInput.value.toLowerCase();
-            const menuContainer = document.getElementById('menuContainer');
-            menuContainer.innerHTML = '';
-            menuItems.filter(item =>
+            const filter = searchInput.value.toLowerCase().trim();
+            const filteredItems = menuItems.filter(item =>
                 item.name.toLowerCase().includes(filter) ||
-                (item.description && item.description.toLowerCase().includes(filter))
-            ).forEach(p => {
-                const card = document.createElement('article');
-                card.className = 'menu-item';
-
-                const img = document.createElement('div');
-                img.className = 'item-image';
-                img.style.backgroundImage = `url(${p.image})`;
-
-                const content = document.createElement('div');
-                content.className = 'item-content';
-
-                const title = document.createElement('h3');
-                title.className = 'item-title';
-                title.textContent = p.name;
-
-                const desc = document.createElement('p');
-                desc.className = 'item-description';
-                desc.textContent = p.description;
-
-                const footer = document.createElement('div');
-                footer.className = 'item-footer';
-
-                const basePrice = (p.sizes && p.sizes.length) ? Math.min(...p.sizes.map(s => Number(s.price || 0))) : 0;
-
-                const price = document.createElement('div');
-                price.className = 'item-price';
-                price.textContent = `A partir de R$ ${formatPrice(basePrice)}`;
-
-                const btn = document.createElement('button');
-                btn.className = 'add-to-cart';
-                btn.type = 'button';
-                btn.textContent = 'Escolher opções';
-                btn.addEventListener('click', () => {
-                    window.openProductOptions(p);
-                });
-
-                footer.appendChild(price);
-                footer.appendChild(btn);
-
-                content.appendChild(title);
-                content.appendChild(desc);
-                content.appendChild(footer);
-
-                card.appendChild(img);
-                card.appendChild(content);
-
-                menuContainer.appendChild(card);
-            });
+                (item.description && item.description.toLowerCase().includes(filter)) ||
+                (item.descricao && item.descricao.toLowerCase().includes(filter))
+            );
+            renderMenuItems(filteredItems);
         });
     }
 
-    initMenu();
-    updateCart();
-    atualizarSaldoUsuario();
-
-
-
-function addClientLog(action, details) {
-    const logs = JSON.parse(localStorage.getItem('clientLogs') || '[]');
-    logs.push({
-        time: new Date().toLocaleString(),
-        action,
-        details
-    });
-    localStorage.setItem('clientLogs', JSON.stringify(logs));
-}
-
-// Função para atualizar o saldo no carrinho
-function atualizarSaldoUsuario(callback) {
-    fetch('balance/saldo.php?' + Date.now()) // Adiciona timestamp para evitar cache
-        .then(response => response.json())
-        .then(data => {
-            let saldoStr = data.saldo;
-            let saldoNum = 0;
-            if (saldoStr) {
-                saldoNum = parseFloat(saldoStr.replace('.', '').replace(',', '.'));
-            }
-            saldoUsuario = saldoNum;
-            const el = document.getElementById('saldoUsuario');
-            if (el) el.textContent = saldoNum.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            atualizarTotalComSaldo();
-            if (typeof callback === 'function') callback(saldoUsuario);
-        })
-        .catch(error => {
-            const el = document.getElementById('saldoUsuario');
-            if (el) el.textContent = '0,00';
-            saldoUsuario = 0;
-            atualizarTotalComSaldo();
-            if (typeof callback === 'function') callback(saldoUsuario);
+    // Listener do Menu Hambúrguer (Mobile)
+    const burger = document.querySelector('.menu-hamburguer');
+    const nav = document.querySelector('.nav');
+    if (burger && nav) {
+        burger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            nav.classList.toggle('active');
+            const isActive = nav.classList.contains('active');
+            burger.setAttribute('aria-expanded', isActive.toString());
+            nav.setAttribute('aria-hidden', (!isActive).toString());
+            document.body.style.overflow = isActive ? 'hidden' : '';
         });
-}
-
-// Atualiza saldo ao carregar a página
-document.addEventListener('DOMContentLoaded', () => {
-    atualizarSaldoUsuario();
-});
-
-// Atualiza saldo ao voltar para a página principal ou ao abrir o carrinho
-window.addEventListener('focus', () => {
-    atualizarSaldoUsuario();
-});
-
-// Finalizar compra: busca saldo antes de calcular/descontar
-function finalizarCompra() {
-    if (cart.length === 0) {
-        alert("Seu carrinho está vazio!");
-        return;
     }
-        const usarSaldo = document.getElementById('usarSaldo').checked;
-        const totalPedido = cart.reduce((total, item) => total + calcItemTotal(item), 0);
-        const valorPagoComSaldo = usarSaldo ? Math.min(totalPedido, saldoUsuario) : 0;
-        const totalFinal = totalPedido - valorPagoComSaldo;
-        let resumo = 'Pedido Finalizado!\n\nItens:\n';
-        cart.forEach(item => {
-            resumo += `- ${item.quantity}x ${item.name} (${item.size})\n`;
-        });
-        resumo += `\nSubtotal: R$ ${formatPrice(totalPedido)}`;
-        if (usarSaldo && valorPagoComSaldo > 0) {
-            resumo += `\nSaldo Utilizado: - R$ ${formatPrice(valorPagoComSaldo)}`;
-        }
-        resumo += `\n\nTotal a Pagar: R$ ${formatPrice(totalFinal)}`;
-        alert(resumo);
-        addClientLog('Resumo do Pedido', { resumo });
-        if (valorPagoComSaldo > 0) {
-            fetch('balance/descontar_saldo.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    valor: parseFloat(valorPagoComSaldo),
-                    descricao: 'Compra realizada',
-                }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                atualizarSaldoUsuario();
-                if (!data.success) {
-                    alert('Erro ao atualizar saldo: ' + data.message);
-                }
-            })
-            .catch(error => {
-                atualizarSaldoUsuario();
-                console.error('Erro ao descontar saldo:', error);
-            });
-        } else {
-            atualizarSaldoUsuario();
-        }
-        cart = [];
-        updateCart();
-        window.toggleCart();
-}
-document.addEventListener('DOMContentLoaded', function () {
-  const burger = document.querySelector('.menu-hamburguer');
-  const nav = document.querySelector('.nav');
 
-  if (!burger || !nav) return; 
-
-  if (!nav.id) nav.id = 'main-nav';
-  burger.setAttribute('role', 'button');
-  burger.setAttribute('aria-controls', nav.id);
-  burger.setAttribute('aria-expanded', 'false');
-  nav.setAttribute('aria-hidden', 'true');
-
-  // Ícones simples (pode trocar por innerHTML com SVG se preferir)
-  const ICON_OPEN = '☰';
-  const ICON_CLOSE = '✕';
-
-  // garante ícone inicial
-  if (!burger.dataset.iconInitialized) {
-    burger.innerHTML = ICON_OPEN;
-    burger.dataset.iconInitialized = '1';
-  }
-
-  function openNav() {
-    nav.classList.add('active');
-    burger.classList.add('open');
-    burger.setAttribute('aria-expanded', 'true');
-    nav.setAttribute('aria-hidden', 'false');
-    // bloquear scroll do fundo (útil no mobile)
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
-    burger.innerHTML = ICON_CLOSE;
-  }
-
-  function closeNav() {
-    nav.classList.remove('active');
-    burger.classList.remove('open');
-    burger.setAttribute('aria-expanded', 'false');
-    // No desktop o nav é visível por CSS; aria-hidden fica false em desktop via onResize()
-    nav.setAttribute('aria-hidden', 'true');
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-    burger.innerHTML = ICON_OPEN;
-  }
-
-  function toggleNav() {
-    if (nav.classList.contains('active')) closeNav();
-    else openNav();
-  }
-
-  // clique no hambúrguer
-  burger.addEventListener('click', function (e) {
-    e.stopPropagation();
-    toggleNav();
-  });
-
-  // clicar fora do nav fecha (útil no mobile)
-  document.addEventListener('click', function (e) {
-    if (!nav.classList.contains('active')) return;
-    if (!nav.contains(e.target) && e.target !== burger) closeNav();
-  });
-
-  // fechar com Esc
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && nav.classList.contains('active')) closeNav();
-  });
-
-  // fechar ao clicar em link do menu (âncoras)
-  nav.addEventListener('click', function (e) {
-    if (e.target.matches('a')) closeNav();
-  });
-
-  // ajustar comportamento no resize: em desktop nav deve ficar visível (não bloqueado)
-  function onResize() {
-    if (window.innerWidth > 768) {
-      // garantir nav visível por CSS; remove estado mobile
-      nav.classList.remove('active');
-      burger.classList.remove('open');
-      burger.setAttribute('aria-expanded', 'false');
-      nav.setAttribute('aria-hidden', 'false'); // desktop: não escondido
-      document.documentElement.style.overflow = '';
-      document.body.style.overflow = '';
-      burger.innerHTML = ICON_OPEN;
-    } else {
-      // mobile: aria-hidden reflete estado atual
-      nav.setAttribute('aria-hidden', nav.classList.contains('active') ? 'false' : 'true');
-    }
-  }
-  window.addEventListener('resize', onResize);
-  onResize();
+    // Listener para atualizar saldo ao focar na janela (útil ao voltar de outra aba)
+    window.addEventListener('focus', atualizarSaldoUsuario);
 });
-
-function formatPrice(valor) {
-    return Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-}
-
-function calcItemTotal(item) {
-    const base = Number(item.basePrice || 0);
-    const extras = (item.adicionais || []).reduce((s, a) => s + Number(a.price || 0), 0);
-    return (base + extras) * (item.quantity || 1);
-}
-
-function updateCart() {
-    const cartItems = document.getElementById('cartItems');
-    if (!cartItems) return;
-    cartItems.innerHTML = '';
-    let total = 0;
-    cart.forEach(item => {
-        const li = document.createElement('li');
-        li.className = 'cart-line';
-        const lineTotal = calcItemTotal(item);
-        total += lineTotal;
-        let drinkImg = '';
-        if (item.image) {
-            drinkImg = `<img src="${item.image}" alt="${item.name}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;vertical-align:middle;">`;
-        }
-        li.innerHTML = `
-            <div class="cart-line-left">
-                ${drinkImg}<strong>${item.name}</strong> ${item.size ? `<small>(${item.size})</small>` : ''}
-                ${(item.adicionais && item.adicionais.length) ? `<div class="cart-extras">${item.adicionais.map(a => `<span class="extra-item">+ ${a.name} R$ ${formatPrice(a.price)}</span>`).join('')}</div>` : ''}
-                <div class="cart-qty">Quantidade: <button class="qty-minus">−</button> ${item.quantity} <button class="qty-plus">+</button></div>
-            </div>
-            <div class="cart-line-right">
-                <div>R$ ${formatPrice(lineTotal)}</div>
-                <div><button class="remove-item">Remover</button></div>
-            </div>
-        `;
-        setTimeout(() => {
-            li.querySelector('.qty-minus').addEventListener('click', () => window.adjustQuantity(item.uid, -1));
-            li.querySelector('.qty-plus').addEventListener('click', () => window.adjustQuantity(item.uid, 1));
-            li.querySelector('.remove-item').addEventListener('click', () => window.removeItem(item.uid));
-        }, 0);
-        cartItems.appendChild(li);
-    });
-    const countEl = document.querySelector('.cart-count');
-    if (countEl) countEl.textContent = cart.reduce((acc, i) => acc + i.quantity, 0);
-    atualizarTotalComSaldo();
-}

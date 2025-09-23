@@ -35,10 +35,30 @@ async function fetchProdutosJson() {
 }
 
 async function saveMenu() {
+    // Inclui produtos, bebidas e adicionais no JSON salvo
+    let drinks = JSON.parse(localStorage.getItem('drinks') || '[]');
+    let adicionais = JSON.parse(localStorage.getItem('adicionais') || '[]');
+
+    const drinkProducts = Array.isArray(drinks) ? drinks.map((d, idx) => ({
+        id: `drink_${idx+1}`,
+        name: d.name,
+        image: d.image || '',
+        descricao: '',
+        sizes: [ { name: 'Único', price: d.price } ],
+        adicionais: []
+    })) : [];
+
+    const allProducts = [...menuItems, ...drinkProducts];
+
+    const payload = {
+        produtos: allProducts,
+        adicionais: adicionais
+    };
+
     await fetch('API/produtos.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(menuItems)
+        body: JSON.stringify(payload)
     });
 }
 
