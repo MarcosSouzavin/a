@@ -19,6 +19,7 @@ use PHPMailer\PHPMailer\Exception;
 // SetEnv SMTP_USER seu@email.com
 // SetEnv SMTP_PASS sua_senha_de_app
 // No código, apenas use getenv como abaixo:
+// Para ambiente local (WAMP/Windows), defina as variáveis diretamente para teste:
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -50,7 +51,7 @@ $msg = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
     $email = $_POST['email'];
 
-  
+
     $stmt = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
     $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -62,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $stmt2 = $pdo->prepare("INSERT INTO redefinir_senha (usuario_id, token, expiracao, usado) VALUES (?, ?, ?, 0)");
         $stmt2->execute([$usuario['id'], $token, $expiracao]);
 
-        $link = "http://localhost/proyecto/senhas/recup.php?token=" . $token;
+        $link = "https://" . $_SERVER['HTTP_HOST'] . "/senhas/recup.php?token=" . $token;
 
         $logFile = __DIR__ . '/../storage/logs/smtp.log';
         if (!is_dir(dirname($logFile))) {
@@ -76,10 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         if (empty($smtpUser) || empty($smtpPass)) {
             $msg = "<div class='error'>Credenciais SMTP não definidas. Defina SMTP_USER e SMTP_PASS e reinicie o Apache.</div>";
         } else {
-            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            $mail = new PHPMailer(true);
             try {
                 // grava debug no arquivo
-                $mail->SMTPDebug = 2;
+                $mail->SMTPDebug = 0;
                 $mail->Debugoutput = function($str, $level) use ($logFile) {
                     file_put_contents($logFile, date('[Y-m-d H:i:s]') . " [$level] $str\n", FILE_APPEND);
                 };
@@ -89,29 +90,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
                 $mail->SMTPAuth = true;
                 $mail->Username = $smtpUser;
                 $mail->Password = $smtpPass;
-                $mail->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
-                // remover em produção
-                $mail->SMTPOptions = [
-                    'ssl' => [
-                        'verify_peer' => false,
-                        'verify_peer_name' => false,
-                        'allow_self_signed' => true,
-                    ],
-                ];
                 $mail->setFrom($smtpUser, 'SquinaXV');
                 $mail->addAddress($email);
 
                 $mail->isHTML(false);
                 $mail->Subject = "Alterar senha - SquinaXV";
-                $mail->Body    = "Olá,\n\nRecebemos uma solicitação para redefinir sua senha. caso não tenha sido você, desconsidere! 
+                $mail->Body    = "Olá,\n\nRecebemos uma solicitação para redefinir sua senha. caso não tenha sido você, desconsidere!
                 Acesse:\n\n{$link}\n\nEste link expira em 1 hora.";
                 $mail->AltBody = strip_tags($mail->Body);
 
                 $mail->send();
                 $msg = "<div class='success'>Enviamos um email com instruções para redefinir sua senha.</div>";
-            } catch (\PHPMailer\PHPMailer\Exception $e) {
+            } catch (Exception $e) {
                 // registra o erro e o token no log, mas NÃO mostra o token ao usuário
                 file_put_contents($logFile,
                     date('[Y-m-d H:i:s]') . " [ERROR] " . $e->getMessage()
@@ -151,7 +144,7 @@ if (isset($_GET['token'])) {
     } elseif (strtotime($dados['expiracao']) < time()) {
         $msg = "<div class='error'>Token expirado.</div>";
     } else {
-   
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['nova_senha'])) {
             $nova_senha = $_POST['nova_senha'];
             $confirmar_senha = $_POST['confirmar_senha'];

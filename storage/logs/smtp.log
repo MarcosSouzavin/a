@@ -1338,3 +1338,377 @@ corretamente após um período de tempo ou a conexão estabelecida falhou
 porque o host conectado não respondeu (10060)
 [2025-08-26 10:43:50] [2] SMTP Error: Could not connect to SMTP host. Failed to connect to server
 [2025-08-26 10:43:50] [ERROR] SMTP Error: Could not connect to SMTP host. Failed to connect to server | Token: 09262a8343bcd30e2103f48a463a66e9 | Link: http://localhost/proyecto/senhas/recup.php?token=09262a8343bcd30e2103f48a463a66e9
+[2025-09-29 20:17:24] [2] SERVER -> CLIENT: 220 smtp.gmail.com ESMTP d9443c01a7336-27ed6ab67a9sm136869715ad.131 - gsmtp
+
+[2025-09-29 20:17:24] [1] CLIENT -> SERVER: EHLO localhost
+
+[2025-09-29 20:17:24] [2] SERVER -> CLIENT: 250-smtp.gmail.com at your service, [177.93.164.122]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-09-29 20:17:24] [1] CLIENT -> SERVER: STARTTLS
+
+[2025-09-29 20:17:24] [2] SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-09-29 20:17:24] [1] CLIENT -> SERVER: EHLO localhost
+
+[2025-09-29 20:17:25] [2] SERVER -> CLIENT: 250-smtp.gmail.com at your service, [177.93.164.122]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-09-29 20:17:25] [1] CLIENT -> SERVER: AUTH LOGIN
+
+[2025-09-29 20:17:25] [2] SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-09-29 20:17:25] [1] CLIENT -> SERVER: [credentials hidden]
+[2025-09-29 20:17:25] [2] SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-09-29 20:17:25] [1] CLIENT -> SERVER: [credentials hidden]
+[2025-09-29 20:17:25] [2] SERVER -> CLIENT: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-27ed6ab67a9sm136869715ad.131 - gsmtp
+
+[2025-09-29 20:17:25] [1] SMTP ERROR: Password command failed: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-27ed6ab67a9sm136869715ad.131 - gsmtp
+
+[2025-09-29 20:17:25] [2] SMTP Error: Could not authenticate.
+[2025-09-29 20:17:25] [1] CLIENT -> SERVER: QUIT
+
+[2025-09-29 20:17:25] [2] SERVER -> CLIENT: 221 2.0.0 closing connection d9443c01a7336-27ed6ab67a9sm136869715ad.131 - gsmtp
+
+[2025-09-29 20:17:25] [2] SMTP Error: Could not authenticate.
+[2025-09-29 20:17:25] [ERROR] SMTP Error: Could not authenticate. | Token: 62665626693ac52de2bba32e325fc51f | Link: http://localhost/proyecto/senhas/recup.php?token=62665626693ac52de2bba32e325fc51f
+[2025-09-29 20:17:33] [2] SERVER -> CLIENT: 220 smtp.gmail.com ESMTP d9443c01a7336-27ed6ab67a9sm136872725ad.131 - gsmtp
+
+[2025-09-29 20:17:33] [1] CLIENT -> SERVER: EHLO localhost
+
+[2025-09-29 20:17:34] [2] SERVER -> CLIENT: 250-smtp.gmail.com at your service, [177.93.164.122]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-09-29 20:17:34] [1] CLIENT -> SERVER: STARTTLS
+
+[2025-09-29 20:17:34] [2] SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-09-29 20:17:34] [1] CLIENT -> SERVER: EHLO localhost
+
+[2025-09-29 20:17:34] [2] SERVER -> CLIENT: 250-smtp.gmail.com at your service, [177.93.164.122]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-09-29 20:17:34] [1] CLIENT -> SERVER: AUTH LOGIN
+
+[2025-09-29 20:17:34] [2] SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-09-29 20:17:34] [1] CLIENT -> SERVER: [credentials hidden]
+[2025-09-29 20:17:35] [2] SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-09-29 20:17:35] [1] CLIENT -> SERVER: [credentials hidden]
+[2025-09-29 20:17:35] [2] SERVER -> CLIENT: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-27ed6ab67a9sm136872725ad.131 - gsmtp
+
+[2025-09-29 20:17:35] [1] SMTP ERROR: Password command failed: 535-5.7.8 Username and Password not accepted. For more information, go to
+535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-27ed6ab67a9sm136872725ad.131 - gsmtp
+
+[2025-09-29 20:17:35] [2] SMTP Error: Could not authenticate.
+[2025-09-29 20:17:35] [1] CLIENT -> SERVER: QUIT
+
+[2025-09-29 20:17:35] [2] SERVER -> CLIENT: 221 2.0.0 closing connection d9443c01a7336-27ed6ab67a9sm136872725ad.131 - gsmtp
+
+[2025-09-29 20:17:35] [2] SMTP Error: Could not authenticate.
+[2025-09-29 20:17:35] [ERROR] SMTP Error: Could not authenticate. | Token: 19539fd1fcf57d3cfac8d26bf6c91508 | Link: http://localhost/proyecto/senhas/recup.php?token=19539fd1fcf57d3cfac8d26bf6c91508
+[2025-09-29 20:24:56] [2] SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 98e67ed59e1d1-33928acc8fcsm219116a91.8 - gsmtp
+
+[2025-09-29 20:24:56] [1] CLIENT -> SERVER: EHLO localhost
+
+[2025-09-29 20:24:56] [2] SERVER -> CLIENT: 250-smtp.gmail.com at your service, [177.93.164.122]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-09-29 20:24:56] [1] CLIENT -> SERVER: STARTTLS
+
+[2025-09-29 20:24:56] [2] SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-09-29 20:24:57] [1] CLIENT -> SERVER: EHLO localhost
+
+[2025-09-29 20:24:57] [2] SERVER -> CLIENT: 250-smtp.gmail.com at your service, [177.93.164.122]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-09-29 20:24:57] [1] CLIENT -> SERVER: AUTH LOGIN
+
+[2025-09-29 20:24:57] [2] SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-09-29 20:24:57] [1] CLIENT -> SERVER: [credentials hidden]
+[2025-09-29 20:24:57] [2] SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-09-29 20:24:57] [1] CLIENT -> SERVER: [credentials hidden]
+[2025-09-29 20:24:58] [2] SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: MAIL FROM:<marcos2008campinas@gmail.com>
+
+[2025-09-29 20:24:58] [2] SERVER -> CLIENT: 250 2.1.0 OK 98e67ed59e1d1-33928acc8fcsm219116a91.8 - gsmtp
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: RCPT TO:<marcos2008hotmail@gmail.com>
+
+[2025-09-29 20:24:58] [2] SERVER -> CLIENT: 250 2.1.5 OK 98e67ed59e1d1-33928acc8fcsm219116a91.8 - gsmtp
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: DATA
+
+[2025-09-29 20:24:58] [2] SERVER -> CLIENT: 354 Go ahead 98e67ed59e1d1-33928acc8fcsm219116a91.8 - gsmtp
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Date: Mon, 29 Sep 2025 20:24:55 +0000
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: To: marcos2008hotmail@gmail.com
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: From: SquinaXV <marcos2008campinas@gmail.com>
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Subject: Alterar senha - SquinaXV
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Message-ID: <wo9ZNe65xsTzDmZqRcOD4KynoiY8ZdZx65AC7O2J3X4@localhost>
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: X-Mailer: PHPMailer 6.11.0 (https://github.com/PHPMailer/PHPMailer)
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: MIME-Version: 1.0
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER:  boundary="b1=_wo9ZNe65xsTzDmZqRcOD4KynoiY8ZdZx65AC7O2J3X4"
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: --b1=_wo9ZNe65xsTzDmZqRcOD4KynoiY8ZdZx65AC7O2J3X4
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Content-Type: text/plain; charset=iso-8859-1
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Olá,
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Recebemos uma solicitação para redefinir sua senha. caso não tenha sido você, desconsidere! 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER:                 Acesse:
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: http://localhost/proyecto/senhas/recup.php?token=1b301a02ffbb0b74025b0fa38314a624
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Este link expira em 1 hora.
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: --b1=_wo9ZNe65xsTzDmZqRcOD4KynoiY8ZdZx65AC7O2J3X4
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Content-Type: text/html; charset=iso-8859-1
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Olá,
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Recebemos uma solicitação para redefinir sua senha. caso não tenha sido você, desconsidere! 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER:                 Acesse:
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: http://localhost/proyecto/senhas/recup.php?token=1b301a02ffbb0b74025b0fa38314a624
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: Este link expira em 1 hora.
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: --b1=_wo9ZNe65xsTzDmZqRcOD4KynoiY8ZdZx65AC7O2J3X4--
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:24:58] [1] CLIENT -> SERVER: .
+
+[2025-09-29 20:24:59] [2] SERVER -> CLIENT: 250 2.0.0 OK  1759177626 98e67ed59e1d1-33928acc8fcsm219116a91.8 - gsmtp
+
+[2025-09-29 20:24:59] [1] CLIENT -> SERVER: QUIT
+
+[2025-09-29 20:24:59] [2] SERVER -> CLIENT: 221 2.0.0 closing connection 98e67ed59e1d1-33928acc8fcsm219116a91.8 - gsmtp
+
+[2025-09-29 20:26:49] [2] SERVER -> CLIENT: 220 smtp.gmail.com ESMTP d9443c01a7336-27ed6882140sm136930935ad.70 - gsmtp
+
+[2025-09-29 20:26:49] [1] CLIENT -> SERVER: EHLO localhost
+
+[2025-09-29 20:26:49] [2] SERVER -> CLIENT: 250-smtp.gmail.com at your service, [177.93.164.122]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-09-29 20:26:49] [1] CLIENT -> SERVER: STARTTLS
+
+[2025-09-29 20:26:49] [2] SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[2025-09-29 20:26:49] [1] CLIENT -> SERVER: EHLO localhost
+
+[2025-09-29 20:26:50] [2] SERVER -> CLIENT: 250-smtp.gmail.com at your service, [177.93.164.122]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[2025-09-29 20:26:50] [1] CLIENT -> SERVER: AUTH LOGIN
+
+[2025-09-29 20:26:50] [2] SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[2025-09-29 20:26:50] [1] CLIENT -> SERVER: [credentials hidden]
+[2025-09-29 20:26:50] [2] SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[2025-09-29 20:26:50] [1] CLIENT -> SERVER: [credentials hidden]
+[2025-09-29 20:26:50] [2] SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[2025-09-29 20:26:50] [1] CLIENT -> SERVER: MAIL FROM:<marcos2008campinas@gmail.com>
+
+[2025-09-29 20:26:51] [2] SERVER -> CLIENT: 250 2.1.0 OK d9443c01a7336-27ed6882140sm136930935ad.70 - gsmtp
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: RCPT TO:<marcos2008hotmail@gmail.com>
+
+[2025-09-29 20:26:51] [2] SERVER -> CLIENT: 250 2.1.5 OK d9443c01a7336-27ed6882140sm136930935ad.70 - gsmtp
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: DATA
+
+[2025-09-29 20:26:51] [2] SERVER -> CLIENT: 354 Go ahead d9443c01a7336-27ed6882140sm136930935ad.70 - gsmtp
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Date: Mon, 29 Sep 2025 20:26:49 +0000
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: To: marcos2008hotmail@gmail.com
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: From: SquinaXV <marcos2008campinas@gmail.com>
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Subject: Alterar senha - SquinaXV
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Message-ID: <MtlxaeXDRAS2GcAPITrtDTOXVZMNUqih1nVLYwIDLE@localhost>
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: X-Mailer: PHPMailer 6.11.0 (https://github.com/PHPMailer/PHPMailer)
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: MIME-Version: 1.0
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER:  boundary="b1=_MtlxaeXDRAS2GcAPITrtDTOXVZMNUqih1nVLYwIDLE"
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: --b1=_MtlxaeXDRAS2GcAPITrtDTOXVZMNUqih1nVLYwIDLE
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Content-Type: text/plain; charset=iso-8859-1
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Olá,
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Recebemos uma solicitação para redefinir sua senha. caso não tenha sido você, desconsidere! 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER:                 Acesse:
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: http://localhost/a/senhas/recup.php?token=53bdcdfe1365aaa13d238e8f3b339de9
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Este link expira em 1 hora.
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: --b1=_MtlxaeXDRAS2GcAPITrtDTOXVZMNUqih1nVLYwIDLE
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Content-Type: text/html; charset=iso-8859-1
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Content-Transfer-Encoding: 8bit
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Olá,
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Recebemos uma solicitação para redefinir sua senha. caso não tenha sido você, desconsidere! 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER:                 Acesse:
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: http://localhost/a/senhas/recup.php?token=53bdcdfe1365aaa13d238e8f3b339de9
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: Este link expira em 1 hora.
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: --b1=_MtlxaeXDRAS2GcAPITrtDTOXVZMNUqih1nVLYwIDLE--
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: 
+
+[2025-09-29 20:26:51] [1] CLIENT -> SERVER: .
+
+[2025-09-29 20:26:52] [2] SERVER -> CLIENT: 250 2.0.0 OK  1759177739 d9443c01a7336-27ed6882140sm136930935ad.70 - gsmtp
+
+[2025-09-29 20:26:52] [1] CLIENT -> SERVER: QUIT
+
+[2025-09-29 20:26:52] [2] SERVER -> CLIENT: 221 2.0.0 closing connection d9443c01a7336-27ed6882140sm136930935ad.70 - gsmtp
+

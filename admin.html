@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -7,7 +7,10 @@
     <link rel="icon" href="img/stg.ico" type="image/x-icon">
 </head>
 <body>
-    <h1>Painel Admin</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1>Painel Admin</h1>
+        <button id="logoutBtn" style="padding: 10px 20px; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">Encerrar Sessão</button>
+    </div>
     <div class="admin-tabs">
         <button class="tab-btn" data-tab="produtos">Produtos</button>
         <button class="tab-btn" data-tab="adicionar">Adicionar</button>

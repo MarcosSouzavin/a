@@ -60,7 +60,10 @@ async function saveMenu() {
         adicionais: [] // bebidas nunca têm adicionais
     })) : [];
 
-    const allProducts = [...menuItems, ...drinkProducts, ...sucoProducts];
+    // Filter out drinks and sucos from menuItems to avoid duplicates
+    const regularProducts = menuItems.filter(p => !String(p.id).startsWith('drink_') && !String(p.id).startsWith('suco_'));
+
+    const allProducts = [...regularProducts, ...drinkProducts, ...sucoProducts];
 
     const payload = {
         produtos: allProducts,
@@ -110,6 +113,15 @@ function setupAdminTabs() {
     });
     tabBtns[0].classList.add('active');
     renderTab(currentTab);
+
+    // Logout button
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.onclick = () => {
+            sessionStorage.removeItem('admin_logged');
+            location.reload();
+        };
+    }
 
     async function renderTab(tab) {
         if (tab === 'produtos') {
@@ -328,6 +340,20 @@ function setupAdminTabs() {
             };
         } else if (tab === 'sucos') {
             let sucos = JSON.parse(localStorage.getItem('sucos')) || [];
+            // If localStorage is empty, try to load from produtos.json
+            if (sucos.length === 0) {
+                menuItems.forEach(p => {
+                    if (String(p.id).startsWith('suco_')) {
+                        sucos.push({
+                            name: p.name,
+                            price: p.sizes && p.sizes.length ? p.sizes[0].price : 0,
+                            image: p.image || '',
+                            descricao: p.descricao || ''
+                        });
+                    }
+                });
+                localStorage.setItem('sucos', JSON.stringify(sucos));
+            }
             tabContent.innerHTML = '<h2>Sucos</h2>';
             tabContent.innerHTML += `
                 <form id="addSucoForm" class="admin-form">
@@ -348,7 +374,7 @@ function setupAdminTabs() {
                     div.className = 'admin-item';
                     const imgUrl = typeof suco.image === 'string' ? suco.image : '';
                     div.innerHTML = `
-                        ${imgUrl ? `<img src="${imgUrl}" alt="${suco.name}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;vertical-align:middle;">` : ''}
+                        ${imgUrl ? `<img src="${imgUrl}" alt="${imgUrl}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;vertical-align:middle;">` : ''}
                         <strong>${suco.name}</strong> - R$ ${suco.price.toFixed(2)}
                         <div>Descrição: ${suco.descricao ? suco.descricao : '<em>Sem descrição</em>'}</div>
                         <button class="delete-suco" data-idx="${idx}">Excluir</button>
