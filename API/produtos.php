@@ -25,7 +25,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!isset($data['produtos'])) $data['produtos'] = [];
             if (!isset($data['adicionais'])) $data['adicionais'] = [];
         }
-        file_put_contents($jsonFile, json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $json = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $result = @file_put_contents($jsonFile, $json);
+        if ($result === false) {
+            // Log de erro em caso de falha
+            $logFile = __DIR__ . '/../storage/logs/produtos_error.log';
+            file_put_contents($logFile, date('Y-m-d H:i:s') . " - Erro ao salvar produtos.json\n", FILE_APPEND);
+            http_response_code(500);
+            echo json_encode(['error' => 'Falha ao salvar produtos.json']);
+            exit;
+        }
         echo json_encode(['success' => true]);
         exit;
     } else {

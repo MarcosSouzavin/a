@@ -1,3 +1,127 @@
+/* Estilo para abas do painel admin */
+.admin-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin: 32px 0 24px 0;
+}
+.tab-btn {
+    background: #f8f9fa;
+    border: 1px solid #007bff;
+    color: #007bff;
+    padding: 10px 32px;
+    border-radius: 6px 6px 0 0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    outline: none;
+}
+.tab-btn.active {
+    background: #007bff;
+    color: #fff;
+    font-weight: bold;
+    box-shadow: 0 2px 8px #007bff33;
+}
+.tab-btn:not(.active):hover {
+    background: #e3eafc;
+    color: #0056b3;
+}
+
+#adminTabContent {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 24px #0002;
+    padding: 32px 24px 24px 24px;
+    min-height: 300px;
+}
+
+/* Cards de produto na aba Produtos */
+.admin-item {
+    background: #f8f9fa;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    padding: 18px 16px;
+    margin-bottom: 18px;
+    box-shadow: 0 1px 4px #0001;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.admin-item img {
+    max-width: 100px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    box-shadow: 0 2px 8px #0001;
+}
+.admin-item h3 {
+    margin: 0 0 8px 0;
+    color: #007bff;
+}
+.admin-item label {
+    display: block;
+    margin: 6px 0;
+    color: #444;
+}
+.admin-item input[type="text"],
+.admin-item input[type="number"],
+.admin-item textarea {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 4px;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 1rem;
+    background: #fff;
+}
+.admin-item button.save-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-right: 8px;
+    transition: background 0.2s;
+}
+.admin-item button.save-btn:hover {
+    background: #0056b3;
+}
+.admin-item button.delete-btn {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.admin-item button.delete-btn:hover {
+    background: #b52a37;
+}
+.editMsg {
+    margin-top: 8px;
+    font-size: 0.98rem;
+}
+
+@media (max-width: 800px) {
+    #adminTabContent {
+        padding: 16px 6px;
+    }
+    .admin-tabs {
+        gap: 6px;
+    }
+    .tab-btn {
+        padding: 8px 10px;
+        font-size: 1rem;
+    }
+    .admin-item img {
+        max-width: 70px;
+    }
+}
 
 /* Imagem de fundo apenas na tela de login admin */
 .admin-login-bg {

@@ -44,10 +44,8 @@ function addClientLog(action, details) {
 function updateCart() {
     const cartItems = document.getElementById('cartItems');
     if (!cartItems) return;
-
     cartItems.innerHTML = '';
     let totalQuantity = 0;
-
     if (cart.length === 0) {
         cartItems.innerHTML = '<li class="cart-empty">Seu carrinho está vazio.</li>';
     } else {
@@ -56,18 +54,18 @@ function updateCart() {
             li.className = 'cart-line';
             const lineTotal = calcItemTotal(item);
             totalQuantity += item.quantity;
-
             const itemImage = item.image ? `<img src="${item.image}" alt="${item.name}" class="cart-item-image" style="width:80px;height:80px;object-fit:cover;border-radius:12px;display:block;margin-bottom:8px;">` : '';
             const itemSize = item.size ? `<small>(${item.size})</small>` : '';
             const itemAdicionais = (item.adicionais && item.adicionais.length)
                 ? `<div class="cart-extras">${item.adicionais.map(a => `<span class="extra-item">+ ${a.name}`).join('')}</div>`
                 : '';
-
+            const removerText = item.remover ? `<div class="cart-remover" style="font-size:0.95em;color:#555;margin-top:2px;">${item.remover}</div>` : '';
             li.innerHTML = `
                 <div class="cart-line-left">
                     ${itemImage}
                     <div class="cart-item-details">
                         <strong>${item.name}</strong> ${itemSize}
+                        ${removerText}
                         ${itemAdicionais}
                         <div class="cart-qty">
                             <button class="qty-minus" aria-label="Diminuir quantidade de ${item.name}">−</button>
@@ -81,18 +79,14 @@ function updateCart() {
                     <button class="remove-item" aria-label="Remover ${item.name} do carrinho">Remover</button>
                 </div>
             `;
-
             li.querySelector('.qty-minus').addEventListener('click', () => window.adjustQuantity(item.uid, -1));
             li.querySelector('.qty-plus').addEventListener('click', () => window.adjustQuantity(item.uid, 1));
             li.querySelector('.remove-item').addEventListener('click', () => window.removeItem(item.uid));
-            
             cartItems.appendChild(li);
         });
     }
-
     const countEl = document.querySelector('.cart-count');
     if (countEl) countEl.textContent = totalQuantity;
-
     atualizarTotalComSaldo();
 }
 
@@ -106,7 +100,8 @@ window.addToCart = function(payload) {
         size: payload.size || null,
         adicionais: (payload.adicionais || []).map(x => ({ id: x.id, price: Number(x.price || 0), name: x.name || '' })),
         quantity: Number(payload.quantity || 1),
-        image: payload.image || null
+        image: payload.image || null,
+        remover: payload.remover || ''
     };
 
     const sameIndex = cart.findIndex(ci => {
@@ -289,24 +284,12 @@ function renderMenuItems(itemsToRender) {
 async function initMenu() {
     let products = await fetchProdutosJson();
     if (!Array.isArray(products)) products = [];
-    menuItems = products; // Armazena na variável global
-
-    // Adiciona "drinks" do localStorage como produtos normais, sem adicionais
-    try {
-        const drinks = JSON.parse(window.localStorage.getItem('drinks') || '[]');
-        if (Array.isArray(drinks) && drinks.length) {
-            const drinkItems = drinks.map((d, idx) => ({
-                id: `drink_${d.id || idx}`,
-                name: d.name,
-                image: d.image,
-                basePrice: d.price,
-                sizes: [{ name: 'Único', price: d.price }],
-                adicionais: [],
-                isDrink: true
-            }));
-            menuItems = [...menuItems, ...drinkItems];
-        }
-    } catch {}
+    // Marca drinks e sucos para exibir corretamente no modal
+    products.forEach(p => {
+        if (String(p.id).startsWith('drink_')) p.isDrink = true;
+        if (String(p.id).startsWith('suco_')) p.isSuco = true;
+    });
+    menuItems = products;
     renderMenuItems(menuItems);
 }
 
@@ -340,10 +323,8 @@ function updateModalPrice() {
 window.openProductOptions = function (product) {
     if (!modal || !product) return;
     currentProduct = product;
-    
     modalTitle.textContent = product.name || 'Produto';
     modalQty.value = 1;
-
     // Renderiza tamanhos
     sizesContainer.innerHTML = '';
     const rawSizes = product.sizes && product.sizes.length ? product.sizes : [{ name: 'Único', price: product.basePrice || product.price || 0 }];
@@ -355,11 +336,14 @@ window.openProductOptions = function (product) {
         label.innerHTML = `<input type="radio" name="size" value="${i}" data-price="${price}" ${i === 0 ? 'checked' : ''}> ${name} ${price > 0 ? `– R$ ${formatPrice(price)}` : ''}`;
         sizesContainer.appendChild(label);
     });
-
     // Renderiza adicionais (oculta se for bebida)
     adicionaisContainer.innerHTML = '';
+    let showRemoveBox = false;
     if (product.isDrink) {
         adicionaisContainer.innerHTML = '<div class="muted">Bebida não possui adicionais.</div>';
+    } else if (product.isSuco) {
+        adicionaisContainer.innerHTML = '<div class="muted">Suco não possui adicionais.</div>';
+        showRemoveBox = true;
     } else {
         const extras = product.adicionais || [];
         if (extras.length === 0) {
@@ -374,8 +358,24 @@ window.openProductOptions = function (product) {
                 adicionaisContainer.appendChild(label);
             });
         }
+        showRemoveBox = true;
     }
-
+    // Adiciona caixa de texto para remoção de ingredientes
+    if (showRemoveBox) {
+        const removeInput = document.createElement('input');
+        removeInput.type = 'text';
+        removeInput.id = 'removeInput';
+        removeInput.placeholder = 'Ex: sem cebola, sem gelo, sem açúcar';
+        removeInput.style.width = '100%';
+        removeInput.style.marginTop = '8px';
+        removeInput.style.padding = '8px';
+        removeInput.style.border = '1px solid #ccc';
+        removeInput.style.borderRadius = '8px';
+        removeInput.style.fontSize = '1rem';
+        removeInput.style.background = '#fafafa';
+        removeInput.style.boxSizing = 'border-box';
+        adicionaisContainer.appendChild(removeInput);
+    }
     modal.classList.remove('hidden');
     modal.setAttribute('aria-hidden', 'false');
     updateModalPrice();
@@ -467,18 +467,21 @@ document.addEventListener('DOMContentLoaded', () => {
         modalForm?.addEventListener('submit', (e) => {
             e.preventDefault();
             if (!currentProduct) return;
-
             const sizeRadio = modalForm.querySelector('input[name="size"]:checked');
             const sizeLabel = sizeRadio ? sizeRadio.parentElement.textContent.trim().split('–')[0].trim() : null;
             const sizePrice = Number(sizeRadio?.dataset?.price || 0);
-
             const adicionaisChecked = Array.from(modalForm.querySelectorAll('input[name="adicional"]:checked'))
                 .map(cb => ({
                     id: cb.value,
                     price: Number(cb.dataset.price || 0),
                     name: cb.dataset.name || ''
                 }));
-
+            // Pega valor da caixa de remoção
+            let remover = '';
+            if (!currentProduct.isDrink) {
+                const removeInput = document.getElementById('removeInput');
+                if (removeInput) remover = removeInput.value.trim();
+            }
             window.addToCart({
                 id: currentProduct.id,
                 name: currentProduct.name,
@@ -486,9 +489,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 basePrice: sizePrice,
                 size: sizeLabel,
                 adicionais: adicionaisChecked,
-                quantity: Number(modalQty.value) || 1
+                quantity: Number(modalQty.value) || 1,
+                remover
             });
-            
             closeProductModal();
         });
     }
