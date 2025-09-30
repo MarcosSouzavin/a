@@ -37,6 +37,23 @@ async function fetchProdutosJson() {
         .catch(() => ({ produtos: [], adicionais: [] }));
 }
 
+function mapToSimpleDrinks(products) {
+    return products.filter(p => String(p.id).startsWith('drink_')).map(p => ({
+        name: p.name,
+        image: p.image || '',
+        price: p.sizes && p.sizes[0] ? p.sizes[0].price || 0 : 0
+    }));
+}
+
+function mapToSimpleSucos(products) {
+    return products.filter(p => String(p.id).startsWith('suco_')).map(p => ({
+        name: p.name,
+        image: p.image || '',
+        descricao: p.descricao || '',
+        price: p.sizes && p.sizes[0] ? p.sizes[0].price || 0 : 0
+    }));
+}
+
 async function saveMenu() {
     const drinkProducts = Array.isArray(drinks) ? drinks.map((d, idx) => ({
         id: `drink_${idx + 1}`,
@@ -82,8 +99,8 @@ async function saveMenu() {
         const data = await fetchProdutosJson();
         menuItems = data.produtos || [];
         adicionais = data.adicionais || [];
-        drinks = menuItems.filter(p => String(p.id).startsWith('drink_'));
-        sucos = menuItems.filter(p => String(p.id).startsWith('suco_'));
+        drinks = mapToSimpleDrinks(menuItems);
+        sucos = mapToSimpleSucos(menuItems);
         renderTab(currentTab);
     } catch (error) {
         console.error('Erro na requisição saveMenu:', error);
@@ -110,8 +127,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await fetchProdutosJson();
         menuItems = data.produtos || [];
         adicionais = data.adicionais || [];
-        drinks = menuItems.filter(p => String(p.id).startsWith('drink_'));
-        sucos = menuItems.filter(p => String(p.id).startsWith('suco_'));
+        drinks = mapToSimpleDrinks(menuItems);
+        sucos = mapToSimpleSucos(menuItems);
+        if (adicionais.length === 0) {
+            adicionais = [
+                { name: 'Queijo', price: 2 },
+                { name: 'Bacon', price: 3 },
+                { name: 'Cebola', price: 1 },
+                { name: 'Azeitona', price: 1.5 }
+            ];
+            await saveMenu();
+        }
         setupAdminTabs();
     }
 });
@@ -330,10 +356,31 @@ async function renderTab(tab) {
                 const imgUrl = typeof drink.image === 'string' ? drink.image : '';
                 div.innerHTML = `
                     ${imgUrl ? `<img src="${imgUrl}" alt="${drink.name}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;vertical-align:middle;">` : ''}
-                    <strong>${drink.name}</strong> - R$ ${drink.price.toFixed(2)}
+                    <label>Nome: <input type="text" value="${drink.name}" class="name-input"></label>
+                    <label>Imagem: <input type="text" value="${drink.image || ''}" class="img-input"></label>
+                    <label>Preço: <input type="number" value="${drink.price}" class="price-input"></label>
+                    <button class="save-drink" data-idx="${idx}">Salvar</button>
                     <button class="delete-drink" data-idx="${idx}">Excluir</button>
+                    <div class="drinkMsg"></div>
                 `;
                 list.appendChild(div);
+            });
+            document.querySelectorAll('.save-drink').forEach(btn => {
+                btn.onclick = async function() {
+                    const idx = this.dataset.idx;
+                    const div = this.parentElement;
+                    const nameInput = div.querySelector('.name-input');
+                    const imgInput = div.querySelector('.img-input');
+                    const priceInput = div.querySelector('.price-input');
+                    const msgDiv = div.querySelector('.drinkMsg');
+                    drinks[idx].name = nameInput.value.trim();
+                    drinks[idx].image = imgInput.value.trim();
+                    drinks[idx].price = Number(priceInput.value);
+                    await saveMenu();
+                    addAdminLog('Editar refrigerante', { idx, name: drinks[idx].name, image: drinks[idx].image, price: drinks[idx].price });
+                    msgDiv.innerHTML = '<span style="color:green;">Refrigerante salvo!</span>';
+                    renderDrinks();
+                };
             });
             document.querySelectorAll('.delete-drink').forEach(btn => {
                 btn.onclick = async function() {
@@ -378,12 +425,35 @@ async function renderTab(tab) {
                 div.className = 'admin-item';
                 const imgUrl = typeof suco.image === 'string' ? suco.image : '';
                 div.innerHTML = `
-                    ${imgUrl ? `<img src="${imgUrl}" alt="${imgUrl}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;vertical-align:middle;">` : ''}
-                    <strong>${suco.name}</strong> - R$ ${suco.price.toFixed(2)}
-                    <div>Descrição: ${suco.descricao ? suco.descricao : '<em>Sem descrição</em>'}</div>
+                    ${imgUrl ? `<img src="${imgUrl}" alt="${suco.name}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;vertical-align:middle;">` : ''}
+                    <label>Nome: <input type="text" value="${suco.name}" class="name-input"></label>
+                    <label>Imagem: <input type="text" value="${suco.image || ''}" class="img-input"></label>
+                    <label>Descrição: <textarea class="desc-input" rows="2" style="width:100%;resize:vertical;">${suco.descricao ? suco.descricao : ''}</textarea></label>
+                    <label>Preço: <input type="number" value="${suco.price}" class="price-input"></label>
+                    <button class="save-suco" data-idx="${idx}">Salvar</button>
                     <button class="delete-suco" data-idx="${idx}">Excluir</button>
+                    <div class="sucoMsg"></div>
                 `;
                 list.appendChild(div);
+            });
+            document.querySelectorAll('.save-suco').forEach(btn => {
+                btn.onclick = async function() {
+                    const idx = this.dataset.idx;
+                    const div = this.parentElement;
+                    const nameInput = div.querySelector('.name-input');
+                    const imgInput = div.querySelector('.img-input');
+                    const descInput = div.querySelector('.desc-input');
+                    const priceInput = div.querySelector('.price-input');
+                    const msgDiv = div.querySelector('.sucoMsg');
+                    sucos[idx].name = nameInput.value.trim();
+                    sucos[idx].image = imgInput.value.trim();
+                    sucos[idx].descricao = descInput.value.trim();
+                    sucos[idx].price = Number(priceInput.value);
+                    await saveMenu();
+                    addAdminLog('Editar suco', { idx, name: sucos[idx].name, image: sucos[idx].image, descricao: sucos[idx].descricao, price: sucos[idx].price });
+                    msgDiv.innerHTML = '<span style="color:green;">Suco salvo!</span>';
+                    renderSucos();
+                };
             });
             document.querySelectorAll('.delete-suco').forEach(btn => {
                 btn.onclick = async function() {

@@ -1,3 +1,9 @@
-- [x] Atualizar js/admin.js para carregar refrigerantes e sucos do produtos.json para localStorage se não estiverem presentes
-- [ ] Verificar se a API/produtos.php está salvando corretamente os dados
-- [ ] Testar o painel admin para confirmar que refrigerantes e sucos são salvos e carregados corretamente
+- [x] Modify renderDrinks function in js/admin.js to include edit inputs (name, image, price) and save button for each drink
+- [x] Add event listeners for save button to update drinks array, log action, and call saveMenu
+- [x] Ensure delete functionality remains intact
+- [ ] Test the changes by reloading the tab and verifying edit/save works
+
+- [x] Modify renderSucos function in js/admin.js to include edit inputs (name, image, descricao, price) and save button for each suco
+- [x] Add event listeners for save button to update sucos array, log action, and call saveMenu
+- [x] Ensure delete functionality remains intact for sucos
+- [ ] Test the changes for sucos by reloading the tab and verifying edit/save works
