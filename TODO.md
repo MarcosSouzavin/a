@@ -1,4 +1,3 @@
-- [x] Modify 'editar' tab in js/admin.js to dynamically generate price inputs based on item.sizes.length
-- [x] Update saveBtn onclick to handle varying sizes without errors
-- [x] Change deleteBtn onclick to re-render tab instead of location.reload()
-- [ ] Test save and delete functionality
+- [x] Atualizar js/admin.js para carregar refrigerantes e sucos do produtos.json para localStorage se não estiverem presentes
+- [ ] Verificar se a API/produtos.php está salvando corretamente os dados
+- [ ] Testar o painel admin para confirmar que refrigerantes e sucos são salvos e carregados corretamente

@@ -36,6 +36,41 @@ async function fetchProdutosJson() {
         .catch(() => []);
 }
 
+async function loadDrinksAndSucosFromJson() {
+    const menuItems = await fetchProdutosJson();
+    let drinks = JSON.parse(localStorage.getItem('drinks')) || [];
+    let sucos = JSON.parse(localStorage.getItem('sucos')) || [];
+
+    // Load drinks from JSON if localStorage is empty
+    if (drinks.length === 0) {
+        menuItems.forEach(p => {
+            if (String(p.id).startsWith('drink_')) {
+                drinks.push({
+                    name: p.name,
+                    price: p.sizes && p.sizes.length ? p.sizes[0].price : 0,
+                    image: p.image || ''
+                });
+            }
+        });
+        localStorage.setItem('drinks', JSON.stringify(drinks));
+    }
+
+    // Load sucos from JSON if localStorage is empty
+    if (sucos.length === 0) {
+        menuItems.forEach(p => {
+            if (String(p.id).startsWith('suco_')) {
+                sucos.push({
+                    name: p.name,
+                    price: p.sizes && p.sizes.length ? p.sizes[0].price : 0,
+                    image: p.image || '',
+                    descricao: p.descricao || ''
+                });
+            }
+        });
+        localStorage.setItem('sucos', JSON.stringify(sucos));
+    }
+}
+
 async function saveMenu() {
     // Inclui produtos, bebidas e adicionais no JSON salvo
 
@@ -137,6 +172,9 @@ function setupAdminTabs() {
             location.reload();
         };
     }
+
+    // Load drinks and sucos from JSON to localStorage if empty
+    loadDrinksAndSucosFromJson();
 
     async function renderTab(tab) {
         if (tab === 'produtos') {

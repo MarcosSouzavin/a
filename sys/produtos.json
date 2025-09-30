@@ -221,49 +221,180 @@
             ]
         },
         {
+            "id": null,
+            "name": "Pizza Romeu e Julieta",
+            "image": "https:\/\/mrteddypizza.com.br\/wp-content\/uploads\/2024\/03\/28092018-IMG_9784-scaled.jpg",
+            "descricao": "Mussarela e goiabada cremosa.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 40
+                },
+                {
+                    "name": "Média",
+                    "price": 50
+                },
+                {
+                    "name": "Grande",
+                    "price": 60
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "name": "Pizza de Banana com Canela",
+            "image": "https:\/\/guiadacozinha.com.br\/wp-content\/uploads\/2007\/01\/pizzadebananaecanela.jpg",
+            "descricao": "Mussarela, banana fatiada, açúcar e canela.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 35
+                },
+                {
+                    "name": "Média",
+                    "price": 45
+                },
+                {
+                    "name": "Grande",
+                    "price": 60
+                }
+            ]
+        },
+        {
             "id": "drink_1",
-            "name": "coca lata zero",
-            "image": "https:\/\/sudoestedistribuidora.com.br\/wp-content\/uploads\/2023\/02\/REFRIGERANTE-COCA-COLA-LATA-ZERO-350ML.png",
+            "name": "Água Tônica",
+            "image": "https:\/\/bretas.vtexassets.com\/arquivos\/ids\/201506-800-auto?v=638376352003200000&width=800&height=auto&aspect=true",
             "descricao": "",
             "sizes": [
                 {
                     "name": "Único",
-                    "price": 5
+                    "price": 7
                 }
             ],
             "adicionais": []
         },
         {
             "id": "drink_2",
-            "name": "coca lata",
-            "image": "https:\/\/us.123rf.com\/450wm\/tiverylucky\/tiverylucky1404\/tiverylucky140400047\/27653068-bangkok-tailndia-21-de-mar%C3%A7o-de-2014-lata-de-coca-cola-deitado-no-gelo-coca-cola-%C3%A9-um-dos.jpg?ver=6",
+            "name": "Coca Lata Zero",
+            "image": "https:\/\/brf.file.force.com\/servlet\/servlet.ImageServer?id=015U600000027LZ&oid=00D410000012TJa&lastMod=1703778994000",
             "descricao": "",
             "sizes": [
                 {
                     "name": "Único",
-                    "price": 5
+                    "price": 7
                 }
             ],
             "adicionais": []
         },
         {
             "id": "drink_3",
-            "name": "Refrigerante Guaraná Antártica",
-            "image": "https:\/\/acdn-us.mitiendanube.com\/stores\/001\/043\/810\/products\/7d215ecd8878c518bfbf5dedb4e4a1df-8368bddfbcb21dc80d17430917054618-640-0.jpg",
+            "name": "Coca Lata",
+            "image": "https:\/\/naturalterra.vtexassets.com\/arquivos\/ids\/167485\/Refrigerante-Coca-Cola-Lata-350Ml.png?v=638797994562700000",
             "descricao": "",
             "sizes": [
                 {
                     "name": "Único",
-                    "price": 5
+                    "price": 7
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_4",
+            "name": "Fanta Laranja",
+            "image": "https:\/\/cdn.awsli.com.br\/600x450\/298\/298064\/produto\/58264850\/06efce66a9.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 7
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_5",
+            "name": "Fanta Uva",
+            "image": "https:\/\/cdn.awsli.com.br\/800x800\/298\/298064\/produto\/58264359\/d7476aa5b6.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 7
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_6",
+            "name": "Sprite",
+            "image": "https:\/\/andinacocacola.vtexassets.com\/arquivos\/ids\/158586\/Sprite-Original.jpg?v=638690962089970000",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 7
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_7",
+            "name": "Coca Cola 1L Zero",
+            "image": "https:\/\/ibassets.com.br\/ib.item.image.large\/l-20159302049258239811f84e8fe0e434d0395af96aadabea951.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 10
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_8",
+            "name": "Schweppes",
+            "image": "https:\/\/www.arenaatacado.com.br\/on\/demandware.static\/-\/Sites-storefront-catalog-sv\/default\/dwc7d5f75e\/Produtos\/92068-7894900320015-refrigerante%20schweppes%20citrus%20leve%20em%20acucares%20lata%20350ml-schweppes-1.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 7
                 }
             ],
             "adicionais": []
         },
         {
             "id": "suco_1",
-            "name": "Suco de laranja",
-            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcRIdXJ1wuzIxz7FZnRI8uXcGgTHQv3LdiWluQ&s",
-            "descricao": "Suco de laranja natural.\ncopo de 350ML",
+            "name": "Copo de Suco Natural de Laranja",
+            "image": "https:\/\/www.citrosuco.com.br\/wp-content\/uploads\/2022\/02\/THUMB-05.png",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 8
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_2",
+            "name": "Copo de Suco Natural de Limão",
+            "image": "https:\/\/www.oitedi.com.br\/_next\/image?url=https%3A%2F%2Ftedi-production.s3.amazonaws.com%2Fcooking_recipes%2Ffood_description%2Fecfeef56236aca254949a7be9de5c6fe91719d46.png&w=1080&q=70",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 8
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_3",
+            "name": "Copo de Suco Natural de Abacaxi",
+            "image": "https:\/\/www.oitedi.com.br\/_next\/image?url=https%3A%2F%2Ftedi-production.s3.amazonaws.com%2Fcooking_recipes%2Ffood_description%2F6f02e04769671200ef07bb8b7713a497b3ac77bd.png&w=1080&q=70",
+            "descricao": "",
             "sizes": [
                 {
                     "name": "Único",
@@ -273,26 +404,5 @@
             "adicionais": []
         }
     ],
-    "adicionais": [
-        {
-            "name": "bacon",
-            "price": 5
-        },
-        {
-            "name": "cebola roxa",
-            "price": 3
-        },
-        {
-            "name": "milho",
-            "price": 5
-        },
-        {
-            "name": "cheddar",
-            "price": 5
-        },
-        {
-            "name": "catupiry",
-            "price": 5
-        }
-    ]
+    "adicionais": []
 }
