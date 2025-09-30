@@ -26,6 +26,7 @@ function showLogin() {
     };
 }
 
+
 let menuItems = [];
 
 async function fetchProdutosJson() {
@@ -70,13 +71,27 @@ async function saveMenu() {
         adicionais: adicionais
     };
 
-    await fetch('API/produtos.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    });
-    // Recarrega produtos do backend após salvar
-    menuItems = await fetchProdutosJson();
+    console.log('saveMenu payload:', payload);
+    console.log('menuItems before save:', menuItems);
+
+    try {
+        const response = await fetch('API/produtos.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+            console.error('Erro ao salvar produtos:', response.statusText);
+            alert('Erro ao salvar produtos no servidor.');
+            return;
+        }
+        // Recarrega produtos do backend após salvar
+        menuItems = await fetchProdutosJson();
+        console.log('menuItems after save:', menuItems);
+    } catch (error) {
+        console.error('Erro na requisição saveMenu:', error);
+        alert('Erro na comunicação com o servidor.');
+    }
 }
 
 
@@ -193,15 +208,17 @@ function setupAdminTabs() {
                 return;
             }
             menuItems.forEach((item, idx) => {
+                let sizeLabels = '';
+                item.sizes.forEach((size, sidx) => {
+                    sizeLabels += `<label>${size.name}: <input type="number" value="${size.price}" class="price-input" data-size="${sidx}"></label>`;
+                });
                 tabContent.innerHTML += `
                     <div class="admin-item" data-idx="${idx}">
                         <h3>${item.name}</h3>
                         <img src="${item.image}" alt="${item.name}" style="max-width:80px;max-height:80px;">
                         <label>Imagem: <input type="text" value="${item.image}" class="img-input"></label>
                         <label>Descrição: <textarea class="desc-input" rows="2" style="width:100%;resize:vertical;">${item.descricao ? item.descricao : ''}</textarea></label>
-                        <label>Pequena: <input type="number" value="${item.sizes[0].price}" class="price-input" data-size="0"></label>
-                        <label>Média: <input type="number" value="${item.sizes[1].price}" class="price-input" data-size="1"></label>
-                        <label>Grande: <input type="number" value="${item.sizes[2].price}" class="price-input" data-size="2"></label>
+                        ${sizeLabels}
                         <button class="save-btn">Salvar</button>
                         <button class="delete-btn">Excluir</button>
                         <div class="editMsg"></div>
@@ -231,10 +248,21 @@ function setupAdminTabs() {
                     };
                     deleteBtn.onclick = async function() {
                         if (confirm('Tem certeza que deseja excluir este produto?')) {
-                            addAdminLog('Excluir produto', { id: menuItems[idx].id, name: menuItems[idx].name });
-                            menuItems.splice(idx, 1);
-                            await saveMenu();
-                            renderTab('editar');
+                            const productId = menuItems[idx].id;
+                            const productName = menuItems[idx].name;
+                            console.log('Tentando excluir produto:', productId, productName);
+                            // Encontrar o índice atual do produto no array menuItems
+                            const currentIdx = menuItems.findIndex(p => p.id === productId);
+                            if (currentIdx !== -1) {
+                                addAdminLog('Excluir produto', { id: productId, name: productName });
+                                menuItems.splice(currentIdx, 1);
+                                console.log('Produto removido do array, salvando menu...');
+                                await saveMenu();
+                                console.log('Menu salvo, recarregando aba');
+                                renderTab('editar'); // Re-render the edit tab to reflect the deletion
+                            } else {
+                                console.error('Produto não encontrado no array para exclusão');
+                            }
                         }
                     };
                 });

@@ -1,4 +1,298 @@
 {
-    "produtos": [],
-    "adicionais": []
+    "produtos": [
+        {
+            "id": 2,
+            "name": "Pizza quatro queijos",
+            "image": "https:\/\/www.comidaereceitas.com.br\/wp-content\/uploads\/2022\/07\/pizza_quatro.jpg",
+            "descricao": "Combinação de 4 queijos, muçarela, provolone, parmesão e Catupiry.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 45
+                },
+                {
+                    "name": "Média",
+                    "price": 50
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza calabresa",
+            "image": "https:\/\/goiasemcena.com.br\/wp-content\/uploads\/2024\/03\/PIZZA.jpg",
+            "descricao": "Muçarela, calabresa fatiada e cebola.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 45
+                },
+                {
+                    "name": "Média",
+                    "price": 50
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza de Marguerita",
+            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcSnLSfrVpl7G8H6uNkRv34qqcZbDP_tzLysUg&s",
+            "descricao": "Muçarela, molho de tomate, rodelas de tomate, manjericão fresco",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 45
+                },
+                {
+                    "name": "Média",
+                    "price": 50
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza Portuguesa",
+            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcSnLSfrVpl7G8H6uNkRv34qqcZbDP_tzLysUg&s",
+            "descricao": "Muçarela, presunto, ovos, azeitona, cebola.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "Média",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza de Frango Catupiry",
+            "image": "https:\/\/www.paollarestaurante.com.br\/uploads\/images\/2019\/08\/pizza-frango-com-catupiry-1565140749.jpg",
+            "descricao": "Muçarela, frango desfiado e Catupiry (ou requeijão cremoso).",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "Média",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza de Bacon",
+            "image": "https:\/\/www.seara.com.br\/wp-content\/uploads\/2025\/09\/R0325-SL-pizza-de-bacon-fatiado-cebola-caramelizada-1200x675-1.webp",
+            "descricao": "Muçarela, bacon crocante em cubos e milho (opcional).",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 45
+                },
+                {
+                    "name": "Média",
+                    "price": 55
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza de Lombo Canadense",
+            "image": "https:\/\/www.receiteria.com.br\/wp-content\/uploads\/receitas-de-pizza-de-lombo-1-730x449.jpg",
+            "descricao": "Muçarela, lombo defumado e Catupiry.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "Média",
+                    "price": 60
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza de Atum",
+            "image": "https:\/\/guiadacozinha.com.br\/wp-content\/uploads\/2019\/10\/pizza-de-mussarela-com-atum-17657.jpg",
+            "descricao": "Muçarela, atum sólido e cebola em rodelas.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 40
+                },
+                {
+                    "name": "Média",
+                    "price": 50
+                },
+                {
+                    "name": "Grande",
+                    "price": 60
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza de Presunto de Parma",
+            "image": "https:\/\/www.seara.com.br\/wp-content\/uploads\/2025\/09\/R0524_MB_pizza_de_presunto_com_abacaxi-capa.webp",
+            "descricao": "Muçarela de búfala e fatias finas de presunto de Parma (adicionado após sair do forno).",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 40
+                },
+                {
+                    "name": "Média",
+                    "price": 55
+                },
+                {
+                    "name": "Grande",
+                    "price": 70
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza de Chocolate",
+            "image": "https:\/\/receitadodia.com\/wp-content\/uploads\/2023\/09\/PizzaChocolate-768x512.jpg.webp",
+            "descricao": "Chocolate cremoso, granulado e doce de leite na base.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "Média",
+                    "price": 60
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ]
+        },
+        {
+            "id": null,
+            "name": "Pizza de sorvete",
+            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcQcVzchlLQPYOSRHKrVALZmKlMpOwa8KxcQKw&s",
+            "descricao": "Pizza de sorvete com sorvete de creme, base de doce leite, chocolate cremoso e disket",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 55
+                },
+                {
+                    "name": "Média",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ]
+        },
+        {
+            "id": "drink_1",
+            "name": "coca lata zero",
+            "image": "https:\/\/sudoestedistribuidora.com.br\/wp-content\/uploads\/2023\/02\/REFRIGERANTE-COCA-COLA-LATA-ZERO-350ML.png",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 5
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_2",
+            "name": "coca lata",
+            "image": "https:\/\/us.123rf.com\/450wm\/tiverylucky\/tiverylucky1404\/tiverylucky140400047\/27653068-bangkok-tailndia-21-de-mar%C3%A7o-de-2014-lata-de-coca-cola-deitado-no-gelo-coca-cola-%C3%A9-um-dos.jpg?ver=6",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 5
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_3",
+            "name": "Refrigerante Guaraná Antártica",
+            "image": "https:\/\/acdn-us.mitiendanube.com\/stores\/001\/043\/810\/products\/7d215ecd8878c518bfbf5dedb4e4a1df-8368bddfbcb21dc80d17430917054618-640-0.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 5
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_1",
+            "name": "Suco de laranja",
+            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcRIdXJ1wuzIxz7FZnRI8uXcGgTHQv3LdiWluQ&s",
+            "descricao": "Suco de laranja natural.\ncopo de 350ML",
+            "sizes": [
+                {
+                    "name": "Único",
+                    "price": 8
+                }
+            ],
+            "adicionais": []
+        }
+    ],
+    "adicionais": [
+        {
+            "name": "bacon",
+            "price": 5
+        },
+        {
+            "name": "cebola roxa",
+            "price": 3
+        },
+        {
+            "name": "milho",
+            "price": 5
+        },
+        {
+            "name": "cheddar",
+            "price": 5
+        },
+        {
+            "name": "catupiry",
+            "price": 5
+        }
+    ]
 }
