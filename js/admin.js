@@ -157,6 +157,115 @@ async function renderTab(tab) {
                 </div>
             `;
         });
+    } else if (tab === 'adicionar') {
+        tabContent.innerHTML = `
+            <form id="addProductForm" class="admin-form">
+                <h2>Adicionar Produto</h2>
+                <label>Nome: <input type="text" id="addName" required></label>
+                <label>Imagem (URL): <input type="text" id="addImage" required></label>
+                <label>Descrição: <textarea id="addDesc" rows="2" style="width:100%;resize:vertical;" required></textarea></label>
+                <label>Preço Pequena: <input type="number" id="addP" required></label>
+                <label>Preço Média: <input type="number" id="addM" required></label>
+                <label>Preço Grande: <input type="number" id="addG" required></label>
+                <button type="submit">Adicionar</button>
+            </form>
+            <div id="addMsg"></div>
+        `;
+        document.getElementById('addProductForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const name = document.getElementById('addName').value.trim();
+            const image = document.getElementById('addImage').value.trim();
+            const descricao = document.getElementById('addDesc').value.trim();
+            const p = Number(document.getElementById('addP').value);
+            const m = Number(document.getElementById('addM').value);
+            const g = Number(document.getElementById('addG').value);
+            if (menuItems.some(i => i.name.toLowerCase() === name.toLowerCase())) {
+                document.getElementById('addMsg').innerHTML = '<span style="color:red;">Produto já existe!</span>';
+                return;
+            }
+            const newId = menuItems.length ? Math.max(...menuItems.map(i => i.id)) + 1 : 1;
+            addAdminLog('Adicionar produto', { name, image, descricao, p, m, g });
+            menuItems.push({
+                id: newId,
+                name,
+                image,
+                descricao,
+                sizes: [
+                    { name: 'Pequena', price: p },
+                    { name: 'Média', price: m },
+                    { name: 'Grande', price: g }
+                ]
+            });
+            await saveMenu();
+            document.getElementById('addMsg').innerHTML = '<span style="color:green;">Produto adicionado!</span>';
+            this.reset();
+        };
+    } else if (tab === 'editar') {
+        tabContent.innerHTML = '<h2>Editar Produtos</h2>';
+        if (!Array.isArray(menuItems) || menuItems.length === 0) {
+            tabContent.innerHTML += '<em>Nenhum produto cadastrado.</em>';
+            return;
+        }
+        menuItems.forEach((item, idx) => {
+            let sizeLabels = '';
+            item.sizes.forEach((size, sidx) => {
+                sizeLabels += `<label>${size.name}: <input type="number" value="${size.price}" class="price-input" data-size="${sidx}"></label>`;
+            });
+            tabContent.innerHTML += `
+                <div class="admin-item" data-idx="${idx}">
+                    <h3>${item.name}</h3>
+                    <img src="${item.image}" alt="${item.name}" style="max-width:80px;max-height:80px;">
+                    <label>Imagem: <input type="text" value="${item.image}" class="img-input"></label>
+                    <label>Descrição: <textarea class="desc-input" rows="2" style="width:100%;resize:vertical;">${item.descricao ? item.descricao : ''}</textarea></label>
+                    ${sizeLabels}
+                    <button class="save-btn">Salvar</button>
+                    <button class="delete-btn">Excluir</button>
+                    <div class="editMsg"></div>
+                </div>
+            `;
+        });
+        // Adicionar listeners de edição/exclusão
+        setTimeout(() => {
+            document.querySelectorAll('.admin-item').forEach((div, idx) => {
+                const imgInput = div.querySelector('.img-input');
+                const descInput = div.querySelector('.desc-input');
+                const priceInputs = div.querySelectorAll('.price-input');
+                const saveBtn = div.querySelector('.save-btn');
+                const deleteBtn = div.querySelector('.delete-btn');
+                const editMsg = div.querySelector('.editMsg');
+                saveBtn.onclick = async function() {
+                    menuItems[idx].image = imgInput.value;
+                    menuItems[idx].descricao = descInput.value;
+                    priceInputs.forEach(input => {
+                        const sizeIdx = input.dataset.size;
+                        menuItems[idx].sizes[sizeIdx].price = Number(input.value);
+                    });
+                    await saveMenu();
+                    addAdminLog('Editar produto', { id: menuItems[idx].id, image: imgInput.value, descricao: descInput.value, prices: Array.from(priceInputs).map(i=>i.value) });
+                    editMsg.innerHTML = '<span style="color:green;">Produto salvo!</span>';
+                    renderTab('editar');
+                };
+                deleteBtn.onclick = async function() {
+                    if (confirm('Tem certeza que deseja excluir este produto?')) {
+                        const productId = menuItems[idx].id;
+                        const productName = menuItems[idx].name;
+                        console.log('Tentando excluir produto:', productId, productName);
+                        // Encontrar o índice atual do produto no array menuItems
+                        const currentIdx = menuItems.findIndex(p => p.id === productId);
+                        if (currentIdx !== -1) {
+                            addAdminLog('Excluir produto', { id: productId, name: productName });
+                            menuItems.splice(currentIdx, 1);
+                            console.log('Produto removido do array, salvando menu...');
+                            await saveMenu();
+                            console.log('Menu salvo, recarregando aba');
+                            renderTab('editar'); // Re-render the edit tab to reflect the deletion
+                        } else {
+                            console.error('Produto não encontrado no array para exclusão');
+                        }
+                    }
+                };
+            });
+        }, 100);
     } else if (tab === 'adicionais') {
         tabContent.innerHTML = '<h2>Adicionais</h2>';
         tabContent.innerHTML += `

@@ -6,9 +6,9 @@ if (!isset($_SESSION['email'])) {
 }
 
 $host   = 'localhost';
-$dbname = 'users'; 
-$dbUser = 'admin';
-$dbPass = 'admin';
+$dbname = 'u557720587.php1'; 
+$dbUser = 'u557720587.php1';
+$dbPass = 'Mtec@php1';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbUser, $dbPass);
