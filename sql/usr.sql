@@ -37,11 +37,11 @@ CREATE TABLE saldos_usuarios (
   data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
-CREATE TABLE frete (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    cep_origem VARCHAR(9) NOT NULL,
-    cep_destino VARCHAR(9) NOT NULL,
-    valor DECIMAL(10, 2) NOT NULL,
-    prazo INT NOT NULL
-);
+    CREATE TABLE frete (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        cep_origem VARCHAR(9) NOT NULL,
+        cep_destino VARCHAR(9) NOT NULL,
+        valor DECIMAL(10, 2) NOT NULL,
+        prazo INT NOT NULL
+    );
 
