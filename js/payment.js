@@ -62,6 +62,8 @@ function montarAbaPagamento() {
             // Pagamento em dinheiro: finalizar pedido localmente
             alert('Pedido finalizado! Por favor, prepare o pagamento em dinheiro na entrega ou retirada.');
             document.getElementById('paymentResult').textContent = 'Pedido finalizado para pagamento em dinheiro.';
+            // Limpar carrinho
+            await clearCart();
             // Aqui você pode implementar lógica para salvar o pedido no backend, se necessário
             return;
         }
@@ -72,6 +74,8 @@ function montarAbaPagamento() {
             if (pref && pref.init_point) {
                 window.open(pref.init_point, '_blank');
                 document.getElementById('paymentResult').textContent = 'Redirecionando para o Mercado Pago (Pix)...';
+                // Limpar carrinho
+                await clearCart();
             } else {
                 document.getElementById('paymentResult').textContent = 'Erro ao iniciar pagamento via Pix.';
             }
@@ -95,6 +99,8 @@ function montarAbaPagamento() {
         if (pref && pref.init_point) {
             window.open(pref.init_point, '_blank');
             document.getElementById('paymentResult').textContent = 'Redirecionando para o Mercado Pago...';
+            // Limpar carrinho
+            await clearCart();
         } else {
             document.getElementById('paymentResult').textContent = 'Erro ao iniciar pagamento.';
         }
@@ -119,6 +125,21 @@ async function getCartItemsForPayment() {
             unit_price: basePrice + extras
         };
     });
+}
+
+async function clearCart() {
+    try {
+        const response = await fetch('API/cart.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify([])
+        });
+        if (!response.ok) {
+            console.error('Erro ao limpar carrinho');
+        }
+    } catch (e) {
+        console.error('Erro ao limpar carrinho', e);
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

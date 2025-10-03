@@ -124,7 +124,24 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
     <!-- carregar primeiro o módulo do modal, depois o index (usa o modal) -->
     <script src="js/product-options.js"></script>
     <script src="js/index.js"></script>
-     <script>
+    <script>
+        // Limpar carrinho ao carregar a página
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const response = await fetch('API/cart.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify([])
+                });
+                if (!response.ok) {
+                    console.error('Erro ao limpar carrinho');
+                }
+            } catch (e) {
+                console.error('Erro ao limpar carrinho', e);
+            }
+        });
+    </script>
+    <script>
     // Atualiza saldo ao carregar a página
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof atualizarSaldoUsuario === 'function') {

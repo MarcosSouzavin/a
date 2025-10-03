@@ -34,4 +34,4 @@
 ## Next Steps
 - Test the checkout flow: add items to cart, click "Finalizar Compra", verify cart summary, select payment method, and process payment.
 - Ensure payment confirmation is handled properly (approved/rejected).
-- Optionally, clear cart after successful payment or redirect back to client page.
+- Cart is now cleared after initiating payment for all methods.

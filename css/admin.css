@@ -1,3 +1,13 @@
+:root {
+    --primary: #b3ab3a;
+    --primary-dark: #8d8628;
+    --danger: #e74c3c;
+    --muted: #6b7280;
+    --gray: #f0f0f0;
+    --card-bg: var(--gray);
+    --shadow: rgba(0,0,0,0.12);
+}
+
 /* Estilo para abas do painel admin */
 .admin-tabs {
     display: flex;
@@ -7,8 +17,8 @@
 }
 .tab-btn {
     background: #f8f9fa;
-    border: 1px solid #007bff;
-    color: #007bff;
+    border: 1px solid var(--primary);
+    color: var(--primary);
     padding: 10px 32px;
     border-radius: 6px 6px 0 0;
     font-size: 1.1rem;
@@ -17,20 +27,20 @@
     outline: none;
 }
 .tab-btn.active {
-    background: #007bff;
+    background: var(--primary);
     color: #fff;
     font-weight: bold;
-    box-shadow: 0 2px 8px #007bff33;
+    box-shadow: 0 2px 8px rgba(179, 171, 58, 0.2);
 }
 .tab-btn:not(.active):hover {
-    background: #e3eafc;
-    color: #0056b3;
+    background: #f7e88a;
+    color: var(--primary-dark);
 }
 
 #adminTabContent {
     max-width: 700px;
     margin: 0 auto;
-    background: #fff;
+    background: var(--gray);
     border-radius: 0 0 10px 10px;
     box-shadow: 0 4px 24px #0002;
     padding: 32px 24px 24px 24px;
@@ -39,7 +49,7 @@
 
 /* Cards de produto na aba Produtos */
 .admin-item {
-    background: #f8f9fa;
+    background: var(--gray);
     border: 1px solid #e1e1e1;
     border-radius: 8px;
     padding: 18px 16px;
@@ -57,7 +67,7 @@
 }
 .admin-item h3 {
     margin: 0 0 8px 0;
-    color: #007bff;
+    color: var(--primary);
 }
 .admin-item label {
     display: block;
@@ -76,7 +86,7 @@
     background: #fff;
 }
 .admin-item button.save-btn {
-    background: #007bff;
+    background: var(--primary);
     color: #fff;
     border: none;
     padding: 8px 18px;
@@ -87,7 +97,7 @@
     transition: background 0.2s;
 }
 .admin-item button.save-btn:hover {
-    background: #0056b3;
+    background: var(--primary-dark);
 }
 .admin-item button.delete-btn {
     background: #dc3545;
@@ -201,7 +211,7 @@
 .logs-list {
     max-width: 700px;
     margin: 32px auto;
-    background: #fff;
+    background: var(--gray);
     border-radius: 8px;
     box-shadow: 0 2px 8px #0001;
     padding: 24px 20px 16px 20px;
@@ -285,7 +295,7 @@
 }
 
 .admin-item {
-    background: #f8f9fa;
+    background: var(--gray);
     border: 1px solid #e1e1e1;
     border-radius: 6px;
     padding: 16px 12px;

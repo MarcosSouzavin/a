@@ -100,7 +100,7 @@
 
 body {
     font-family: 'Segoe UI', sans-serif;
-    background: #4f5052;
+    background: #44443f;
     color: #333;
 }
 
@@ -240,7 +240,7 @@ body {
 }
 
 #searchInput:focus {
-    border-color: #3498db;
+    border-color: var(--primary);
     outline: none;
 }
 
@@ -253,7 +253,7 @@ body {
 }
 
 .menu-item {
-    background: #fff;
+    background: var(--gray);
     border-radius: 14px;
     overflow: hidden;
     box-shadow: 0 4px 14px rgba(0,0,0,0.08);
@@ -306,7 +306,7 @@ body {
 }
 
 .add-to-cart {
-    background: #3498db;
+    background: var(--primary);
     color: white;
     border: none;
     padding: 0.7rem 1.3rem;
@@ -317,7 +317,7 @@ body {
 }
 
 .add-to-cart:hover {
-    background: #2980b9;
+    background: var(--primary-dark);
 }
 
 /* Responsivo grid */
@@ -339,7 +339,8 @@ body {
   --primary-dark: #8d8628;
   --danger: #e74c3c;
   --muted: #6b7280;
-  --card-bg: #fff;
+  --gray: #f0f0f0;
+  --card-bg: var(--gray);
   --shadow: rgba(0,0,0,0.12);
 }
 
@@ -621,7 +622,7 @@ body {
     max-width: 100%;
     padding: 16px;
     transform: translateX(100%); /* fechado */
-    background: linear-gradient(180deg, #fff, #fff);
+    background: linear-gradient(180deg, var(--gray), var(--gray));
   }
   .cart-sidebar.active { transform: translateX(0); }
 
@@ -666,7 +667,7 @@ body {
 
 /* Estilo para o container do cálculo de frete */
 .frete-container {
-    background-color: #f9f9f9;
+    background-color: var(--gray);
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 16px;
@@ -716,14 +717,14 @@ body {
 }
 
 .frete-container input[type="text"]:focus {
-    border-color: #007bff;
+    border-color: var(--primary);
     outline: none;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    box-shadow: 0 0 5px rgba(179, 171, 58, 0.5);
 }
 
 
 .frete-container button[type="submit"]:hover {
-    background-color: #0056b3;
+    background-color: var(--primary-dark);
 }
 
 .frete-container #freteResultado {
@@ -753,20 +754,113 @@ body {
   transition: background 0.3s, box-shadow 0.3s;
   margin-top: 10px;
 }
-.frete-container button[type="submit"]:hover {
-  background: linear-gradient(90deg, var(--primary-dark), var(--primary));
-  box-shadow: 0 8px 24px rgba(27,27,27,0.12);
+/* ===== Checkout Page Styles ===== */
+.checkout-page body {
+    font-family: Arial, sans-serif;
+    background-color: var(--gray);
+    margin: 0;
+    padding: 0;
 }
-
-/* Mantém o resultado do frete estilizado */
-.frete-container #freteResultado {
-  margin-top: 15px;
-  font-size: 0.9rem;
-  color: #333;
-  text-align: left;
-  font-family: 'Arial', sans-serif;
-  line-height: 1.5;
+.checkout-page .header {
+    background: linear-gradient(90deg, #b3ab3a, #8d8628);
+    color: white;
+    padding: 1rem 0;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
 }
-.frete-container #freteResultado p {
-  margin: 5px 0;
+.checkout-page .header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.checkout-page .logo-image {
+    height: 48px;
+    vertical-align: middle;
+    margin-right: 10px;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+.checkout-page .nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    transition: background 0.25s;
+}
+.checkout-page .nav a.active,
+.checkout-page .nav a:hover {
+    background: rgba(255,255,255,0.15);
+}
+.checkout-page main.container {
+    max-width: 900px;
+    margin: 20px auto;
+    background: var(--gray);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.checkout-page h2, .checkout-page h3 {
+    color: #333;
+}
+.checkout-page #cartSummary {
+    margin-bottom: 30px;
+}
+.checkout-page #cartItemsList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 10px 0;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+.checkout-page #cartItemsList li {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+.checkout-page #cartItemsList li:last-child {
+    border-bottom: none;
+}
+.checkout-page #paymentTabContent h2 {
+    margin-top: 0;
+}
+.checkout-page #paymentMethods {
+    margin-bottom: 20px;
+}
+.checkout-page #paymentMethods label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: normal;
+    cursor: pointer;
+}
+.checkout-page #cardDetails {
+    display: none;
+    margin-bottom: 20px;
+}
+.checkout-page #cardDetails label {
+    display: block;
+    margin-bottom: 5px;
+}
+.checkout-page #cardDetails input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+.checkout-page #payButton {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.checkout-page #payButton:hover {
+    background: var(--primary-dark);
+}
+.checkout-page #paymentResult {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #d9534f;
 }
