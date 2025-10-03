@@ -2,6 +2,30 @@
 let cart = [];
 let menuItems = [];
 let saldoUsuario = 0;
+window.freteValor = 0;
+
+// --- FUNÇÕES DO CARRINHO ---
+async function getCart() {
+    try {
+        const response = await fetch('API/cart.php');
+        return await response.json();
+    } catch (e) {
+        console.error('Erro ao carregar carrinho', e);
+        return [];
+    }
+}
+
+async function saveCart(c) {
+    try {
+        await fetch('API/cart.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(c)
+        });
+    } catch (e) {
+        console.error('Erro ao salvar carrinho', e);
+    }
+}
 
 // --- FUNÇÕES UTILITÁRIAS ---
 
@@ -91,7 +115,7 @@ function updateCart() {
 }
 
 /** Adiciona um item ao carrinho ou incrementa a quantidade se já existir um item idêntico. */
-window.addToCart = function(payload) {
+window.addToCart = async function(payload) {
     const item = {
         uid: makeUid(),
         productId: payload.id ?? null,
@@ -118,26 +142,29 @@ window.addToCart = function(payload) {
     } else {
         cart.push(item);
     }
+    await saveCart(cart);
     updateCart();
     window.toggleCart(true); // Abre o carrinho ao adicionar item
 };
 
 /** Remove um item do carrinho pelo seu UID. */
-window.removeItem = function(uid) {
+window.removeItem = async function(uid) {
     cart = cart.filter(item => item.uid !== uid);
+    await saveCart(cart);
     updateCart();
 };
 
 /** Ajusta a quantidade de um item no carrinho. Remove se a quantidade for menor ou igual a zero. */
-window.adjustQuantity = function(uid, amount) {
+window.adjustQuantity = async function(uid, amount) {
     const item = cart.find(i => i.uid === uid);
     if (!item) return;
     
     item.quantity += amount;
     
     if (item.quantity <= 0) {
-        window.removeItem(uid);
+        await window.removeItem(uid);
     } else {
+        await saveCart(cart);
         updateCart();
     }
 };
@@ -198,11 +225,13 @@ function atualizarSaldoUsuario(callback) {
 function atualizarTotalComSaldo() {
     const usarSaldoEl = document.getElementById('usarSaldo');
     const usarSaldo = usarSaldoEl ? usarSaldoEl.checked : false;
-    
+
     const subtotal = cart.reduce((total, item) => total + calcItemTotal(item), 0);
-    const desconto = usarSaldo ? Math.min(saldoUsuario, subtotal) : 0;
-    const totalFinal = subtotal - desconto;
-    
+    const frete = window.freteValor || 0;
+    const subtotalComFrete = subtotal + frete;
+    const desconto = usarSaldo ? Math.min(saldoUsuario, subtotalComFrete) : 0;
+    const totalFinal = subtotalComFrete - desconto;
+
     const el = document.getElementById('cartTotal');
     if (el) el.textContent = formatPrice(totalFinal);
 }
@@ -391,14 +420,16 @@ window.closeProductModal = function () {
 
 // --- LÓGICA DE FINALIZAÇÃO DA COMPRA ---
 
-function finalizarCompra() {
+async function finalizarCompra() {
     if (cart.length === 0) {
         alert("Seu carrinho está vazio!");
         return;
     }
 
     const usarSaldo = document.getElementById('usarSaldo')?.checked || false;
-    const totalPedido = cart.reduce((total, item) => total + calcItemTotal(item), 0);
+    const subtotal = cart.reduce((total, item) => total + calcItemTotal(item), 0);
+    const frete = window.freteValor || 0;
+    const totalPedido = subtotal + frete;
     const valorPagoComSaldo = usarSaldo ? Math.min(totalPedido, saldoUsuario) : 0;
     const totalFinal = totalPedido - valorPagoComSaldo;
 
@@ -406,7 +437,10 @@ function finalizarCompra() {
     cart.forEach(item => {
         resumo += `- ${item.quantity}x ${item.name} ${item.size ? `(${item.size})` : ''}\n`;
     });
-    resumo += `\nSubtotal: R$ ${formatPrice(totalPedido)}`;
+    resumo += `\nSubtotal: R$ ${formatPrice(subtotal)}`;
+    if (frete > 0) {
+        resumo += `\nFrete: R$ ${formatPrice(frete)}`;
+    }
     if (usarSaldo && valorPagoComSaldo > 0) {
         resumo += `\nSaldo Utilizado: - R$ ${formatPrice(valorPagoComSaldo)}`;
     }
@@ -437,8 +471,9 @@ function finalizarCompra() {
             atualizarSaldoUsuario();
         });
     }
-    
+
     cart = [];
+    await saveCart(cart);
     updateCart();
     toggleCart(false); // Fecha o carrinho
 }
@@ -450,6 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicialização principal
     async function init() {
         await initMenu();
+        cart = await getCart();
         updateCart();
         atualizarSaldoUsuario();
     }

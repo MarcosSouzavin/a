@@ -1,10 +1,16 @@
 <?php
 session_start();
-
-$host = 'localhost';
-$dbname = 'u557720587_2025_php01'; 
-$user = 'u557720587_2025_php01';   
-$password = 'Mtec@php1';
+if (true){
+  $host = 'localhost';
+  $dbname = 'users'; 
+  $dbUser = 'admin';   
+  $dbPass = 'admin';
+}else{
+  $host = 'https://auth-db1206.hstgr.io/';
+  $dbname = 'u557720587_2025_php01'; 
+  $dbUser = 'u557720587_2025_php01';   
+  $dbPass = 'Mtec@php1';
+}
 
 try {
  $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbUser, $dbPass);
@@ -14,8 +20,8 @@ try {
   exit();
 }
 
-$usuario = trim($_POST['usuario']);
-$senha  = trim($_POST['senha']);
+$usuario = isset($_POST['usuario']) ? trim($_POST['usuario']) : '';
+$senha  = isset($_POST['senha']) ? trim($_POST['senha']) : '';
 
 $sql = "SELECT id, usuario, email, cpf, telefone, senha FROM usuarios WHERE usuario = :usuario";
 $stmt = $pdo->prepare($sql);

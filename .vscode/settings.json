@@ -1,0 +1,9 @@
+{
+  "intelephense.environment.includePaths": [
+    "vendor/mercadopago/dx-php/src"
+  ],
+  "intelephense.files.associations": [
+    "*.php"
+  ],
+  "intelephense.diagnostics.undefinedTypes": false
+}

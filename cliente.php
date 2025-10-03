@@ -28,7 +28,6 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
             </h1>
             <div class="menu-hamburguer">☰</div>
             <nav class="nav">
-               <a href="balance/historic_balance.php" class="nav-link">Saldo</a>
                 <a href="#ofertas" class="nav-link">Ofertas</a>
                 <a href="#contacto" class="nav-link">Contato</a>
                 <a href="dados.php" class="nav-link">Meus Dados</a>
@@ -67,14 +66,6 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
 
         <ul class="cart-items" id="cartItems"></ul>
 
-        <div class="cart-saldo">
-            Saldo disponível: R$<span id="saldoUsuario">0.00</span><br>
-            <label>
-                <input type="checkbox" id="usarSaldo" onchange="atualizarTotalComSaldo()">
-                Usar saldo na compra
-            </label>
-        </div>
-
         <div class="cart-total">
             Total a pagar: R$<span id="cartTotal">0.00</span>
         </div>
@@ -90,7 +81,7 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
             <div id="freteResultado"></div>
         </div>
 
-        <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
+        <button id="checkoutButton" class="checkout-button" onclick="window.location.href='checkout.php'">Finalizar Compra</button>
     </aside>
 
     <!-- modal de opções (tamanho + adicionais) -->
@@ -170,11 +161,15 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
                     <p>Endereço: ${data.endereco.logradouro}, ${data.endereco.bairro}, ${data.endereco.localidade} - ${data.endereco.uf}</p>
                 `;
 
-                // Atualiza o total do carrinho com o valor do frete
-                const cartTotalElement = document.getElementById('cartTotal');
-                const cartTotal = parseFloat(cartTotalElement.textContent.replace(',', '.')) || 0;
-                const totalComFrete = cartTotal + data.valorFrete;
-                cartTotalElement.textContent = totalComFrete.toFixed(2).replace('.', ',');
+                // Define o valor do frete globalmente
+                window.freteValor = data.valorFrete;
+                localStorage.setItem('frete', data.valorFrete);
+                // Notifica outras abas sobre a atualização do frete
+                const bc = new BroadcastChannel('frete-update');
+                bc.postMessage({ frete: data.valorFrete });
+                bc.close();
+                // Atualiza o total do carrinho
+                atualizarTotalComSaldo();
             }
         })
         .catch(error => console.error('Erro:', error));

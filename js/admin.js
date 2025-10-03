@@ -101,6 +101,7 @@ async function saveMenu() {
         adicionais = data.adicionais || [];
         drinks = mapToSimpleDrinks(menuItems);
         sucos = mapToSimpleSucos(menuItems);
+        sessionStorage.setItem('menuData', JSON.stringify(data));
         renderTab(currentTab);
     } catch (error) {
         console.error('Erro na requisição saveMenu:', error);
@@ -118,13 +119,41 @@ function addAdminLog(action, details) {
     localStorage.setItem('adminLogs', JSON.stringify(logs));
 }
 
+function montarAbaPagamento() {
+    const container = document.getElementById('adminTabContent');
+    container.innerHTML = `
+        <h2>Configurações de Pagamento</h2>
+        <p>Aqui você pode configurar as opções de pagamento, como chaves do Mercado Pago.</p>
+        <label>Access Token do Mercado Pago: <input type="text" id="mpAccessToken" placeholder="APP_USR-..."></label>
+        <button id="saveMpSettings">Salvar</button>
+        <div id="mpMsg"></div>
+    `;
+    // Load existing token if any
+    const savedToken = localStorage.getItem('mpAccessToken');
+    if (savedToken) {
+        document.getElementById('mpAccessToken').value = savedToken;
+    }
+    document.getElementById('saveMpSettings').onclick = () => {
+        const token = document.getElementById('mpAccessToken').value.trim();
+        localStorage.setItem('mpAccessToken', token);
+        document.getElementById('mpMsg').innerHTML = '<span style="color:green;">Token salvo!</span>';
+        addAdminLog('Salvar token Mercado Pago', { token: token ? '***' : '' });
+    };
+}
+
 let currentTab = 'produtos';
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (!isLoggedIn()) {
         showLogin();
     } else {
-        const data = await fetchProdutosJson();
+        let data;
+        if (sessionStorage.getItem('menuData')) {
+            data = JSON.parse(sessionStorage.getItem('menuData'));
+        } else {
+            data = await fetchProdutosJson();
+            sessionStorage.setItem('menuData', JSON.stringify(data));
+        }
         menuItems = data.produtos || [];
         // Alteração: Atribuir IDs numéricos se null ou inválido para evitar problemas com IDs NaN
         let idCounter = 1;
@@ -148,6 +177,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             await saveMenu();
         }
         setupAdminTabs();
+
+        // Setup payment tab button click handler here to ensure DOM is ready
+        const paymentTabBtn = document.getElementById('paymentTabBtn');
+        if (paymentTabBtn) {
+            paymentTabBtn.onclick = () => {
+                const adminTabContent = document.getElementById('adminTabContent');
+                adminTabContent.innerHTML = '';
+                montarAbaPagamento();
+            };
+        }
     }
 });
 
