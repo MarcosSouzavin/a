@@ -6,25 +6,15 @@ window.freteValor = 0;
 
 // --- FUNÇÕES DO CARRINHO ---
 async function getCart() {
-    try {
-        const response = await fetch('API/cart.php');
-        return await response.json();
-    } catch (e) {
-        console.error('Erro ao carregar carrinho', e);
-        return [];
-    }
+    const cartData = localStorage.getItem('cart') || '[]';
+    console.log('getCart: loaded cart data from localStorage:', cartData);
+    return JSON.parse(cartData);
 }
 
 async function saveCart(c) {
-    try {
-        await fetch('API/cart.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(c)
-        });
-    } catch (e) {
-        console.error('Erro ao salvar carrinho', e);
-    }
+    const cartData = JSON.stringify(c);
+    console.log('saveCart: saving cart data to localStorage:', cartData);
+    localStorage.setItem('cart', cartData);
 }
 
 // --- FUNÇÕES UTILITÁRIAS ---
@@ -485,7 +475,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicialização principal
     async function init() {
         await initMenu();
-        cart = await getCart();
+        // Limpa o carrinho a cada carregamento da página
+        cart = [];
+        await saveCart(cart);
         updateCart();
         atualizarSaldoUsuario();
     }

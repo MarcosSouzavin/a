@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SquinaXV - Login</title>
+    <script>
+        // Limpa o carrinho ao carregar a página de login
+        localStorage.removeItem('cart');
+    </script>
     <script src="js/login.js"></script>
     <link rel="icon" href="img/stg.ico" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="css/estilo.css" media="screen" /> 

@@ -70,15 +70,15 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
             Total a pagar: R$<span id="cartTotal">0.00</span>
         </div>
 
-        <!-- Formulário de cálculo de frete dentro do carrinho -->
+        <!-- Formulário de endereço dentro do carrinho -->
         <div class="frete-container">
-            <h3>Calcular Frete</h3>
-            <form id="freteForm">
-                <label for="cepDestino">Digite seu CEP:</label>
-                <input type="text" id="cepDestino" name="cepDestino" placeholder="00000-000" required>
-                <button type="submit">Calcular</button>
+            <h3>Informe seu Endereço</h3>
+            <form id="enderecoForm">
+                <label for="endereco">Endereço Completo:</label>
+                <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade, estado" required>
+                <button type="submit">Confirmar Endereço</button>
             </form>
-            <div id="freteResultado"></div>
+            <div id="enderecoResultado"></div>
         </div>
 
         <button id="checkoutButton" class="checkout-button" onclick="window.location.href='checkout.php'">Finalizar Compra</button>
@@ -125,23 +125,6 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
     <script src="js/product-options.js"></script>
     <script src="js/index.js"></script>
     <script>
-        // Limpar carrinho ao carregar a página
-        document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                const response = await fetch('API/cart.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify([])
-                });
-                if (!response.ok) {
-                    console.error('Erro ao limpar carrinho');
-                }
-            } catch (e) {
-                console.error('Erro ao limpar carrinho', e);
-            }
-        });
-    </script>
-    <script>
     // Atualiza saldo ao carregar a página
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof atualizarSaldoUsuario === 'function') {
@@ -156,38 +139,42 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
         }
     });
 
-    document.getElementById('freteForm').addEventListener('submit', function(e) {
+    document.getElementById('enderecoForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        const cepDestino = document.getElementById('cepDestino').value;
+        const endereco = document.getElementById('endereco').value;
 
-        fetch('API/frete.php', {
+        fetch('API/endereco.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ cepDestino })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ endereco })
         })
         .then(response => response.json())
         .then(data => {
             if (data.erro) {
-                document.getElementById('freteResultado').innerText = data.erro;
-            } else {
-                // Atualiza o resultado do frete no carrinho
-                document.getElementById('freteResultado').innerHTML = `
-                    <p>CEP Destino: ${data.cepDestino}</p>
-                    <p>Valor do Frete: R$ ${data.valorFrete.toFixed(2)}</p>
-                    <p>Prazo de Entrega: ${data.prazoEntrega} horas</p>
-                    <p>Endereço: ${data.endereco.logradouro}, ${data.endereco.bairro}, ${data.endereco.localidade} - ${data.endereco.uf}</p>
-                `;
-
-                // Define o valor do frete globalmente
-                window.freteValor = data.valorFrete;
-                localStorage.setItem('frete', data.valorFrete);
-                // Notifica outras abas sobre a atualização do frete
-                const bc = new BroadcastChannel('frete-update');
-                bc.postMessage({ frete: data.valorFrete });
-                bc.close();
-                // Atualiza o total do carrinho
-                atualizarTotalComSaldo();
+                alert(data.erro);
+                return;
             }
+
+            // Atualiza o resultado do endereço
+            document.getElementById('enderecoResultado').innerHTML = `
+                <p>Endereço: ${data.endereco}</p>
+                <p>Valor do Frete: R$ ${data.frete.toFixed(2)}</p>
+            `;
+
+            // Armazena o endereço e frete
+            localStorage.setItem('endereco', data.endereco);
+            localStorage.setItem('frete', data.frete);
+
+            // Define o valor do frete globalmente
+            window.freteValor = data.frete;
+
+            // Notifica outras abas sobre a atualização do frete
+            const bc = new BroadcastChannel('frete-update');
+            bc.postMessage({ frete: data.frete });
+            bc.close();
+
+            // Atualiza o total do carrinho
+            atualizarTotalComSaldo();
         })
         .catch(error => console.error('Erro:', error));
     });

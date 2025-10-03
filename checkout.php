@@ -1,4 +1,4 @@
-<?php
+     <?php
 session_start();
 ?>
 <!DOCTYPE html>
@@ -32,6 +32,42 @@ session_start();
         <div id="cartSummary">
             <h3>Resumo do Pedido</h3>
             <ul id="cartItemsList"></ul>
+            <div id="enderecoDisplay"></div>
+            <div id="retiradaLevarOption" style="margin: 10px 0;">
+                <label><input type="radio" name="retiradaLevar" value="levar" checked> Levar (Entrega)</label>
+                <label style="margin-left: 20px;"><input type="radio" name="retiradaLevar" value="retirar"> Retirar (Sem frete)</label>
+            </div>
+            <div id="horarioOption" style="margin: 10px 0;">
+                <label for="horarioSelect">Horário de Entrega/Retirada:</label>
+                <select id="horarioSelect" style="margin-left: 10px;">
+                    <option value="">Selecione um horário</option>
+                    <option value="10:00">10:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="11:00">11:00</option>
+                    <option value="11:30">11:30</option>
+                    <option value="12:00">12:00</option>
+                    <option value="12:30">12:30</option>
+                    <option value="13:00">13:00</option>
+                    <option value="13:30">13:30</option>
+                    <option value="14:00">14:00</option>
+                    <option value="14:30">14:30</option>
+                    <option value="15:00">15:00</option>
+                    <option value="15:30">15:30</option>
+                    <option value="16:00">16:00</option>
+                    <option value="16:30">16:30</option>
+                    <option value="17:00">17:00</option>
+                    <option value="17:30">17:30</option>
+                    <option value="18:00">18:00</option>
+                    <option value="18:30">18:30</option>
+                    <option value="19:00">19:00</option>
+                    <option value="19:30">19:30</option>
+                    <option value="20:00">20:00</option>
+                    <option value="20:30">20:30</option>
+                    <option value="21:00">21:00</option>
+                    <option value="21:30">21:30</option>
+                    <option value="22:00">22:00</option>
+                </select>
+            </div>
             <p>Total: R$ <span id="cartTotalAmount">0.00</span></p>
         </div>
 
@@ -47,13 +83,22 @@ session_start();
             const cartTotalAmount = document.getElementById('cartTotalAmount');
             cartItemsList.innerHTML = '';
             let total = 0;
-            let cart = [];
+            let cartData = localStorage.getItem('cart') || '[]';
+            console.log('loadCartSummary: loaded cart data from localStorage:', cartData);
+            let cart;
             try {
-                const response = await fetch('API/cart.php');
-                cart = await response.json();
+                cart = JSON.parse(cartData);
+                if (!Array.isArray(cart)) {
+                    console.error('loadCartSummary: cart data is not an array:', cart);
+                    cartItemsList.innerHTML = '<li>Erro ao carregar o carrinho.</li>';
+                    cartTotalAmount.textContent = '0.00';
+                    return;
+                }
             } catch (e) {
-                console.error('Erro ao carregar carrinho', e);
-                cart = [];
+                console.error('loadCartSummary: error parsing cart data:', e);
+                cartItemsList.innerHTML = '<li>Erro ao carregar o carrinho.</li>';
+                cartTotalAmount.textContent = '0.00';
+                return;
             }
             if (cart.length === 0) {
                 cartItemsList.innerHTML = '<li>Carrinho vazio.</li>';
@@ -70,24 +115,24 @@ session_start();
                 total += itemTotal;
             });
             const frete = parseFloat(localStorage.getItem('frete') || 0);
-            if (frete > 0) {
+            // Check retirada or levar option
+            const retiradaLevar = document.querySelector('input[name="retiradaLevar"]:checked')?.value || 'levar';
+            if (retiradaLevar === 'levar' && frete > 0) {
                 const freteLi = document.createElement('li');
                 freteLi.textContent = `Frete - R$ ${frete.toFixed(2)}`;
                 cartItemsList.appendChild(freteLi);
                 total += frete;
             }
+            const enderecoDisplay = document.getElementById('enderecoDisplay');
+            // Load address from localStorage or use default
+            const endereco = localStorage.getItem('endereco') || "Rua Exemplo, 123, Bairro Central, Cidade Exemplo, Estado Exemplo, CEP 12345-678";
+            enderecoDisplay.innerHTML = `<p><strong>Endereço de Entrega:</strong> ${endereco}</p>`;
             cartTotalAmount.textContent = total.toFixed(2);
         }
 
         async function getCartItemsForPayment() {
-            let cart = [];
-            try {
-                const response = await fetch('API/cart.php');
-                cart = await response.json();
-            } catch (e) {
-                console.error('Erro ao carregar carrinho', e);
-                cart = [];
-            }
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const retiradaLevar = document.querySelector('input[name="retiradaLevar"]:checked')?.value || 'levar';
             const items = cart.map(item => {
                 const basePrice = Number(item.basePrice || 0);
                 const extras = (item.adicionais || []).reduce((s, a) => s + Number(a.price || 0), 0);
@@ -98,7 +143,7 @@ session_start();
                 };
             });
             const frete = parseFloat(localStorage.getItem('frete') || 0);
-            if (frete > 0) {
+            if (retiradaLevar === 'levar' && frete > 0) {
                 items.push({
                     title: 'Frete',
                     quantity: 1,
@@ -131,6 +176,31 @@ session_start();
         document.addEventListener('DOMContentLoaded', () => {
             loadCartSummary();
             montarAbaPagamento();
+
+            // Load saved retiradaLevar option
+            const savedOption = localStorage.getItem('retiradaLevar') || 'levar';
+            const radio = document.querySelector(`input[name="retiradaLevar"][value="${savedOption}"]`);
+            if (radio) radio.checked = true;
+
+            // Load saved horario option
+            const savedHorario = localStorage.getItem('horarioEntrega') || '';
+            const horarioSelect = document.getElementById('horarioSelect');
+            if (horarioSelect) horarioSelect.value = savedHorario;
+
+            // Listen for changes on retiradaLevar option
+            document.querySelectorAll('input[name="retiradaLevar"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    localStorage.setItem('retiradaLevar', this.value);
+                    loadCartSummary();
+                });
+            });
+
+            // Listen for changes on horario option
+            if (horarioSelect) {
+                horarioSelect.addEventListener('change', function() {
+                    localStorage.setItem('horarioEntrega', this.value);
+                });
+            }
         });
 
         // Atualizar resumo quando frete for calculado
