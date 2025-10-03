@@ -126,6 +126,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         const data = await fetchProdutosJson();
         menuItems = data.produtos || [];
+        // Alteração: Atribuir IDs numéricos se null ou inválido para evitar problemas com IDs NaN
+        let idCounter = 1;
+        menuItems.forEach(item => {
+            if (!item.id || (typeof item.id !== 'number' && typeof item.id !== 'string')) {
+                item.id = idCounter++;
+            } else if (typeof item.id === 'number' && isNaN(item.id)) {
+                item.id = idCounter++;
+            }
+        });
         adicionais = data.adicionais || [];
         drinks = mapToSimpleDrinks(menuItems);
         sucos = mapToSimpleSucos(menuItems);
@@ -173,13 +182,25 @@ async function renderTab(tab) {
             tabContent.innerHTML += '<em>Nenhum produto cadastrado.</em>';
             return;
         }
-        menuItems.filter(p => !String(p.id).startsWith('drink_') && !String(p.id).startsWith('suco_')).forEach(item => {
+        // Alteração: Mostrar apenas pizzas (produtos regulares), excluindo bebidas e sucos, ajustando exibição de preços para itens com um ou múltiplos tamanhos
+        const regularProducts = menuItems.filter(p => !String(p.id).startsWith('drink_') && !String(p.id).startsWith('suco_'));
+        regularProducts.forEach(item => {
+            let priceDisplay = '';
+            if (item.sizes && item.sizes.length > 0) {
+                if (item.sizes.length === 1) {
+                    priceDisplay = `Preço: R$ ${item.sizes[0].price.toFixed(2)}`;
+                } else {
+                    priceDisplay = item.sizes.map(s => `${s.name}: R$ ${s.price.toFixed(2)}`).join(' | ');
+                }
+            }
+            const adicionaisDisplay = item.adicionais && item.adicionais.length > 0 ? item.adicionais.map(a => a.name).join(', ') : 'Nenhum';
             tabContent.innerHTML += `
                 <div class="admin-item">
                     <h3>${item.name}</h3>
                     <img src="${item.image}" alt="${item.name}" style="max-width:80px;max-height:80px;">
                     <div>Descrição: ${item.descricao ? item.descricao : '<em>Sem descrição</em>'}</div>
-                    <div>Pequena: R$ ${item.sizes[0].price.toFixed(2)} | Média: R$ ${item.sizes[1].price.toFixed(2)} | Grande: R$ ${item.sizes[2].price.toFixed(2)}</div>
+                    <div>${priceDisplay}</div>
+                    <div>Adicionais: ${adicionaisDisplay}</div>
                 </div>
             `;
         });
@@ -209,7 +230,10 @@ async function renderTab(tab) {
                 document.getElementById('addMsg').innerHTML = '<span style="color:red;">Produto já existe!</span>';
                 return;
             }
-            const newId = menuItems.length ? Math.max(...menuItems.map(i => i.id)) + 1 : 1;
+            // Alteração: Calcular novo ID corretamente, filtrando apenas IDs numéricos válidos para evitar NaN
+            const existingIds = menuItems.map(i => i.id).filter(id => typeof id === 'number' && !isNaN(id));
+            const maxId = existingIds.length ? Math.max(...existingIds) : 0;
+            const newId = maxId + 1;
             addAdminLog('Adicionar produto', { name, image, descricao, p, m, g });
             menuItems.push({
                 id: newId,
@@ -232,10 +256,17 @@ async function renderTab(tab) {
             tabContent.innerHTML += '<em>Nenhum produto cadastrado.</em>';
             return;
         }
-        menuItems.forEach((item, idx) => {
+        // Alteração: Mostrar apenas pizzas (produtos regulares) para edição, excluindo bebidas e sucos
+        const regularProducts = menuItems.filter(p => !String(p.id).startsWith('drink_') && !String(p.id).startsWith('suco_'));
+        regularProducts.forEach((item, idx) => {
             let sizeLabels = '';
             item.sizes.forEach((size, sidx) => {
                 sizeLabels += `<label>${size.name}: <input type="number" value="${size.price}" class="price-input" data-size="${sidx}"></label>`;
+            });
+            let adicionaisCheckboxes = '<div>Adicionais:</div>';
+            adicionais.forEach((ad, adidx) => {
+                const checked = item.adicionais && item.adicionais.some(a => a.name === ad.name) ? 'checked' : '';
+                adicionaisCheckboxes += `<label><input type="checkbox" class="adicional-checkbox" data-adname="${ad.name}" ${checked}> ${ad.name} (R$ ${ad.price.toFixed(2)})</label>`;
             });
             tabContent.innerHTML += `
                 <div class="admin-item" data-idx="${idx}">
@@ -244,6 +275,7 @@ async function renderTab(tab) {
                     <label>Imagem: <input type="text" value="${item.image}" class="img-input"></label>
                     <label>Descrição: <textarea class="desc-input" rows="2" style="width:100%;resize:vertical;">${item.descricao ? item.descricao : ''}</textarea></label>
                     ${sizeLabels}
+                    ${adicionaisCheckboxes}
                     <button class="save-btn">Salvar</button>
                     <button class="delete-btn">Excluir</button>
                     <div class="editMsg"></div>
@@ -260,33 +292,39 @@ async function renderTab(tab) {
                 const deleteBtn = div.querySelector('.delete-btn');
                 const editMsg = div.querySelector('.editMsg');
                 saveBtn.onclick = async function() {
-                    menuItems[idx].image = imgInput.value;
-                    menuItems[idx].descricao = descInput.value;
+                    // Atualizar o índice correto no array menuItems, considerando filtro regularProducts
+                    const productId = regularProducts[idx].id;
+                    const menuIdx = menuItems.findIndex(p => p.id === productId);
+                    if (menuIdx === -1) {
+                        alert('Produto não encontrado para salvar.');
+                        return;
+                    }
+                    menuItems[menuIdx].image = imgInput.value;
+                    menuItems[menuIdx].descricao = descInput.value;
                     priceInputs.forEach(input => {
                         const sizeIdx = input.dataset.size;
-                        menuItems[idx].sizes[sizeIdx].price = Number(input.value);
+                        menuItems[menuIdx].sizes[sizeIdx].price = Number(input.value);
                     });
+                    const adicionalCheckboxes = div.querySelectorAll('.adicional-checkbox');
+                    const selectedAdicionais = Array.from(adicionalCheckboxes).filter(cb => cb.checked).map(cb => adicionais.find(a => a.name === cb.dataset.adname));
+                    menuItems[menuIdx].adicionais = selectedAdicionais;
                     await saveMenu();
-                    addAdminLog('Editar produto', { id: menuItems[idx].id, image: imgInput.value, descricao: descInput.value, prices: Array.from(priceInputs).map(i=>i.value) });
+                    addAdminLog('Editar produto', { id: menuItems[menuIdx].id, image: imgInput.value, descricao: descInput.value, prices: Array.from(priceInputs).map(i=>i.value), adicionais: selectedAdicionais.map(a => a.name) });
                     editMsg.innerHTML = '<span style="color:green;">Produto salvo!</span>';
                     renderTab('editar');
                 };
                 deleteBtn.onclick = async function() {
                     if (confirm('Tem certeza que deseja excluir este produto?')) {
-                        const productId = menuItems[idx].id;
-                        const productName = menuItems[idx].name;
-                        console.log('Tentando excluir produto:', productId, productName);
-                        // Encontrar o índice atual do produto no array menuItems
-                        const currentIdx = menuItems.findIndex(p => p.id === productId);
-                        if (currentIdx !== -1) {
+                        const productId = regularProducts[idx].id;
+                        const productName = regularProducts[idx].name;
+                        const menuIdx = menuItems.findIndex(p => p.id === productId);
+                        if (menuIdx !== -1) {
                             addAdminLog('Excluir produto', { id: productId, name: productName });
-                            menuItems.splice(currentIdx, 1);
-                            console.log('Produto removido do array, salvando menu...');
+                            menuItems.splice(menuIdx, 1);
                             await saveMenu();
-                            console.log('Menu salvo, recarregando aba');
                             renderTab('editar'); // Re-render the edit tab to reflect the deletion
                         } else {
-                            console.error('Produto não encontrado no array para exclusão');
+                            alert('Produto não encontrado para exclusão.');
                         }
                     }
                 };

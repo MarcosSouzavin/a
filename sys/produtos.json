@@ -1,7 +1,7 @@
 {
     "produtos": [
         {
-            "id": null,
+            "id": 1,
             "name": "Pizza calabresa",
             "image": "https:\/\/goiasemcena.com.br\/wp-content\/uploads\/2024\/03\/PIZZA.jpg",
             "descricao": "Muçarela, calabresa fatiada e cebola.",
@@ -18,10 +18,28 @@
                     "name": "Grande",
                     "price": 75
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "Queijo",
+                    "price": 2
+                },
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 2,
             "name": "Pizza de Marguerita",
             "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcSnLSfrVpl7G8H6uNkRv34qqcZbDP_tzLysUg&s",
             "descricao": "Muçarela, molho de tomate, rodelas de tomate, manjericão fresco",
@@ -38,10 +56,28 @@
                     "name": "Grande",
                     "price": 75
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "Queijo",
+                    "price": 2
+                },
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 3,
             "name": "Pizza Portuguesa",
             "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcSnLSfrVpl7G8H6uNkRv34qqcZbDP_tzLysUg&s",
             "descricao": "Muçarela, presunto, ovos, azeitona, cebola.",
@@ -58,10 +94,28 @@
                     "name": "Grande",
                     "price": 80
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "Queijo",
+                    "price": 2
+                },
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 4,
             "name": "Pizza de Frango Catupiry",
             "image": "https:\/\/www.paollarestaurante.com.br\/uploads\/images\/2019\/08\/pizza-frango-com-catupiry-1565140749.jpg",
             "descricao": "Muçarela, frango desfiado e Catupiry (ou requeijão cremoso).",
@@ -78,10 +132,28 @@
                     "name": "Grande",
                     "price": 75
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "Queijo",
+                    "price": 2
+                },
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 5,
             "name": "Pizza de Bacon",
             "image": "https:\/\/www.seara.com.br\/wp-content\/uploads\/2025\/09\/R0325-SL-pizza-de-bacon-fatiado-cebola-caramelizada-1200x675-1.webp",
             "descricao": "Muçarela, bacon crocante em cubos e milho (opcional).",
@@ -98,10 +170,28 @@
                     "name": "Grande",
                     "price": 75
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "Queijo",
+                    "price": 2
+                },
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 6,
             "name": "Pizza de Lombo Canadense",
             "image": "https:\/\/www.receiteria.com.br\/wp-content\/uploads\/receitas-de-pizza-de-lombo-1-730x449.jpg",
             "descricao": "Muçarela, lombo defumado e Catupiry.",
@@ -118,10 +208,28 @@
                     "name": "Grande",
                     "price": 75
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "Queijo",
+                    "price": 2
+                },
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 7,
             "name": "Pizza de Atum",
             "image": "https:\/\/guiadacozinha.com.br\/wp-content\/uploads\/2019\/10\/pizza-de-mussarela-com-atum-17657.jpg",
             "descricao": "Muçarela, atum sólido e cebola em rodelas.",
@@ -138,10 +246,28 @@
                     "name": "Grande",
                     "price": 60
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "Queijo",
+                    "price": 2
+                },
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 8,
             "name": "Pizza de Presunto de Parma",
             "image": "https:\/\/www.seara.com.br\/wp-content\/uploads\/2025\/09\/R0524_MB_pizza_de_presunto_com_abacaxi-capa.webp",
             "descricao": "Muçarela de búfala e fatias finas de presunto de Parma (adicionado após sair do forno).",
@@ -158,10 +284,28 @@
                     "name": "Grande",
                     "price": 70
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "Queijo",
+                    "price": 2
+                },
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 9,
             "name": "Pizza de Chocolate",
             "image": "https:\/\/receitadodia.com\/wp-content\/uploads\/2023\/09\/PizzaChocolate-768x512.jpg.webp",
             "descricao": "Chocolate cremoso, granulado e doce de leite na base.",
@@ -178,10 +322,32 @@
                     "name": "Grande",
                     "price": 75
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "doce de leite",
+                    "price": 5
+                },
+                {
+                    "name": "Nutella",
+                    "price": 8
+                },
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Sorvete",
+                    "price": 8
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 10,
             "name": "Pizza de sorvete",
             "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcQcVzchlLQPYOSRHKrVALZmKlMpOwa8KxcQKw&s",
             "descricao": "Pizza de sorvete com sorvete de creme, base de doce leite, chocolate cremoso e disket",
@@ -198,10 +364,28 @@
                     "name": "Grande",
                     "price": 80
                 }
+            ],
+            "adicionais": [
+                {
+                    "name": "doce de leite",
+                    "price": 5
+                },
+                {
+                    "name": "Nutella",
+                    "price": 8
+                },
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
+                }
             ]
         },
         {
-            "id": null,
+            "id": 11,
             "name": "Pizza Romeu e Julieta",
             "image": "https:\/\/mrteddypizza.com.br\/wp-content\/uploads\/2024\/03\/28092018-IMG_9784-scaled.jpg",
             "descricao": "Mussarela e goiabada cremosa.",
@@ -217,6 +401,16 @@
                 {
                     "name": "Grande",
                     "price": 60
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "doce de leite",
+                    "price": 5
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
                 }
             ]
         },
@@ -276,6 +470,26 @@
         {
             "name": "Azeitona",
             "price": 1.5
+        },
+        {
+            "name": "doce de leite",
+            "price": 5
+        },
+        {
+            "name": "Nutella",
+            "price": 8
+        },
+        {
+            "name": "Morango",
+            "price": 5
+        },
+        {
+            "name": "Sorvete",
+            "price": 8
+        },
+        {
+            "name": "Leite condensado",
+            "price": 5
         }
     ]
 }

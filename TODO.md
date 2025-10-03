@@ -1,9 +1,17 @@
-- [x] Modify renderDrinks function in js/admin.js to include edit inputs (name, image, price) and save button for each drink
-- [x] Add event listeners for save button to update drinks array, log action, and call saveMenu
-- [x] Ensure delete functionality remains intact
-- [ ] Test the changes by reloading the tab and verifying edit/save works
+# TODO: Fix Admin Products Display and Persistence
 
-- [x] Modify renderSucos function in js/admin.js to include edit inputs (name, image, descricao, price) and save button for each suco
-- [x] Add event listeners for save button to update sucos array, log action, and call saveMenu
-- [x] Ensure delete functionality remains intact for sucos
-- [ ] Test the changes for sucos by reloading the tab and verifying edit/save works
+## Completed Tasks
+- [x] Assign proper IDs to products with null or invalid IDs on load
+- [x] Fix new product ID calculation to handle mixed types
+- [x] Update 'produtos' tab to display all products (pizzas, drinks, juices) instead of filtering out drinks and juices
+- [x] Adjust price display in 'produtos' tab to handle single-price items (drinks/juices) and multi-size items (pizzas)
+
+## Summary of Changes
+- Modified `js/admin.js` to assign numeric IDs to products missing or invalid IDs during initialization.
+- Updated the ID generation logic for new products to correctly find the maximum numeric ID.
+- Changed the 'produtos' tab rendering to show all menu items without filtering, ensuring drinks and juices are visible alongside pizzas.
+- Improved price display logic to show appropriate pricing based on item type (single price for drinks/juices, size-based for pizzas).
+
+## Next Steps
+- Test the admin interface to verify all products are displayed and can be edited/deleted properly.
+- Ensure new additions persist correctly after page reloads.

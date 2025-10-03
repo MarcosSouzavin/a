@@ -118,5 +118,114 @@ Anexos / referências rápidas
 - smtp4dev (Windows) via Chocolatey: choco install smtp4dev -y
 - MailHog: https://github.com/mailhog/MailHog
 
+# Log de alterações — js/admin.js
+Data: 2025-01-10
+hora: 12:00
+Autor: BLACKBOXAI (alterações aplicadas)
+Versão: 1.0.2
+
+Resumo
+- Objetivo: organizar a interface de administração para que pizzas sejam exibidas e editadas na aba 'produtos', bebidas na aba 'refrigerantes' e sucos na aba 'sucos', com todos os produtos editáveis, salvos e exibidos via produtos.json (não localStorage), para acessibilidade em servidor.
+- Arquivo alterado: js/admin.js
+- Principais mudanças: filtros aplicados nas abas 'produtos' e 'editar' para mostrar apenas pizzas, bebidas e sucos editáveis em suas abas respectivas, dados persistidos via API/produtos.php (produtos.json), não localStorage.
+
+Detalhamento das alterações (por seções)
+1) Filtro na aba 'produtos' para mostrar apenas pizzas
+- O que foi alterado:
+  - Adicionado filtro const regularProducts = menuItems.filter(p => !String(p.id).startsWith('drink_') && !String(p.id).startsWith('suco_'));
+  - Loop forEach aplicado a regularProducts.
+- Por quê:
+  - Separa pizzas das bebidas e sucos, mantendo organização por categoria.
+
+2) Filtro na aba 'editar' para editar apenas pizzas
+- O que foi alterado:
+  - Mesmo filtro aplicado para exibir apenas pizzas para edição.
+  - Ajuste nos listeners de save e delete para mapear índices corretos entre regularProducts e menuItems.
+- Por quê:
+  - Permite edição exclusiva de pizzas na aba 'editar', evitando confusão com bebidas e sucos.
+
+3) Bebidas e sucos editáveis em suas abas
+- O que foi confirmado:
+  - Abas 'refrigerantes' e 'sucos' já permitem adicionar, editar e excluir bebidas e sucos respectivamente.
+- Por quê:
+  - Mantém funcionalidade completa para todas as categorias de produtos.
+
+4) Persistência via produtos.json (não localStorage)
+- O que foi confirmado:
+  - Dados são salvos e carregados via fetch para API/produtos.php, que manipula produtos.json.
+  - Logs de admin permanecem em localStorage, mas produtos em JSON.
+- Por quê:
+  - Garante acessibilidade de qualquer lugar, independente do navegador ou dispositivo, ao hospedar em servidor.
+
+Como testar (passo a passo local)
+1. Acesse admin.html no navegador.
+2. Faça login com senha 'g'.
+3. Verifique aba 'produtos': mostra apenas pizzas.
+4. Verifique aba 'refrigerantes': mostra bebidas, editáveis.
+5. Verifique aba 'sucos': mostra sucos, editáveis.
+6. Adicione/edite/exclua produtos em cada aba e confirme salvamento em produtos.json.
+
+Boas práticas / próximas ações
+- Testar upload para servidor para confirmar acessibilidade.
+- Adicionar validações de entrada se necessário.
+
+Rollback
+- Para voltar à versão anterior:
+  - Substituir js/admin.js pelo backup anterior.
+
+Fim do log.
+
+# Log de alterações — js/admin.js
+Data: 2025-01-10
+hora: 14:00
+Autor: BLACKBOXAI (alterações aplicadas)
+Versão: 1.0.3
+
+Resumo
+- Objetivo: exibir os adicionais associados a cada produto na aba 'produtos' e permitir edição dos adicionais na aba 'editar' através de checkboxes, salvando as associações no produtos.json.
+- Arquivo alterado: js/admin.js
+- Principais mudanças: adição de exibição de adicionais na lista de produtos, checkboxes na edição para selecionar adicionais globais por produto, atualização da função de salvar para persistir os adicionais selecionados.
+
+Detalhamento das alterações (por seções)
+1) Exibição de adicionais na aba 'produtos'
+- O que foi adicionado:
+  - const adicionaisDisplay = item.adicionais && item.adicionais.length > 0 ? item.adicionais.map(a => a.name).join(', ') : 'Nenhum';
+  - <div>Adicionais: ${adicionaisDisplay}</div> no template de cada produto.
+- Por quê:
+  - Permite visualizar quais adicionais estão associados a cada produto diretamente na lista.
+
+2) Checkboxes para edição de adicionais na aba 'editar'
+- O que foi adicionado:
+  - let adicionaisCheckboxes = '<div>Adicionais:</div>';
+  - Loop adicionais.forEach para gerar checkboxes com checked baseado em item.adicionais.some(a => a.name === ad.name).
+  - ${adicionaisCheckboxes} no template de edição.
+- Por quê:
+  - Permite ao administrador selecionar quais adicionais globais aplicar a cada produto individualmente.
+
+3) Atualização da função de salvar para incluir adicionais
+- O que foi alterado:
+  - const adicionalCheckboxes = div.querySelectorAll('.adicional-checkbox');
+  - const selectedAdicionais = Array.from(adicionalCheckboxes).filter(cb => cb.checked).map(cb => adicionais.find(a => a.name === cb.dataset.adname));
+  - menuItems[menuIdx].adicionais = selectedAdicionais;
+  - Atualização do log para incluir adicionais: selectedAdicionais.map(a => a.name).
+- Por quê:
+  - Salva as associações de adicionais por produto no JSON, permitindo persistência e uso no frontend.
+
+Como testar (passo a passo local)
+1. Acesse admin.html no navegador.
+2. Faça login com senha 'g'.
+3. Verifique aba 'produtos': veja a lista de adicionais para cada produto.
+4. Vá para aba 'editar': selecione/desmarque checkboxes de adicionais para um produto e salve.
+5. Volte para aba 'produtos' e confirme que os adicionais foram atualizados.
+6. Verifique produtos.json para confirmar salvamento.
+
+Boas práticas / próximas ações
+- Garantir que adicionais sejam exibidos corretamente no frontend do cliente.
+- Adicionar validações se necessário para associações.
+
+Rollback
+- Para voltar à versão anterior:
+  - Substituir js/admin.js pelo backup anterior.
+
 Fim do log.
 
