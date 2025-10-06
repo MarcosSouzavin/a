@@ -5,17 +5,10 @@ if (!isset($_SESSION['email'])) {
     exit();
 }
 
-if(true){
-  $host = 'localhost';
-  $dbname = 'users'; 
-  $dbUser = 'admin';   
-  $dbPass = 'admin';
-}else{
   $host = 'https://auth-db1206.hstgr.io/';
   $dbname = 'u557720587_2025_php01'; 
   $dbUser = 'u557720587_2025_php01';   
   $dbPass = 'Mtec@php1';
-}
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbUser, $dbPass);
