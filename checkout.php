@@ -83,22 +83,16 @@ session_start();
             const cartTotalAmount = document.getElementById('cartTotalAmount');
             cartItemsList.innerHTML = '';
             let total = 0;
-            let cartData = localStorage.getItem('cart') || '[]';
-            console.log('loadCartSummary: loaded cart data from localStorage:', cartData);
             let cart;
             try {
-                cart = JSON.parse(cartData);
+                const response = await fetch('API/cart.php');
+                cart = await response.json();
                 if (!Array.isArray(cart)) {
-                    console.error('loadCartSummary: cart data is not an array:', cart);
-                    cartItemsList.innerHTML = '<li>Erro ao carregar o carrinho.</li>';
-                    cartTotalAmount.textContent = '0.00';
-                    return;
+                    throw new Error('Cart data is not an array');
                 }
             } catch (e) {
-                console.error('loadCartSummary: error parsing cart data:', e);
-                cartItemsList.innerHTML = '<li>Erro ao carregar o carrinho.</li>';
-                cartTotalAmount.textContent = '0.00';
-                return;
+                console.error('loadCartSummary: error loading cart data from API, falling back to localStorage:', e);
+                cart = JSON.parse(localStorage.getItem('cart') || '[]');
             }
             if (cart.length === 0) {
                 cartItemsList.innerHTML = '<li>Carrinho vazio.</li>';
@@ -131,7 +125,13 @@ session_start();
         }
 
         async function getCartItemsForPayment() {
-            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            let cart;
+            try {
+                const response = await fetch('API/cart.php');
+                cart = await response.json();
+            } catch (e) {
+                cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            }
             const retiradaLevar = document.querySelector('input[name="retiradaLevar"]:checked')?.value || 'levar';
             const items = cart.map(item => {
                 const basePrice = Number(item.basePrice || 0);

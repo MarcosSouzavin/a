@@ -15,6 +15,19 @@ async function saveCart(c) {
     const cartData = JSON.stringify(c);
     console.log('saveCart: saving cart data to localStorage:', cartData);
     localStorage.setItem('cart', cartData);
+    // Also save to session via API
+    try {
+        const response = await fetch('API/cart.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: cartData
+        });
+        if (!response.ok) {
+            console.error('Erro ao salvar carrinho na sessão');
+        }
+    } catch (e) {
+        console.error('Erro ao salvar carrinho na sessão', e);
+    }
 }
 
 // --- FUNÇÕES UTILITÁRIAS ---
@@ -436,7 +449,7 @@ async function finalizarCompra() {
     }
     resumo += `\n\nTotal a Pagar: R$ ${formatPrice(totalFinal)}`;
 
-    alert(resumo);
+    // alert(resumo);
     addClientLog('Resumo do Pedido', { resumo });
 
     if (valorPagoComSaldo > 0) {
