@@ -3,5 +3,7 @@
 - [x] Change checkout.php getCartItemsForPayment to load from API/cart.php with fallback to localStorage
 - [x] Remove alert 'Pedido finalizado!' from payment.js for cash payment
 - [x] Remove alert from finalizarCompra in js/index.js
+- [x] Load cart on page init instead of clearing it
+- [x] Add limit of 4000 products on main page menu
 - [ ] Test checkout page to ensure cart items display correctly
 - [ ] Test payment flow to ensure no unwanted alerts

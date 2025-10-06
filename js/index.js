@@ -316,6 +316,8 @@ function renderMenuItems(itemsToRender) {
 async function initMenu() {
     let products = await fetchProdutosJson();
     if (!Array.isArray(products)) products = [];
+    // Limite de 4000 produtos na página principal
+    products = products.slice(0, 4000);
     // Marca drinks e sucos para exibir corretamente no modal
     products.forEach(p => {
         if (String(p.id).startsWith('drink_')) p.isDrink = true;
@@ -488,9 +490,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicialização principal
     async function init() {
         await initMenu();
-        // Limpa o carrinho a cada carregamento da página
-        cart = [];
-        await saveCart(cart);
+        // Carrega o carrinho salvo
+        cart = await getCart();
         updateCart();
         atualizarSaldoUsuario();
     }
