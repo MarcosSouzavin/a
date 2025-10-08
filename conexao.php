@@ -1,8 +1,8 @@
 <?php
-    $host = 'localhost';
-    $dbname = 'users';
-    $user = 'admin';
-    $password = 'admin';
+    $host = 'auth-db1206.hstgr.io';
+    $dbname = 'u557720587_2025_php01';
+    $user = 'u557720587_2025_php01';
+    $password = 'Mtec@php1';
 
 
 

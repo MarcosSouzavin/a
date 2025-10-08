@@ -475,9 +475,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicialização principal
     async function init() {
         await initMenu();
-        // Limpa o carrinho a cada carregamento da página
-        cart = [];
-        await saveCart(cart);
+        // Carrega o carrinho do localStorage
+        cart = await getCart();
         updateCart();
         atualizarSaldoUsuario();
     }

@@ -15,6 +15,7 @@ if (isset($_SESSION['erro'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SquinaXV - Registro</title>
     <link rel="stylesheet" type="text/css" href="css/register.css" media="screen" />
+    <link rel="icon" href="img/stg.ico" type="image/x-icon">
     <script src="js/cpf-format.js"></script>
 </head>
 <body>
