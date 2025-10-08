@@ -4,14 +4,14 @@
             "id": 1,
             "name": "Pizza calabresa",
             "image": "https:\/\/goiasemcena.com.br\/wp-content\/uploads\/2024\/03\/PIZZA.jpg",
-            "descricao": "Muçarela, calabresa fatiada e cebola.",
+            "descricao": "MuÃ§arela, calabresa fatiada e cebola.",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 45
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 50
                 },
                 {
@@ -20,10 +20,6 @@
                 }
             ],
             "adicionais": [
-                {
-                    "name": "Queijo",
-                    "price": 2
-                },
                 {
                     "name": "Bacon",
                     "price": 3
@@ -35,21 +31,45 @@
                 {
                     "name": "Azeitona",
                     "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
                 }
             ]
         },
         {
             "id": 2,
             "name": "Pizza de Marguerita",
-            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcSnLSfrVpl7G8H6uNkRv34qqcZbDP_tzLysUg&s",
-            "descricao": "Muçarela, molho de tomate, rodelas de tomate, manjericão fresco",
+            "image": "https:\/\/www.estadao.com.br\/resizer\/v2\/NIDA6IE6N5CTNAIWU365A257VA.jpg?quality=80&auth=5d90f714a8c8a131866e1f34fcaaab55df258ffa218a2baf915f5d9c4fa6f60b&width=720&height=410&smart=true",
+            "descricao": "MuÃ§arela, molho de tomate, rodelas de tomate, manjericÃ£o fresco",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 45
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 50
                 },
                 {
@@ -58,10 +78,6 @@
                 }
             ],
             "adicionais": [
-                {
-                    "name": "Queijo",
-                    "price": 2
-                },
                 {
                     "name": "Bacon",
                     "price": 3
@@ -73,21 +89,45 @@
                 {
                     "name": "Azeitona",
                     "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
                 }
             ]
         },
         {
             "id": 3,
             "name": "Pizza Portuguesa",
-            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcSnLSfrVpl7G8H6uNkRv34qqcZbDP_tzLysUg&s",
-            "descricao": "Muçarela, presunto, ovos, azeitona, cebola.",
+            "image": "https:\/\/img.cdndsgni.com\/preview\/10059174.jpg",
+            "descricao": "MuÃ§arela, presunto, ovos, azeitona, cebola.",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 50
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 65
                 },
                 {
@@ -97,10 +137,6 @@
             ],
             "adicionais": [
                 {
-                    "name": "Queijo",
-                    "price": 2
-                },
-                {
                     "name": "Bacon",
                     "price": 3
                 },
@@ -111,6 +147,30 @@
                 {
                     "name": "Azeitona",
                     "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
                 }
             ]
         },
@@ -118,14 +178,14 @@
             "id": 4,
             "name": "Pizza de Frango Catupiry",
             "image": "https:\/\/www.paollarestaurante.com.br\/uploads\/images\/2019\/08\/pizza-frango-com-catupiry-1565140749.jpg",
-            "descricao": "Muçarela, frango desfiado e Catupiry (ou requeijão cremoso).",
+            "descricao": "MuÃ§arela, frango desfiado e Catupiry (ou requeijÃ£o cremoso).",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 50
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 65
                 },
                 {
@@ -135,10 +195,6 @@
             ],
             "adicionais": [
                 {
-                    "name": "Queijo",
-                    "price": 2
-                },
-                {
                     "name": "Bacon",
                     "price": 3
                 },
@@ -149,6 +205,30 @@
                 {
                     "name": "Azeitona",
                     "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
                 }
             ]
         },
@@ -156,14 +236,14 @@
             "id": 5,
             "name": "Pizza de Bacon",
             "image": "https:\/\/www.seara.com.br\/wp-content\/uploads\/2025\/09\/R0325-SL-pizza-de-bacon-fatiado-cebola-caramelizada-1200x675-1.webp",
-            "descricao": "Muçarela, bacon crocante em cubos e milho (opcional).",
+            "descricao": "MuÃ§arela, bacon crocante em cubos e milho (opcional).",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 45
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 55
                 },
                 {
@@ -173,10 +253,6 @@
             ],
             "adicionais": [
                 {
-                    "name": "Queijo",
-                    "price": 2
-                },
-                {
                     "name": "Bacon",
                     "price": 3
                 },
@@ -187,6 +263,30 @@
                 {
                     "name": "Azeitona",
                     "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
                 }
             ]
         },
@@ -194,14 +294,14 @@
             "id": 6,
             "name": "Pizza de Lombo Canadense",
             "image": "https:\/\/www.receiteria.com.br\/wp-content\/uploads\/receitas-de-pizza-de-lombo-1-730x449.jpg",
-            "descricao": "Muçarela, lombo defumado e Catupiry.",
+            "descricao": "MuÃ§arela, lombo defumado e Catupiry.",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 50
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 60
                 },
                 {
@@ -211,10 +311,6 @@
             ],
             "adicionais": [
                 {
-                    "name": "Queijo",
-                    "price": 2
-                },
-                {
                     "name": "Bacon",
                     "price": 3
                 },
@@ -225,6 +321,30 @@
                 {
                     "name": "Azeitona",
                     "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
                 }
             ]
         },
@@ -232,14 +352,14 @@
             "id": 7,
             "name": "Pizza de Atum",
             "image": "https:\/\/guiadacozinha.com.br\/wp-content\/uploads\/2019\/10\/pizza-de-mussarela-com-atum-17657.jpg",
-            "descricao": "Muçarela, atum sólido e cebola em rodelas.",
+            "descricao": "MuÃ§arela, atum sÃ³lido e cebola em rodelas.",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 40
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 50
                 },
                 {
@@ -249,10 +369,6 @@
             ],
             "adicionais": [
                 {
-                    "name": "Queijo",
-                    "price": 2
-                },
-                {
                     "name": "Bacon",
                     "price": 3
                 },
@@ -263,6 +379,30 @@
                 {
                     "name": "Azeitona",
                     "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
                 }
             ]
         },
@@ -270,14 +410,14 @@
             "id": 8,
             "name": "Pizza de Presunto de Parma",
             "image": "https:\/\/www.seara.com.br\/wp-content\/uploads\/2025\/09\/R0524_MB_pizza_de_presunto_com_abacaxi-capa.webp",
-            "descricao": "Muçarela de búfala e fatias finas de presunto de Parma (adicionado após sair do forno).",
+            "descricao": "MuÃ§arela de bÃºfala e fatias finas de presunto de Parma (adicionado apÃ³s sair do forno).",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 40
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 55
                 },
                 {
@@ -287,10 +427,6 @@
             ],
             "adicionais": [
                 {
-                    "name": "Queijo",
-                    "price": 2
-                },
-                {
                     "name": "Bacon",
                     "price": 3
                 },
@@ -301,6 +437,30 @@
                 {
                     "name": "Azeitona",
                     "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
                 }
             ]
         },
@@ -315,8 +475,902 @@
                     "price": 50
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 60
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "doce de leite",
+                    "price": 5
+                },
+                {
+                    "name": "Nutella",
+                    "price": 8
+                },
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Sorvete",
+                    "price": 8
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
+                },
+                {
+                    "name": "MuÃ§arela",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "name": "Pizza de sorvete",
+            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcQcVzchlLQPYOSRHKrVALZmKlMpOwa8KxcQKw&s",
+            "descricao": "Pizza de sorvete com sorvete de creme, base de doce leite, chocolate cremoso e disket",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 55
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "doce de leite",
+                    "price": 5
+                },
+                {
+                    "name": "Nutella",
+                    "price": 8
+                },
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
+                },
+                {
+                    "name": "MuÃ§arela",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 11,
+            "name": "Pizza Romeu e Julieta",
+            "image": "https:\/\/mrteddypizza.com.br\/wp-content\/uploads\/2024\/03\/28092018-IMG_9784-scaled.jpg",
+            "descricao": "Mussarela e goiabada cremosa.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 40
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 50
+                },
+                {
+                    "name": "Grande",
+                    "price": 60
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "doce de leite",
+                    "price": 5
+                },
+                {
+                    "name": "Nutella",
+                    "price": 8
+                },
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
+                },
+                {
+                    "name": "MuÃ§arela",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 13,
+            "name": "Carne Seca com Catupiry",
+            "image": "https:\/\/institucional.ifood.com.br\/wp-content\/uploads\/2024\/06\/sabores-de-pizza-carne-seca-e-catupiry.jpg",
+            "descricao": "Uma adaptaÃ§Ã£o muito popular, especialmente no Nordeste, que une o sabor da carne seca desfiada e temperada com a cremosidade do requeijÃ£o.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 45
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 55
+                },
+                {
+                    "name": "Grande",
+                    "price": 70
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "name": "Pepperoni",
+            "image": "https:\/\/cdn.casaeculinaria.com\/wp-content\/uploads\/2024\/06\/21163651\/pizza-de-pepperoni-1.webp",
+            "descricao": "A linguiÃ§a condimentada e levemente picante, muito popularizada pelo estilo americano de pizza.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 45
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 55
+                },
+                {
+                    "name": "Grande",
+                    "price": 70
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 15,
+            "name": "Pizza de Palmito com Bacon ou Catupiry",
+            "image": "https:\/\/therezapizzagrill.com.br\/wp-content\/uploads\/2017\/10\/palmito1.png",
+            "descricao": "O sabor suave do palmito, que pode ser combinado com a gordura do bacon ou a cremosidade do requeijÃ£o.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 45
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 60
+                },
+                {
+                    "name": "Grande",
+                    "price": 70
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 16,
+            "name": "Pizza de Prestigio",
+            "image": "https:\/\/s3-sa-east-1.amazonaws.com\/deliveryon-uploads\/products\/braveromp\/102_65e8f05370953.jpg",
+            "descricao": "Chocolate, coco ralado, doce e leite e cereja.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 55
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Nutella",
+                    "price": 8
+                },
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Sorvete",
+                    "price": 8
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
+                }
+            ]
+        },
+        {
+            "id": 17,
+            "name": "Pizza de 4 Queijos",
+            "image": "https:\/\/apetitosa.wordpress.com\/wp-content\/uploads\/2017\/01\/729408_orig.png",
+            "descricao": "A mistura tradicional de muÃ§arela, provolone, gorgonzola e parmesÃ£o.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 18,
+            "name": "Pizza de Presunto de Parma com RÃºcula",
+            "image": "https:\/\/img.freepik.com\/fotos-premium\/saborosa-pizza-com-presunto-di-parma-rucula-e-parmesao-em-uma-mesa-de-madeira-cozinha-tradicional-italiana-delicioso-close-up-mesa-de-comida_207126-2168.jpg",
+            "descricao": "Uma combinaÃ§Ã£o elegante, muitas vezes feita em pizza branca (sem molho de tomate). Leva a massa fina, muÃ§arela de bÃºfala, finas fatias de Presunto de Parma adicionadas apÃ³s o forno, rÃºcula fresca e lascas de parmesÃ£o.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 60
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 19,
+            "name": "Pizza de FilÃ© com Gorgonzola",
+            "image": "https:\/\/revistasaboresdosul.com.br\/wp-content\/uploads\/2022\/04\/file-com-gorgonzola-bianca-pizzaria.jpg",
+            "descricao": "Tiras de filÃ© mignon grelhado combinadas com a intensidade do queijo gorgonzola e a cremosidade da muÃ§arela ou Catupiry.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 55
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 20,
+            "name": "Pizza de Pancetta ou Pepperoni Artesanal",
+            "image": "https:\/\/viagem.cnnbrasil.com.br\/wp-content\/uploads\/sites\/5\/2019\/04\/A-tal-da-Pizza-1.jpg?w=1200&h=1200&crop=1",
+            "descricao": "Usar pancetta (barriga de porco curada) ou um pepperoni apimentado de alta qualidade eleva o sabor dos embutidos.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 55
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "MuÃ§arela",
+                    "price": 3
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 21,
+            "name": "Pizza de Funghi Trufado",
+            "image": "https:\/\/www.maiorviagem.net\/wp-content\/uploads\/2016\/07\/Prima-Farina_Tartufi-I-Funghi-di-Bosco_Filico-4.jpg",
+            "descricao": "Mistura de cogumelos frescos (shitake, shimeji) refogados e finalizados com azeite trufado e tomilho.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 55
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "MuÃ§arela",
+                    "price": 3
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 22,
+            "name": "Pizza de Pesto com Tomate-Cereja",
+            "image": "https:\/\/s2.glbimg.com\/-y2bjN5IrX8eRZCQjj6bK9IRX0s=\/620x455\/e.glbimg.com\/og\/ed\/f\/original\/2021\/11\/05\/receita-pizza-vegana-capri-mucarela-tomate-pesto-manjericao-camila-botelho-micheluccio.jpg",
+            "descricao": "Uma base de molho pesto no lugar do molho de tomate tradicional, coberta com muÃ§arela de bÃºfala ou queijo de cabra e tomates-cereja.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 23,
+            "name": "Pizza de Carne com Banana-da-Terra",
+            "image": "https:\/\/scontent.fpoo2-1.fna.fbcdn.net\/v\/t1.6435-9\/143098981_3695914737169764_3843067285568565913_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=0b6b33&_nc_ohc=FtnWG6Iw9psQ7kNvwHyw_IQ&_nc_oc=Adk6HXSRbGonwrcNfvsMromyMH-Z2Dds1PgS_aEOBNYAnYpIeZW83OqOs9Qg-EspAw0&_nc_zt=23&_nc_ht=scontent.fpoo2-1.fna&_nc_gid=Q3Flz-u00uhvOntt2RAVNA&oh=00_Afe4vGGfVv2jeieETVcmyOGoPMKjUs0iGJdEH5BEUXJ5OQ&oe=690C7328",
+            "descricao": "Massa, molho de tomate e muÃ§arela. O recheio Ã© a combinaÃ§Ã£o de Carne desfiada (geralmente carne-seca) com Banana-da-Terra assada. Finalizada com um toque de cebola e especiarias.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "MuÃ§arela",
+                    "price": 3
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 24,
+            "name": "Pizza Napolitana",
+            "image": "https:\/\/cloudfront-us-east-1.images.arcpublishing.com\/estadao\/MHEB7V2WRFDVHBXPFP6RFYZ66U.jpg",
+            "descricao": "Leva muÃ§arela, molho de tomate, rodelas de tomate, alho e orÃ©gano.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 45
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 60
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Bacon",
+                    "price": 3
+                },
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 25,
+            "name": "Pizza de Bacon com BrÃ³colis",
+            "image": "https:\/\/media-cdn.tripadvisor.com\/media\/photo-s\/0e\/50\/9b\/b8\/pizza-a-moda-da-casa.jpg",
+            "descricao": "O equilÃ­brio perfeito! Nossa pizza Bacon com BrÃ³colis une o sabor suave e a textura macia do brÃ³colis fresco com a crocÃ¢ncia e o toque defumado do bacon. Tudo sobre uma base cremosa de muzzarella e requeijÃ£o.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 60
+                },
+                {
+                    "name": "Grande",
+                    "price": 80
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Cebola",
+                    "price": 1
+                },
+                {
+                    "name": "Azeitona",
+                    "price": 1.5
+                },
+                {
+                    "name": "Milho",
+                    "price": 5
+                },
+                {
+                    "name": "Cheddar",
+                    "price": 5
+                },
+                {
+                    "name": "Catupiry",
+                    "price": 5
+                },
+                {
+                    "name": "Champignon",
+                    "price": 5
+                },
+                {
+                    "name": "Palmito",
+                    "price": 5
+                },
+                {
+                    "name": "ManjericÃ£o fresco",
+                    "price": 3
+                }
+            ]
+        },
+        {
+            "id": 26,
+            "name": "Pizza de Banoffee",
+            "image": "https:\/\/cloudfront-us-east-1.images.arcpublishing.com\/estadao\/WOZK5UVWRVNAJENZNGVYGBGNBY.jpg",
+            "descricao": "combinaÃ§Ã£o sublime do cremoso e caramelizado doce de leite com fatias frescas de banana. Assada na perfeiÃ§Ã£o e finalizada com uma nuvem suave de chantilly e um toque de canela em pÃ³. ",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 55
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
+                },
+                {
+                    "name": "Grande",
+                    "price": 75
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Nutella",
+                    "price": 8
+                },
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Sorvete",
+                    "price": 8
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
+                }
+            ]
+        },
+        {
+            "id": 27,
+            "name": "Pizza de PaÃ§oca",
+            "image": "https:\/\/img.cdndsgni.com\/preview\/10024224.jpg",
+            "descricao": "feita sobre uma base cremosa de doce de leite ou brigadeiro branco, coberta com paÃ§oca esfarelada de forma generosa. A combinaÃ§Ã£o perfeita de cremosidade e crocÃ¢ncia, com o sabor inconfundÃ­vel do amendoim torrado e doce.",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 55
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 65
                 },
                 {
                     "name": "Grande",
@@ -347,22 +1401,56 @@
             ]
         },
         {
-            "id": 10,
-            "name": "Pizza de sorvete",
-            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcQcVzchlLQPYOSRHKrVALZmKlMpOwa8KxcQKw&s",
-            "descricao": "Pizza de sorvete com sorvete de creme, base de doce leite, chocolate cremoso e disket",
+            "id": 28,
+            "name": "Pizza de Ninho com Nutella",
+            "image": "https:\/\/media-cdn.tripadvisor.com\/media\/photo-s\/0f\/1d\/9a\/90\/pizza-de-nutella-com.jpg",
+            "descricao": "coberta com o cremoso creme de avelÃ£ Nutella e generosamente polvilhada com Leite Ninho.",
             "sizes": [
                 {
                     "name": "Pequena",
                     "price": 55
                 },
                 {
-                    "name": "Média",
+                    "name": "MÃ©dia",
                     "price": 65
                 },
                 {
                     "name": "Grande",
-                    "price": 80
+                    "price": 75
+                }
+            ],
+            "adicionais": [
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Sorvete",
+                    "price": 8
+                },
+                {
+                    "name": "Leite condensado",
+                    "price": 5
+                }
+            ]
+        },
+        {
+            "id": 29,
+            "name": "Pizza Dois Amores",
+            "image": "https:\/\/www.calenzano.com.br\/wp-content\/uploads\/2021\/01\/24-Dois-amores.jpg",
+            "descricao": "coberta com uma base de chocolate ao leite e outra base de chocolate branco, dividindo a pizza em duas metades (ou em Ã¡reas mescladas).",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 50
+                },
+                {
+                    "name": "MÃ©dia",
+                    "price": 60
+                },
+                {
+                    "name": "Grande",
+                    "price": 70
                 }
             ],
             "adicionais": [
@@ -379,34 +1467,50 @@
                     "price": 5
                 },
                 {
+                    "name": "Sorvete",
+                    "price": 8
+                },
+                {
                     "name": "Leite condensado",
                     "price": 5
                 }
             ]
         },
         {
-            "id": 11,
-            "name": "Pizza Romeu e Julieta",
-            "image": "https:\/\/mrteddypizza.com.br\/wp-content\/uploads\/2024\/03\/28092018-IMG_9784-scaled.jpg",
-            "descricao": "Mussarela e goiabada cremosa.",
+            "id": 30,
+            "name": "Pizza de Chocobis",
+            "image": "https:\/\/fibo.promokit.com.br\/images\/empresa\/f844f2e0-437b-11ed-bad7-639a08d284fc.jpeg",
+            "descricao": "base de chocolate cremoso (pode ser ganache de chocolate ao leite, brigadeiro cremoso ou atÃ© mesmo chocolate branco) e Ã© generosamente coberta com pedaÃ§os do biscoito wafer Bis esmigalhados ou inteiros.",
             "sizes": [
                 {
                     "name": "Pequena",
-                    "price": 40
+                    "price": 45
                 },
                 {
-                    "name": "Média",
-                    "price": 50
+                    "name": "MÃ©dia",
+                    "price": 55
                 },
                 {
                     "name": "Grande",
-                    "price": 60
+                    "price": 65
                 }
             ],
             "adicionais": [
                 {
                     "name": "doce de leite",
                     "price": 5
+                },
+                {
+                    "name": "Nutella",
+                    "price": 8
+                },
+                {
+                    "name": "Morango",
+                    "price": 5
+                },
+                {
+                    "name": "Sorvete",
+                    "price": 8
                 },
                 {
                     "name": "Leite condensado",
@@ -416,12 +1520,103 @@
         },
         {
             "id": "drink_1",
-            "name": "coca lata",
-            "image": "https:\/\/external-content.duckduckgo.com\/iu\/?u=https%3A%2F%2Fstatic.wixstatic.com%2Fmedia%2Fa27d24_3cc9d66086604374ac8fcf3879a493e8~mv2.jpg%2Fv1%2Ffill%2Fw_511%2Ch_440%2Cal_c%2Cq_80%2Cenc_avif%2Cquality_auto%2Fa27d24_3cc9d66086604374ac8fcf3879a493e8~mv2.jpg&f=1&nofb=1&ipt=8c97d93692a0b2cb3863c270899e260b878834d4c70075d826846fd4ba3aa61b",
+            "name": "Coca Cola Lata",
+            "image": "https:\/\/texting.com.br\/\/assets\/uploads\/2025\/04\/capitalist-2025-04-03t064304-402.png",
             "descricao": "",
             "sizes": [
                 {
-                    "name": "Único",
+                    "name": "Ãšnico",
+                    "price": 6
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_2",
+            "name": "Fanta Laranja Lata",
+            "image": "https:\/\/mir-s3-cdn-cf.behance.net\/project_modules\/1400\/49c67375736649.5dd150d268815.png",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 6
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_3",
+            "name": "Fanta Uva Lata",
+            "image": "https:\/\/www.imigrantesbebidas.com.br\/img\/bebida\/images\/products\/full\/1997-refrigerante-fanta-uva-lata-350ml-2.20230712095239.jpg?s=a7cf00379003da676b4557b9bad47d61",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 6
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_4",
+            "name": "Sprite Lata",
+            "image": "https:\/\/uploads.promoview.com.br\/2025\/01\/rEevxR7l-sprite-verao-4-png.webp",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 6
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_5",
+            "name": "Schweppes Lata",
+            "image": "https:\/\/mir-s3-cdn-cf.behance.net\/projects\/404\/ccfb6141700377.Y3JvcCw2NjAsNTE3LDAsMTUw.png",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 6
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_6",
+            "name": "GuaranÃ¡ Antartica Lata",
+            "image": "https:\/\/majoricario.com.br\/wp-content\/uploads\/2021\/02\/Guarana.png",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 6
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_7",
+            "name": "Coca Zero Lata",
+            "image": "https:\/\/pbs.twimg.com\/amplify_video_thumb\/1662203322663673872\/img\/49lZVy0gzeBexEIx.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 6
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "drink_8",
+            "name": "GuaranÃ¡ Antartica Zero Lata",
+            "image": "https:\/\/classic.exame.com\/wp-content\/uploads\/2023\/11\/guarana.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
                     "price": 6
                 }
             ],
@@ -429,12 +1624,12 @@
         },
         {
             "id": "suco_1",
-            "name": "Copo de Suco Natural de Limão",
-            "image": "https:\/\/www.oitedi.com.br\/_next\/image?url=https%3A%2F%2Ftedi-production.s3.amazonaws.com%2Fcooking_recipes%2Ffood_description%2Fecfeef56236aca254949a7be9de5c6fe91719d46.png&w=1080&q=70",
+            "name": "Copo de Suco Natural de Abacaxi 250ml",
+            "image": "https:\/\/www.oitedi.com.br\/_next\/image?url=https%3A%2F%2Ftedi-production.s3.amazonaws.com%2Fcooking_recipes%2Ffood_description%2Fd06a47664e1afb51a5e5dad92de579fc00b80d93.png&w=1080&q=70",
             "descricao": "",
             "sizes": [
                 {
-                    "name": "Único",
+                    "name": "Ãšnico",
                     "price": 8
                 }
             ],
@@ -442,23 +1637,214 @@
         },
         {
             "id": "suco_2",
-            "name": "Copo de Suco Natural de Abacaxi",
-            "image": "https:\/\/www.oitedi.com.br\/_next\/image?url=https%3A%2F%2Ftedi-production.s3.amazonaws.com%2Fcooking_recipes%2Ffood_description%2F6f02e04769671200ef07bb8b7713a497b3ac77bd.png&w=1080&q=70",
+            "name": "Copo de suco natural de MaracujÃ¡ 250ml",
+            "image": "https:\/\/espaconatelie.com.br\/wp-content\/uploads\/2024\/09\/suco-de-maracuja.jpg",
             "descricao": "",
             "sizes": [
                 {
-                    "name": "Único",
+                    "name": "Ãšnico",
                     "price": 8
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_3",
+            "name": "Copo de suco natural de LimÃ£o 250ml",
+            "image": "https:\/\/image.tuasaude.com\/media\/article\/ua\/hv\/suco-de-limao-desintoxicante_30808.jpg?width=686&height=487",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 8
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_4",
+            "name": "Copo de suco natural de Morango 250ml",
+            "image": "https:\/\/cdn.deliway.com.br\/blog\/base\/edf\/3e2\/ee6\/receita-suco-natural-morango.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 8
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_5",
+            "name": "Copo de suco natural de Uva 250ml",
+            "image": "https:\/\/media.istockphoto.com\/id\/1407684263\/pt\/foto\/glass-of-grape-juice-with-rural-background.jpg?s=612x612&w=0&k=20&c=2zWsqUz9wYJfGuMPNd7zo1J9xOcHur4k_iSW36GVGyo=",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 8
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_6",
+            "name": "Jarra de Suco Natural de Abacaxi 600ml",
+            "image": "https:\/\/img.freepik.com\/fotos-premium\/abacaxi-jarra-de-vidro-e-copo-com-suco-na-madeira-espaco-para-texto_185193-7352.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 16
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_7",
+            "name": "Jarra de Suco Natural de MaracujÃ¡ 600ml",
+            "image": "https:\/\/seuneo.onezap.link\/wp-content\/uploads\/2022\/03\/maracuja-Jarra-500x500.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 16
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_8",
+            "name": "Jarra de Suco Natural de LimÃ£o 600ml",
+            "image": "https:\/\/www.receitasnestle.com.br\/sites\/default\/files\/srh_recipes\/e7061c33ef27540fd8356ac97f2d7e50.jpg",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 16
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_9",
+            "name": "Jarra de Suco Natural de Morango 600ml",
+            "image": "https:\/\/blog.precolandia.com.br\/wp-content\/uploads\/2025\/04\/Adobe-Express-file-2025-04-11T134948.252-1.webp",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 16
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_10",
+            "name": "Jarra de Suco Natural de Uva 600ml",
+            "image": "https:\/\/encrypted-tbn0.gstatic.com\/images?q=tbn:ANd9GcQ5-SIOVthF54rMGp6PSIsDlGW6_OPHOuuJUA&s",
+            "descricao": "",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 16
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_11",
+            "name": "Caipirinha Tradicional",
+            "image": "https:\/\/fly.metroimg.com\/upload\/q_85,w_700\/https:\/\/uploads.metroimg.com\/wp-content\/uploads\/2021\/01\/07143151\/GettyImages-697705870.jpg",
+            "descricao": "Feita com cachaÃ§a de qualidade e limÃ£o esmagado. O toque cÃ­trico e forte para acompanhar a sua pizza.",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 15
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_12",
+            "name": "Mojito",
+            "image": "https:\/\/static.itdg.com.br\/images\/640-auto\/a13c9eb59f11eaac05a9355e897e3a9a\/2mojito-c.png",
+            "descricao": "O clÃ¡ssico cubano. Rum branco, hortelÃ£ fresca, limÃ£o e Ã¡gua com gÃ¡s. Extremamente refrescante.",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 26
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_13",
+            "name": "Margarita",
+            "image": "https:\/\/static.itdg.com.br\/images\/640-auto\/5eedbd3f2e61b41d5e2673afad373b13\/3-margarita-c.png",
+            "descricao": "ClÃ¡ssico mexicano com Tequila, licor de laranja e limÃ£o, na taÃ§a com borda de sal. Um equilÃ­brio perfeito.",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 32
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_14",
+            "name": "PiÃ±a colada",
+            "image": "https:\/\/static.itdg.com.br\/images\/640-auto\/9e3a91dfcd4968264feb1d85b240a8a0\/4-pinacolada-c.png",
+            "descricao": "Cremoso e tropical. Rum, leite de coco e abacaxi batidos no ponto.",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 28
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_15",
+            "name": "Cosmopolitan",
+            "image": "https:\/\/static.itdg.com.br\/images\/640-auto\/6714914b4d6db9666a866d34e1ad6de5\/5-cosmopolitan-c.png",
+            "descricao": "O clÃ¡ssico pink. Vodka, Cointreau, limÃ£o e cranberry, servido na taÃ§a Martini.",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 32
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_16",
+            "name": "Cuba libre",
+            "image": "https:\/\/bartenderstore.com.br\/wp-content\/uploads\/2019\/03\/Foto_1_Liquor-3.jpg",
+            "descricao": "drink com histÃ³ria e sabor refrescante. Simples e direto, ele combina a potÃªncia do Rum, a acidez do limÃ£o taiti fresco e o toque efervescente da Coca-Cola. Servido no copo alto com bastante gelo, Ã© uma escolha robusta e fÃ¡cil de beber.",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 30
+                }
+            ],
+            "adicionais": []
+        },
+        {
+            "id": "suco_17",
+            "name": "Negroni",
+            "image": "https:\/\/static.itdg.com.br\/images\/640-auto\/07ae7f154c2e286785b5ca5a81c69067\/8-negronic.png",
+            "descricao": "A harmoniosa combinaÃ§Ã£o de gin, vermute e Campari, um drink intenso e marcante.",
+            "sizes": [
+                {
+                    "name": "Ãšnico",
+                    "price": 30
                 }
             ],
             "adicionais": []
         }
     ],
     "adicionais": [
-        {
-            "name": "Queijo",
-            "price": 2
-        },
         {
             "name": "Bacon",
             "price": 3
@@ -490,6 +1876,34 @@
         {
             "name": "Leite condensado",
             "price": 5
+        },
+        {
+            "name": "Milho",
+            "price": 5
+        },
+        {
+            "name": "Cheddar",
+            "price": 5
+        },
+        {
+            "name": "Catupiry",
+            "price": 5
+        },
+        {
+            "name": "MuÃ§arela",
+            "price": 3
+        },
+        {
+            "name": "Champignon",
+            "price": 5
+        },
+        {
+            "name": "Palmito",
+            "price": 5
+        },
+        {
+            "name": "ManjericÃ£o fresco",
+            "price": 3
         }
     ]
 }
