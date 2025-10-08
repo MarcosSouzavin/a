@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SquinaXV - Login</title>
     <script>
-        // Limpa o carrinho ao carregar a página de login
         localStorage.removeItem('cart');
     </script>
     <script src="js/login.js"></script>

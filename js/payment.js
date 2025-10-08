@@ -60,7 +60,7 @@ function montarAbaPagamento() {
 
         if (selectedMethod === 'cash') {
             // Pagamento em dinheiro: finalizar pedido localmente
-            alert('Pedido finalizado! Por favor, prepare o pagamento em dinheiro na entrega ou retirada.');
+            // alert('Pedido finalizado! Por favor, prepare o pagamento em dinheiro na entrega ou retirada.');
             document.getElementById('paymentResult').textContent = 'Pedido finalizado para pagamento em dinheiro.';
             // Limpar carrinho
             await clearCart();

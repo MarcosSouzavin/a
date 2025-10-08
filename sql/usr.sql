@@ -5,7 +5,7 @@ CREATE TABLE usuarios (
     cpf VARCHAR(14) NOT NULL,
     usuario VARCHAR(100) NOT NULL,
     telefone VARCHAR(15) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,  
     senha VARCHAR(255) NOT NULL
 );
 CREATE TABLE redefinir_senha (

@@ -15,6 +15,19 @@ async function saveCart(c) {
     const cartData = JSON.stringify(c);
     console.log('saveCart: saving cart data to localStorage:', cartData);
     localStorage.setItem('cart', cartData);
+    // Also save to session via API
+    try {
+        const response = await fetch('API/cart.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: cartData
+        });
+        if (!response.ok) {
+            console.error('Erro ao salvar carrinho na sessão');
+        }
+    } catch (e) {
+        console.error('Erro ao salvar carrinho na sessão', e);
+    }
 }
 
 // --- FUNÇÕES UTILITÁRIAS ---
@@ -303,6 +316,8 @@ function renderMenuItems(itemsToRender) {
 async function initMenu() {
     let products = await fetchProdutosJson();
     if (!Array.isArray(products)) products = [];
+    // Limite de 4000 produtos na página principal
+    products = products.slice(0, 4000);
     // Marca drinks e sucos para exibir corretamente no modal
     products.forEach(p => {
         if (String(p.id).startsWith('drink_')) p.isDrink = true;
@@ -436,7 +451,7 @@ async function finalizarCompra() {
     }
     resumo += `\n\nTotal a Pagar: R$ ${formatPrice(totalFinal)}`;
 
-    alert(resumo);
+    // alert(resumo);
     addClientLog('Resumo do Pedido', { resumo });
 
     if (valorPagoComSaldo > 0) {
@@ -475,7 +490,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inicialização principal
     async function init() {
         await initMenu();
-        // Carrega o carrinho do localStorage
+
+        // Carrega o carrinho salvo
         cart = await getCart();
         updateCart();
         atualizarSaldoUsuario();
