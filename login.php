@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$host = 'auth-db1206.hstgr.io';
+$host = 'localhost';
 $dbname = 'u557720587_2025_php01';
 $dbUser = 'u557720587_2025_php01';
 $dbPass = 'Mtec@php1';
