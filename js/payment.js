@@ -112,9 +112,12 @@ async function getCartItemsForPayment() {
     try {
         const response = await fetch('API/cart.php');
         cart = await response.json();
+        if (!Array.isArray(cart) || cart.length === 0) {
+            throw new Error('Cart from API is empty or invalid');
+        }
     } catch (e) {
-        console.error('Erro ao carregar carrinho', e);
-        cart = [];
+        console.error('Erro ao carregar carrinho da API, usando localStorage', e);
+        cart = JSON.parse(localStorage.getItem('cart') || '[]');
     }
     return cart.map(item => {
         const basePrice = Number(item.basePrice || 0);
@@ -135,11 +138,13 @@ async function clearCart() {
             body: JSON.stringify([])
         });
         if (!response.ok) {
-            console.error('Erro ao limpar carrinho');
+            console.error('Erro ao limpar carrinho na API');
         }
     } catch (e) {
-        console.error('Erro ao limpar carrinho', e);
+        console.error('Erro ao limpar carrinho na API', e);
     }
+    // Also clear localStorage
+    localStorage.setItem('cart', '[]');
 }
 
 document.addEventListener('DOMContentLoaded', () => {

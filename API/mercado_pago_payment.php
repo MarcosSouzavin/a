@@ -37,23 +37,23 @@ try {
 
     // URLs de retorno (ajustar conforme ambiente)
     $preference->back_urls = array(
-        "success" => "http://localhost/success",
-        "failure" => "http://localhost/failure",
-        "pending" => "http://localhost/pending"
+        "success" => "http://localhost/success.php",
+        "failure" => "http://localhost/failure.php",
+        "pending" => "http://localhost/pending.php"
     );
     $preference->auto_return = "approved";
 
     $preference->save();
 
     // Log da criação da preferência
-    $logFile = __DIR__ . '/../source (leia sempre)';
+    $logFile = __DIR__ . '/../storage/logs/mercado_pago.log';
     $logEntry = date('Y-m-d H:i:s') . " - Preferência criada: ID {$preference->id}, URL {$preference->init_point}\n";
     file_put_contents($logFile, $logEntry, FILE_APPEND);
 
     echo json_encode(array('id' => $preference->id, 'init_point' => $preference->init_point));
 } catch (Exception $e) {
     // Log do erro
-    $logFile = __DIR__ . '/../source (leia sempre)';
+    $logFile = __DIR__ . '/../storage/logs/mercado_pago.log';
     $logEntry = date('Y-m-d H:i:s') . " - Erro ao criar preferência: " . $e->getMessage() . "\n";
     file_put_contents($logFile, $logEntry, FILE_APPEND);
 

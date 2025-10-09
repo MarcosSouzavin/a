@@ -15,14 +15,14 @@
     <header class="header">
         <div class="container">
             <h1 class="logo">
-                <img src="img/stg.jpeg" alt="Delicias Gourmet" class="logo-image">
+                <img src="img/stg.jpeg" alt="Delícias Gourmet" class="logo-image">
                 SquinaXV
             </h1>
             <div class="menu-hamburguer">☰</div>
             <nav class="nav">
                 <a href="login_index.php" class="nav-link active">Login</a>
                 <a href="#ofertas" class="nav-link">Ofertas</a>
-                <a href="#contcto" class="nav-link">Contato</a>
+                <a href="#contato" class="nav-link">Contato</a>
             </nav>
         </div>
     </header>
@@ -31,24 +31,26 @@
         <div class="container">
             <div class="search-container">
                 <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Pesquisar Delicias">
+                <input type="text" id="searchInput" placeholder="Pesquisar Delícias...">
             </div>
         </div>
     </div>
 
     <main class="container">
         <div class="menu-grid" id="menuContainer">
-            <!-- produtos serão renderizados aqui pelo js/index.js -->
+            <!-- produtos serão renderizados aqui via index.js -->
         </div>
     </main>
 
+    <!-- Botão flutuante do carrinho -->
     <div class="cart-floating">
-        <button class="cart-button">
+        <button class="cart-button" onclick="toggleCart()">
             <i class="fas fa-shopping-cart"></i>
             <span class="cart-count">0</span>
         </button>
     </div>
 
+    <!-- Carrinho lateral -->
     <aside class="cart-sidebar" id="cartSidebar" aria-hidden="true">
         <div class="cart-header">
             <h2>Seu Pedido</h2>
@@ -56,13 +58,12 @@
         </div>
 
         <ul class="cart-items" id="cartItems"></ul>
-        </div>
 
         <div class="cart-total">
             Total a pagar: R$<span id="cartTotal">0.00</span>
         </div>
 
-        <!-- Formulário de endereço dentro do carrinho -->
+        <!-- Formulário de endereço -->
         <div class="frete-container">
             <h3>Informe seu Endereço</h3>
             <form id="enderecoForm">
@@ -73,10 +74,10 @@
             <div id="enderecoResultado"></div>
         </div>
 
-        <button id="checkoutButton" class="checkout-button" onclick="window.location.href='checkout.php'">Finalizar Compra</button>
+        <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
     </aside>
 
-    <!-- modal de opções (tamanho + adicionais) -->
+    <!-- Modal de opções de produto -->
     <div id="productModal" class="modal hidden" aria-hidden="true">
         <div class="modal-backdrop" onclick="closeProductModal()"></div>
         <div class="modal-card" role="dialog" aria-modal="true">
@@ -113,64 +114,114 @@
         </div>
     </div>
 
-    <!-- carregar primeiro o módulo do modal, depois o index (usa o modal) -->
-    <script src="js/product-options.js"></script>
-    <script src="js/index.js"></script>
-    <script>
-        // Atualiza saldo ao carregar a página
-        document.addEventListener('DOMContentLoaded', function () {
-            if (typeof atualizarSaldoUsuario === 'function') {
-                atualizarSaldoUsuario();
+    <!-- Scripts -->
+  <script src="js/product-options.js"></script>
+<script src="js/index.js"></script>
+
+<script>
+    // Atualiza o saldo do usuário (se a função existir)
+    document.addEventListener('DOMContentLoaded', function () {
+        if (typeof atualizarSaldoUsuario === 'function') {
+            atualizarSaldoUsuario();
+        }
+    });
+
+    // Atualiza saldo ao voltar pra aba
+    window.addEventListener('focus', function () {
+        if (typeof atualizarSaldoUsuario === 'function') {
+            atualizarSaldoUsuario();
+        }
+    });
+
+    // Envio de endereço e cálculo de frete
+    document.getElementById('enderecoForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const endereco = document.getElementById('endereco').value;
+
+        fetch('API/endereco.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ endereco })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.erro) {
+                alert(data.erro);
+                return;
             }
-        });
 
-        // Atualiza saldo sempre que a página ganha foco (ao voltar da página de saldo)
-        window.addEventListener('focus', function () {
-            if (typeof atualizarSaldoUsuario === 'function') {
-                atualizarSaldoUsuario();
-            }
-        });
+            document.getElementById('enderecoResultado').innerHTML = `
+                <p>Endereço: ${data.endereco}</p>
+                <p>Valor do Frete: R$ ${data.frete.toFixed(2)}</p>
+            `;
 
-        document.getElementById('enderecoForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const endereco = document.getElementById('endereco').value;
+            localStorage.setItem('endereco', data.endereco);
+            localStorage.setItem('frete', data.frete);
 
-            fetch('API/endereco.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ endereco })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.erro) {
-                    alert(data.erro);
-                    return;
-                }
+            window.freteValor = data.frete;
 
-                // Atualiza o resultado do endereço
-                document.getElementById('enderecoResultado').innerHTML = `
-                    <p>Endereço: ${data.endereco}</p>
-                    <p>Valor do Frete: R$ ${data.frete.toFixed(2)}</p>
-                `;
+            const bc = new BroadcastChannel('frete-update');
+            bc.postMessage({ frete: data.frete });
+            bc.close();
 
-                // Armazena o endereço e frete
-                localStorage.setItem('endereco', data.endereco);
-                localStorage.setItem('frete', data.frete);
-
-                // Define o valor do frete globalmente
-                window.freteValor = data.frete;
-
-                // Notifica outras abas sobre a atualização do frete
-                const bc = new BroadcastChannel('frete-update');
-                bc.postMessage({ frete: data.frete });
-                bc.close();
-
-                // Atualiza o total do carrinho
+            if (typeof atualizarTotalComSaldo === 'function') {
                 atualizarTotalComSaldo();
-            })
-            .catch(error => console.error('Erro:', error));
-        });
-    </script>
-</body>
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    });
 
+    // 🔥 Função principal: salva o carrinho atual
+async function saveCart() {
+  try {
+    let cartItems = [];
+    if (typeof cart !== 'undefined' && Array.isArray(cart)) {
+      cartItems = cart;
+    } else {
+      const saved = localStorage.getItem('cartItems');
+      cartItems = saved ? JSON.parse(saved) : [];
+    }
+
+    if (!cartItems || cartItems.length === 0) {
+      alert('Seu carrinho está vazio!');
+      return false;
+    }
+
+    const frete = Number(localStorage.getItem('frete') || 0);
+    const endereco = localStorage.getItem('endereco') || '';
+
+    const subtotal = cartItems.reduce((acc, item) => {
+      const precoBase = Number(item.preco ?? item.price ?? item.basePrice ?? 0);
+      const qtd = Number(item.quantidade ?? item.qty ?? item.quantity ?? 1);
+      const somaAdicionais = Array.isArray(item.adicionais)
+        ? item.adicionais.reduce((s, a) => s + Number(a.preco ?? a.price ?? 0), 0)
+        : 0;
+      return acc + (precoBase + somaAdicionais) * qtd;
+    }, 0);
+
+    const pedido = {
+      produtos: cartItems,
+      frete,
+      endereco,
+      total: subtotal + frete
+    };
+
+    localStorage.setItem('pedidoCheckout', JSON.stringify(pedido));
+    return true;
+  } catch (e) {
+    console.error('Erro ao salvar carrinho:', e);
+    alert('Não foi possível salvar o carrinho.');
+    return false;
+  }
+}
+
+document.getElementById('checkoutButton').addEventListener('click', async (e) => {
+    e.preventDefault();
+    const ok = await saveCart();
+    if (ok) window.location.href = 'checkout.php';
+});
+</script>
+
+
+</body>
 </html>

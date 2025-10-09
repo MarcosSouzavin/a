@@ -23,6 +23,10 @@
 - [x] Modify index.html to redirect to checkout.php on "Finalizar Compra"
 - [x] Modify cliente.php to redirect to checkout.php on "Finalizar Compra"
 - [x] Integrate js/payment.js for Mercado Pago payment processing
+- [x] Fix log file path in API/mercado_pago_payment.php
+- [x] Create success.php, failure.php, pending.php for payment redirects
+- [x] Update back_urls to include .php extension
+- [x] Fix cart loading in checkout.php to load from session first
 
 ## Summary of Changes
 - Created checkout.php as a dedicated checkout page for logged-in users.
@@ -30,8 +34,13 @@
 - Included payment method selection (credit card, debit card, cash, pix).
 - Integrated Mercado Pago API for payment processing.
 - Updated checkout buttons in index.html and cliente.php to redirect to checkout.php.
+- Fixed invalid log file path to proper storage/logs/mercado_pago.log
+- Created post-payment pages: success.php (clears cart), failure.php, pending.php (clears cart)
+- Updated Mercado Pago back_urls to point to correct .php files
 
 ## Next Steps
-- Test the checkout flow: add items to cart, click "Finalizar Compra", verify cart summary, select payment method, and process payment.
+- Replace 'TEST-ACCESS-TOKEN' with a valid Mercado Pago test access token
+- Test the checkout flow: add items to cart, click "Finalizar Compra", verify cart summary loads from session (synced from localStorage), select payment method, and process payment.
 - Ensure payment confirmation is handled properly (approved/rejected).
-- Cart is now cleared after initiating payment for all methods.
+- Cart is now cleared after initiating payment for all methods and on successful/pending payments.
+- Cart persistence fixed by syncing localStorage to session on checkout button click in index.html and cliente.php.

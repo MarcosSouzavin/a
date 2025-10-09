@@ -3,212 +3,329 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - SquinaXV</title>
-    <link rel="stylesheet" href="css/styles.css" />
-    <link rel="icon" href="img/stg.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="icon" href="img/stg.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f6f6f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .checkout-container {
+            max-width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #fafafa;
+            margin-bottom: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .produto-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .produto-info img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .produto-detalhes {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .adicionais-list {
+            margin: 5px 0 0 10px;
+            padding: 0;
+            list-style: none;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .total, .frete, .endereco, .pagamento, .retirada {
+            margin-top: 15px;
+            font-size: 1.1em;
+        }
+
+        .total strong {
+            color: #b3ab3a;
+        }
+
+        .btn-pagar {
+            display: block;
+            width: 100%;
+            background: #b3ab3a;
+            color: white;
+            border: none;
+            padding: 15px;
+            margin-top: 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background 0.3s;
+        }
+
+        .btn-pagar:hover {
+            background: #9c942e;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .radio-group label {
+            background: #eee;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .radio-group input {
+            display: none;
+        }
+
+        .radio-group input:checked + label {
+            background: #b3ab3a;
+            color: white;
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            margin-top: 10px;
+            border-radius: 8px;
+            padding: 10px;
+            resize: none;
+            border: 1px solid #ccc;
+        }
+
+        .btn-voltar {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+            text-decoration: none;
+        }
+
+        .btn-voltar:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            text-align: center;
+            color: #888;
+            padding: 40px;
+            font-size: 1.2em;
+        }
+    </style>
 </head>
+<body>
 
-<body class="checkout-page">
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">
-                <img src="img/stg.jpeg" alt="Delicias Gourmet" class="logo-image" />
-                SquinaXV
-            </h1>
-            <div class="menu-hamburguer">☰</div>
-            <nav class="nav">
-                <a href="javascript:history.back()" class="nav-link">Voltar</a>
-            </nav>
+<div class="checkout-container" id="checkoutResumo">
+    <h1>Carregando pedido...</h1>
+</div>
+
+<a href="index.html" class="btn-voltar">← Voltar para o cardápio</a>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const pedido = JSON.parse(localStorage.getItem('pedidoCheckout'));
+
+  if (!pedido || !pedido.produtos || pedido.produtos.length === 0) {
+    document.getElementById('checkoutResumo').innerHTML =
+      '<div class="empty">Seu carrinho está vazio.<br><a href="index.html">Voltar para o menu</a></div>';
+    return;
+  }
+
+  // 1) Monta lista e calcula subtotal (base + adicionais) * qtd
+  let html = `<h2>Resumo do Pedido</h2><ul>`;
+  let subtotalProdutos = 0;
+
+  pedido.produtos.forEach(p => {
+    const nome = p.nome || p.name || 'Produto';
+    const qtd = Number(p.quantidade ?? p.qty ?? p.quantity ?? 1);
+    const precoBase = Number(p.preco ?? p.price ?? p.basePrice ?? 0);
+    const tamanho = p.tamanho || p.size || '';
+    const imagem = p.imagem || p.image || 'img/default.png';
+
+    let somaAdicionais = 0;
+    let htmlAdicionais = '';
+
+    if (Array.isArray(p.adicionais) && p.adicionais.length > 0) {
+      htmlAdicionais += `<ul class="adicionais-list">`;
+      p.adicionais.forEach(a => {
+        const nomeAd = a.nome || a.name || 'Adicional';
+        const precoAd = Number(a.preco ?? a.price ?? 0);
+        somaAdicionais += precoAd;
+        htmlAdicionais += `<li>+ ${nomeAd} — R$ ${precoAd.toFixed(2)}</li>`;
+      });
+      htmlAdicionais += `</ul>`;
+    }
+
+    const subtotalItem = (precoBase + somaAdicionais) * qtd;
+    subtotalProdutos += subtotalItem;
+
+    html += `
+      <li>
+        <div class="produto-info">
+          <img src="${imagem}" alt="${nome}">
+          <div class="produto-detalhes">
+            <strong>${nome}</strong> ${tamanho ? `(${tamanho})` : ''} x${qtd}
+            ${htmlAdicionais}
+          </div>
         </div>
-    </header>
+        <span>R$ ${subtotalItem.toFixed(2)}</span>
+      </li>
+    `;
+  });
 
-    <main class="container">
-        <h2>Checkout</h2>
-        <div id="cartSummary">
-            <h3>Resumo do Pedido</h3>
-            <ul id="cartItemsList"></ul>
-            <div id="enderecoDisplay"></div>
-            <div id="retiradaLevarOption" style="margin: 10px 0;">
-                <label><input type="radio" name="retiradaLevar" value="levar" checked> Levar (Entrega)</label>
-                <label style="margin-left: 20px;"><input type="radio" name="retiradaLevar" value="retirar"> Retirar (Sem frete)</label>
-            </div>
-            <div id="horarioOption" style="margin: 10px 0;">
-                <label for="horarioSelect">Horário de Entrega/Retirada:</label>
-                <select id="horarioSelect" style="margin-left: 10px;">
-                    <option value="">Selecione um horário</option>
-                    <option value="10:00">10:00</option>
-                    <option value="10:30">10:30</option>
-                    <option value="11:00">11:00</option>
-                    <option value="11:30">11:30</option>
-                    <option value="12:00">12:00</option>
-                    <option value="12:30">12:30</option>
-                    <option value="13:00">13:00</option>
-                    <option value="13:30">13:30</option>
-                    <option value="14:00">14:00</option>
-                    <option value="14:30">14:30</option>
-                    <option value="15:00">15:00</option>
-                    <option value="15:30">15:30</option>
-                    <option value="16:00">16:00</option>
-                    <option value="16:30">16:30</option>
-                    <option value="17:00">17:00</option>
-                    <option value="17:30">17:30</option>
-                    <option value="18:00">18:00</option>
-                    <option value="18:30">18:30</option>
-                    <option value="19:00">19:00</option>
-                    <option value="19:30">19:30</option>
-                    <option value="20:00">20:00</option>
-                    <option value="20:30">20:30</option>
-                    <option value="21:00">21:00</option>
-                    <option value="21:30">21:30</option>
-                    <option value="22:00">22:00</option>
-                </select>
-            </div>
-            <p>Total: R$ <span id="cartTotalAmount">0.00</span></p>
-        </div>
+  const freteValor = Number(pedido.frete || 0);
+  const enderecoSalvo = pedido.endereco || '';
 
-        <div id="paymentTabContent"></div>
-    </main>
+  html += `
+    </ul>
 
-    <div id="paymentResult"></div>
+    <div class="retirada">
+      <h3>Entrega ou Retirada</h3>
+      <div class="radio-group">
+        <input type="radio" id="entrega" name="tipoEntrega" value="entrega" checked>
+        <label for="entrega">Entrega</label>
 
-    <script src="js/payment.js"></script>
-    <script>
-        async function loadCartSummary() {
-            const cartItemsList = document.getElementById('cartItemsList');
-            const cartTotalAmount = document.getElementById('cartTotalAmount');
-            cartItemsList.innerHTML = '';
-            let total = 0;
-            let cart;
-            try {
-                const response = await fetch('API/cart.php');
-                cart = await response.json();
-                if (!Array.isArray(cart)) {
-                    throw new Error('Cart data is not an array');
-                }
-            } catch (e) {
-                console.error('loadCartSummary: error loading cart data from API, falling back to localStorage:', e);
-                cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            }
-            if (cart.length === 0) {
-                cartItemsList.innerHTML = '<li>Carrinho vazio.</li>';
-                cartTotalAmount.textContent = '0.00';
-                return;
-            }
-            cart.forEach(item => {
-                const basePrice = Number(item.basePrice || 0);
-                const extras = (item.adicionais || []).reduce((s, a) => s + Number(a.price || 0), 0);
-                const itemTotal = (basePrice + extras) * item.quantity;
-                const li = document.createElement('li');
-                li.textContent = `${item.name} - Quantidade: ${item.quantity} - R$ ${itemTotal.toFixed(2)}`;
-                cartItemsList.appendChild(li);
-                total += itemTotal;
-            });
-            const frete = parseFloat(localStorage.getItem('frete') || 0);
-            // Check retirada or levar option
-            const retiradaLevar = document.querySelector('input[name="retiradaLevar"]:checked')?.value || 'levar';
-            if (retiradaLevar === 'levar' && frete > 0) {
-                const freteLi = document.createElement('li');
-                freteLi.textContent = `Frete - R$ ${frete.toFixed(2)}`;
-                cartItemsList.appendChild(freteLi);
-                total += frete;
-            }
-            const enderecoDisplay = document.getElementById('enderecoDisplay');
-            // Load address from localStorage or use default
-            const endereco = localStorage.getItem('endereco') || "Rua Exemplo, 123, Bairro Central, Cidade Exemplo, Estado Exemplo, CEP 12345-678";
-            enderecoDisplay.innerHTML = `<p><strong>Endereço de Entrega:</strong> ${endereco}</p>`;
-            cartTotalAmount.textContent = total.toFixed(2);
-        }
+        <input type="radio" id="retirada" name="tipoEntrega" value="retirada">
+        <label for="retirada">Retirada no local</label>
+      </div>
+    </div>
 
-        async function getCartItemsForPayment() {
-            let cart;
-            try {
-                const response = await fetch('API/cart.php');
-                cart = await response.json();
-            } catch (e) {
-                cart = JSON.parse(localStorage.getItem('cart') || '[]');
-            }
-            const retiradaLevar = document.querySelector('input[name="retiradaLevar"]:checked')?.value || 'levar';
-            const items = cart.map(item => {
-                const basePrice = Number(item.basePrice || 0);
-                const extras = (item.adicionais || []).reduce((s, a) => s + Number(a.price || 0), 0);
-                return {
-                    title: item.name,
-                    quantity: item.quantity,
-                    unit_price: basePrice + extras
-                };
-            });
-            const frete = parseFloat(localStorage.getItem('frete') || 0);
-            if (retiradaLevar === 'levar' && frete > 0) {
-                items.push({
-                    title: 'Frete',
-                    quantity: 1,
-                    unit_price: frete
-                });
-            }
-            return items;
-        }
+    <div class="endereco">
+      <h3>Endereço de Entrega</h3>
+      <input type="text" id="endereco" placeholder="Rua, número, bairro, cidade" value="${enderecoSalvo}" style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
+    </div>
+
+    <div class="pagamento">
+      <h3>Forma de Pagamento</h3>
+      <div class="radio-group">
+        <input type="radio" id="pix" name="pagamento" value="pix" checked><label for="pix">PIX</label>
+        <input type="radio" id="dinheiro" name="pagamento" value="dinheiro"><label for="dinheiro">Dinheiro</label>
+        <input type="radio" id="credito" name="pagamento" value="credito"><label for="credito">Crédito</label>
+        <input type="radio" id="debito" name="pagamento" value="debito"><label for="debito">Débito</label>
+      </div>
+    </div>
+
+    <div class="observacoes">
+      <h3>Observações</h3>
+      <textarea id="observacoes" placeholder="Ex: sem cebola, entregar no portão..."></textarea>
+    </div>
+
+    <p class="frete" id="freteInfo">Frete: R$ ${freteValor.toFixed(2)}</p>
+    <p class="total"><strong>Total: R$ <span id="valorTotal">0.00</span></strong></p>
+
+    <button class="btn-pagar" id="btnPagar">Confirmar e Pagar</button>
+  `;
+
+  document.getElementById('checkoutResumo').innerHTML = html;
+
+  // 2) Função para recalcular total (sem confiar em pedido.total)
+  function recalcularTotal() {
+    const tipo = document.querySelector('input[name="tipoEntrega"]:checked').value;
+    const freteAtual = (tipo === 'entrega') ? freteValor : 0;
+
+    document.getElementById('freteInfo').textContent = `Frete: R$ ${freteAtual.toFixed(2)}`;
+    const total = subtotalProdutos + freteAtual;
+    document.getElementById('valorTotal').textContent = total.toFixed(2);
+    return total;
+  }
+
+  // total inicial
+  recalcularTotal();
+
+  // 3) Troca entrega/retirada altera total
+  document.querySelectorAll('input[name="tipoEntrega"]').forEach(el => {
+    el.addEventListener('change', () => {
+      const tipo = document.querySelector('input[name="tipoEntrega"]:checked').value;
+      // habilita/desabilita campo de endereço
+      document.getElementById('endereco').disabled = (tipo === 'retirada');
+      recalcularTotal();
+    });
+  });
+
+  // 4) Confirma e envia pedido
+  document.getElementById('btnPagar').addEventListener('click', async () => {
+    const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked').value;
+    const pagamento = document.querySelector('input[name="pagamento"]:checked').value;
+    const endereco = document.getElementById('endereco').value;
+    const observacoes = document.getElementById('observacoes').value;
+    const totalFinal = recalcularTotal();
+
+    const pedidoFinal = {
+      ...pedido,
+      tipoEntrega,
+      pagamento,
+      endereco,
+      observacoes,
+      total: totalFinal,     // envia o total correto
+      frete: (tipoEntrega === 'entrega') ? freteValor : 0
+    };
+
+    try {
+      const response = await fetch('API/registrar_pedido.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(pedidoFinal)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        alert('Pedido registrado com sucesso! Número do pedido: ' + result.pedido_id);
+        localStorage.removeItem('cartItems');
+        localStorage.removeItem('pedidoCheckout');
+        window.location.href = 'payment.php?pedido=' + result.pedido_id;
+      } else {
+        alert('Erro ao registrar pedido: ' + (result.error || 'desconhecido'));
+      }
+    } catch (error) {
+      console.error('Erro ao enviar pedido:', error);
+      alert('Erro de conexão com o servidor.');
+    }
+  });
+});
+</script>
 
 
-
-        async function criarPreferenciaMercadoPago(items) {
-            try {
-                const response = await fetch('API/mercado_pago_payment.php', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ items })
-                });
-                if (!response.ok) {
-                    throw new Error('Erro ao criar preferência de pagamento');
-                }
-                const data = await response.json();
-                return data;
-            } catch (error) {
-                console.error('Erro:', error);
-                return null;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            loadCartSummary();
-            montarAbaPagamento();
-
-            // Load saved retiradaLevar option
-            const savedOption = localStorage.getItem('retiradaLevar') || 'levar';
-            const radio = document.querySelector(`input[name="retiradaLevar"][value="${savedOption}"]`);
-            if (radio) radio.checked = true;
-
-            // Load saved horario option
-            const savedHorario = localStorage.getItem('horarioEntrega') || '';
-            const horarioSelect = document.getElementById('horarioSelect');
-            if (horarioSelect) horarioSelect.value = savedHorario;
-
-            // Listen for changes on retiradaLevar option
-            document.querySelectorAll('input[name="retiradaLevar"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    localStorage.setItem('retiradaLevar', this.value);
-                    loadCartSummary();
-                });
-            });
-
-            // Listen for changes on horario option
-            if (horarioSelect) {
-                horarioSelect.addEventListener('change', function() {
-                    localStorage.setItem('horarioEntrega', this.value);
-                });
-            }
-        });
-
-        // Atualizar resumo quando frete for calculado
-        const bc = new BroadcastChannel('frete-update');
-        bc.addEventListener('message', function(e) {
-            loadCartSummary();
-        });
-    </script>
 </body>
-
 </html>
