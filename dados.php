@@ -1,12 +1,12 @@
 <?php
 session_start();
 if (!isset($_SESSION['email'])) {
-    header("Location: index.html"); 
+    header("Location: cliente.php"); 
     exit();
 }
 
 
-  $host = 'https://auth-db1206.hstgr.io/';
+  $host = 'localhost';
   $dbname = 'u557720587_2025_php01'; 
   $dbUser = 'u557720587_2025_php01';   
   $dbPass = 'Mtec@php1';
