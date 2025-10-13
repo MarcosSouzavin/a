@@ -327,43 +327,35 @@ document.addEventListener('DOMContentLoaded', async () => {
     // CONFIRMAR PEDIDO
     // ----------------------------
     document.getElementById('btnPagar').addEventListener('click', async () => {
-        const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked').value;
-        const pagamento = document.querySelector('input[name="pagamento"]:checked').value;
-        const endereco = document.getElementById('endereco').value;
-        const observacoes = document.getElementById('observacoes').value;
-        const totalFinal = recalcularTotal();
+  const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked').value;
+  const endereco = document.getElementById('endereco').value;
+  const observacoes = document.getElementById('observacoes').value;
+  const totalFinal = recalcularTotal();
 
-        const pedidoFinal = {
-            ...pedido,
-            tipoEntrega,
-            pagamento,
-            endereco,
-            observacoes,
-            total: totalFinal,
-            frete: (tipoEntrega === 'entrega') ? freteValor : 0
-        };
+  const pedidoFinal = {
+    ...pedido,
+    tipoEntrega,
+    endereco,
+    observacoes,
+    total: totalFinal,
+    frete: (tipoEntrega === 'entrega') ? freteValor : 0,
+    usuario_id: <?php echo json_encode($_SESSION['usuario_id'] ?? null); ?>
+  };
 
-        try {
-            const response = await fetch('API/registrar_pedido.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(pedidoFinal)
-            });
+  const resp = await fetch('API/mercado_pago/criar_preferencia.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(pedidoFinal)
+  });
+  const data = await resp.json();
 
-            const result = await response.json();
-            if (result.success) {
-                alert('Pedido registrado com sucesso! Número do pedido: ' + result.pedido_id);
-                localStorage.removeItem('cartItems');
-                localStorage.removeItem('pedidoCheckout');
-                window.location.href = 'payment.php?pedido=' + result.pedido_id;
-            } else {
-                alert('Erro ao registrar pedido: ' + (result.error || 'desconhecido'));
-            }
-        } catch (error) {
-            console.error('Erro ao enviar pedido:', error);
-            alert('Erro de conexão com o servidor.');
-        }
-    });
+  if (data.init_point) {
+    window.location.href = data.init_point; // redireciona pro Mercado Pago
+  } else {
+    alert('Erro ao criar pagamento.');
+    console.error(data);
+  }
+});
 });
 </script>
 
