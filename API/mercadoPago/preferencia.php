@@ -4,7 +4,7 @@ include '../../conexao.php';
 header('Content-Type: application/json');
 
 // ✅ CHAVE DE ACESSO DO MERCADO PAGO (usa a tua)
-$access_token = "TEST-xxxxxxxxxxxxxxxxxxxxxxxxxxxx"; // substitui aqui
+$access_token = "TEST-43f69931-7659-4ce3-8ad9-9ca7d1f7d44c"; // substitui aqui
 
 // Recebe o pedido
 $input = json_decode(file_get_contents("php://input"), true);
@@ -52,7 +52,7 @@ $dados_preferencia = [
     ],
     "auto_return" => "approved",
     "binary_mode" => true,
-    "notification_url" => "https://projetosetim.com.br/2025/php1/API/mercado_pago/notificar.php"
+    "notification_url" => "https://projetosetim.com.br/2025/php1/API/mercadoPago/notificar.php"
 ];
 
 $resposta = mp_criar_preferencia($access_token, $dados_preferencia);
