@@ -62,7 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $stmt2->execute([$usuario['id'], $token, $expiracao]);
 
         // link absoluto do servidor
-        $link = "https://" . $_SERVER['HTTP_HOST'] . "/2025/php1/senhas/recup.php?token=" . $token;
+       $link = "https://projetosetim.com.br/2025/php1/senhas/recup.php?token=" . $token;
+
 
         $logFile = __DIR__ . '/../storage/logs/smtp.log';
         if (!is_dir(dirname($logFile))) {
