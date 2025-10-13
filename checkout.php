@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     usuario_id: <?php echo json_encode($_SESSION['usuario_id'] ?? null); ?>
   };
 
-  const resp = await fetch('API/mercado_pago/criar_preferencia.php', {
+  const resp = await fetch('API/mercadoPago/preferencia.php', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(pedidoFinal)
