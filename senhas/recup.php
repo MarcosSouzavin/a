@@ -4,22 +4,12 @@ session_start();
 include '../conexao.php';
 
 // Carrega o autoload do Composer
-$autoload = __DIR__ . '/../vendor/autoload.php';
-if (!file_exists($autoload)) {
-    die('Dependências não instaladas. Rode no terminal: composer require phpmailer/phpmailer');
-}
-require $autoload;
+require_once __DIR__ . '/../phpmailer/PHPMailer.php';
+require_once __DIR__ . '/../phpmailer/SMTP.php';
+require_once __DIR__ . '/../phpmailer/Exception.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
-
-// Em produção, configure as variáveis de ambiente SMTP_USER e SMTP_PASS no painel do servidor, .htaccess ou painel de hospedagem.
-// Nunca coloque as credenciais diretamente no código!
-// Exemplo para Apache (.htaccess na raiz):
-// SetEnv SMTP_USER seu@email.com
-// SetEnv SMTP_PASS sua_senha_de_app
-// No código, apenas use getenv como abaixo:
-// Para ambiente local (WAMP/Windows), defina as variáveis diretamente para teste:
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -63,7 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $stmt2 = $pdo->prepare("INSERT INTO redefinir_senha (usuario_id, token, expiracao, usado) VALUES (?, ?, ?, 0)");
         $stmt2->execute([$usuario['id'], $token, $expiracao]);
 
-        $link = "https://" . $_SERVER['HTTP_HOST'] . "/senhas/recup.php?token=" . $token;
+        $link = "https://" . $_SERVER['HTTP_HOST'] . "/2025/php1/senhas/recup.php?token=" . $token;
+
 
         $logFile = __DIR__ . '/../storage/logs/smtp.log';
         if (!is_dir(dirname($logFile))) {
@@ -191,6 +182,40 @@ if (isset($_GET['token']) && isset($dados) && !$dados['usado'] && strtotime($dad
     <?php
 }
 ?>
+<style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #f9f9f9;
+  margin: 0;
+}
+.container {
+  max-width: 400px;
+  margin: 60px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+label { display:block; margin-top:10px; }
+input {
+  width:100%;
+  padding:10px;
+  border:1px solid #ccc;
+  border-radius:6px;
+}
+button {
+  margin-top:15px;
+  background:#b3ab3a;
+  color:white;
+  border:none;
+  padding:10px 15px;
+  border-radius:6px;
+  cursor:pointer;
+}
+.error { color:#c0392b; background:#f9e0e0; padding:8px; border-radius:6px; }
+.success { color:#2d8a45; background:#e7f8ec; padding:8px; border-radius:6px; }
+</style>
+
 
 </div>
 </body>
