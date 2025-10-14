@@ -2,8 +2,10 @@
 include 'mp_sdk.php';
 include '../../conexao.php';
 
-$access_token = "TEST-43f69931-7659-4ce3-8ad9-9ca7d1f7d44c"; // mesma chave
+$access_token = "TEST-43f69931-7659-4ce3-8ad9-9ca7d1f7d44c";
 $data = json_decode(file_get_contents("php://input"), true);
+
+// Log simples pra depuração
 file_put_contents(__DIR__ . "/log_notificacoes.txt", date('[Y-m-d H:i:s]') . " " . json_encode($data) . "\n", FILE_APPEND);
 
 if (!isset($data['data']['id'])) exit;
