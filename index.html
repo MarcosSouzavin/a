@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -37,7 +38,7 @@
 
   <main class="container">
     <div class="menu-grid" id="menuContainer">
-      <!-- Produtos renderizados via JS -->
+      <!-- produtos via index.js -->
     </div>
   </main>
 
@@ -62,6 +63,7 @@
       Total a pagar: R$<span id="cartTotal">0.00</span>
     </div>
 
+    <!-- Endereço -->
     <div class="frete-container">
       <h3>Informe seu Endereço</h3>
       <form id="enderecoForm">
@@ -112,75 +114,71 @@
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- Scripts principais -->
   <script src="js/product-options.js"></script>
   <script src="js/index.js"></script>
 
-<script>
-  // ----------------------------
-  // FRETE FIXO
-  // ----------------------------
-  document.getElementById('enderecoForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-    const endereco = document.getElementById('endereco').value.trim();
-    if (!endereco) return alert("Informe um endereço válido.");
+  <!-- Script de checkout visitante -->
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log("Checkout visitante pronto.");
 
-    const frete = 5.00; // Frete fixo padrão
-    document.getElementById('enderecoResultado').innerHTML = `
-      <p>Endereço: ${endereco}</p>
-      <p>Frete fixo: R$ ${frete.toFixed(2)}</p>
-    `;
+    // 🔸 Frete fixo (sem API)
+    document.getElementById('enderecoForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const endereco = document.getElementById('endereco').value.trim();
+      if (!endereco) return alert('Digite um endereço válido.');
+      const frete = 5.00;
+      document.getElementById('enderecoResultado').innerHTML =
+        `<p>Endereço: ${endereco}</p><p>Frete fixo: R$ ${frete.toFixed(2)}</p>`;
+      localStorage.setItem('guest_endereco', endereco);
+      localStorage.setItem('guest_frete', frete);
+    });
 
-    localStorage.setItem('guest_endereco', endereco);
-    localStorage.setItem('guest_frete', frete);
-    window.freteValor = frete;
-  });
+    // 🔸 Função pra salvar o pedido visitante
+    async function saveGuestCart() {
+      try {
+        const cartData = localStorage.getItem('cart') || localStorage.getItem('guest_cart');
+        const cartItems = cartData ? JSON.parse(cartData) : [];
 
-  // ----------------------------
-  // SALVAR CARRINHO DO VISITANTE
-  // ----------------------------
-  async function saveGuestCart() {
-    try {
-      let cartItems = [];
-      const saved = localStorage.getItem('guest_cart');
-      cartItems = saved ? JSON.parse(saved) : [];
+        console.log("Itens do carrinho visitante:", cartItems);
 
-      if (!cartItems.length) {
-        alert('Seu carrinho está vazio!');
+        if (!cartItems.length) {
+          alert("Seu carrinho está vazio!");
+          return false;
+        }
+
+        const frete = Number(localStorage.getItem('guest_frete') || 5.00);
+        const endereco = localStorage.getItem('guest_endereco') || '';
+
+        const total = cartItems.reduce((acc, item) => {
+          const preco = Number(item.basePrice || item.price || 0);
+          const qtd = Number(item.quantity || 1);
+          const somaAdicionais = Array.isArray(item.adicionais)
+            ? item.adicionais.reduce((s, a) => s + Number(a.price || 0), 0)
+            : 0;
+          return acc + (preco + somaAdicionais) * qtd;
+        }, 0) + frete;
+
+        const pedido = { produtos: cartItems, frete, endereco, total };
+        localStorage.setItem('guest_pedidoCheckout', JSON.stringify(pedido));
+
+        console.log("✅ Pedido visitante salvo:", pedido);
+        return true;
+      } catch (err) {
+        console.error("Erro ao salvar pedido visitante:", err);
         return false;
       }
-
-      const frete = parseFloat(localStorage.getItem('guest_frete') || 0);
-      const endereco = localStorage.getItem('guest_endereco') || '';
-
-      const total = cartItems.reduce((acc, item) => {
-        const base = parseFloat(item.preco || item.price || item.basePrice || 0);
-        const qtd = parseFloat(item.quantidade || item.qty || item.quantity || 1);
-        const extras = Array.isArray(item.adicionais)
-          ? item.adicionais.reduce((s, a) => s + parseFloat(a.preco || a.price || 0), 0)
-          : 0;
-        return acc + (base + extras) * qtd;
-      }, 0) + frete;
-
-      const pedido = { produtos: cartItems, frete, endereco, total };
-
-      localStorage.setItem('guest_pedidoCheckout', JSON.stringify(pedido));
-      console.log('Pedido visitante salvo:', pedido);
-      return true;
-    } catch (error) {
-      console.error('Erro ao salvar carrinho visitante:', error);
-      alert('Não foi possível salvar o carrinho.');
-      return false;
     }
-  }
 
-  document.getElementById('checkoutButton').addEventListener('click', async (e) => {
-    e.preventDefault();
-    const ok = await saveGuestCart();
-    if (ok) window.location.href = 'checkout.php';
+    // 🔸 Quando clicar em "Finalizar Compra"
+    document.getElementById('checkoutButton').addEventListener('click', async e => {
+      e.preventDefault();
+      const ok = await saveGuestCart();
+      if (ok) window.location.href = 'checkout.php';
+    });
   });
-</script>
-
+  </script>
 
 </body>
 </html>
