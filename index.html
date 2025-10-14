@@ -116,33 +116,33 @@
   <script src="js/product-options.js"></script>
   <script src="js/index.js"></script>
 
-  <script>
+<script>
   // ----------------------------
-  // FRETE (fixo, sem cálculo)
+  // FRETE FIXO
   // ----------------------------
   document.getElementById('enderecoForm').addEventListener('submit', function (e) {
     e.preventDefault();
     const endereco = document.getElementById('endereco').value.trim();
     if (!endereco) return alert("Informe um endereço válido.");
 
-    const frete = 5.00; // 🔥 frete fixo
+    const frete = 5.00; // Frete fixo padrão
     document.getElementById('enderecoResultado').innerHTML = `
       <p>Endereço: ${endereco}</p>
       <p>Frete fixo: R$ ${frete.toFixed(2)}</p>
     `;
 
-    localStorage.setItem('endereco', endereco);
-    localStorage.setItem('frete', frete);
+    localStorage.setItem('guest_endereco', endereco);
+    localStorage.setItem('guest_frete', frete);
     window.freteValor = frete;
   });
 
   // ----------------------------
-  // SALVAR CARRINHO (padronizado)
+  // SALVAR CARRINHO DO VISITANTE
   // ----------------------------
-  async function saveCart() {
+  async function saveGuestCart() {
     try {
       let cartItems = [];
-      const saved = localStorage.getItem('cart');
+      const saved = localStorage.getItem('guest_cart');
       cartItems = saved ? JSON.parse(saved) : [];
 
       if (!cartItems.length) {
@@ -150,8 +150,8 @@
         return false;
       }
 
-      const frete = parseFloat(localStorage.getItem('frete') || 0);
-      const endereco = localStorage.getItem('endereco') || '';
+      const frete = parseFloat(localStorage.getItem('guest_frete') || 0);
+      const endereco = localStorage.getItem('guest_endereco') || '';
 
       const total = cartItems.reduce((acc, item) => {
         const base = parseFloat(item.preco || item.price || item.basePrice || 0);
@@ -163,11 +163,12 @@
       }, 0) + frete;
 
       const pedido = { produtos: cartItems, frete, endereco, total };
-      localStorage.setItem('pedidoCheckout', JSON.stringify(pedido));
-      console.log('Pedido salvo:', pedido);
+
+      localStorage.setItem('guest_pedidoCheckout', JSON.stringify(pedido));
+      console.log('Pedido visitante salvo:', pedido);
       return true;
     } catch (error) {
-      console.error('Erro ao salvar carrinho:', error);
+      console.error('Erro ao salvar carrinho visitante:', error);
       alert('Não foi possível salvar o carrinho.');
       return false;
     }
@@ -175,10 +176,11 @@
 
   document.getElementById('checkoutButton').addEventListener('click', async (e) => {
     e.preventDefault();
-    const ok = await saveCart();
+    const ok = await saveGuestCart();
     if (ok) window.location.href = 'checkout.php';
   });
-  </script>
+</script>
+
 
 </body>
 </html>
