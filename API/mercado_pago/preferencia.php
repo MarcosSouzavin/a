@@ -1,76 +1,117 @@
 <?php
-include 'mp_sdk.php';
-include '../../conexao.php';
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
-// 🔐 Token de teste Mercado Pago
-$access_token = "TEST-43f69931-7659-4ce3-8ad9-9ca7d1f7d44c";
+// === CONFIGURAÇÕES MERCADO PAGO ===
+$ACCESS_TOKEN = "TEST-43f69931-7659-4ce3-8ad9-9ca7d1f7d44c";
+$BACK_URL = "https://projetosetim.com.br/2025/php1/checkout_success.php";
 
-$input = json_decode(file_get_contents("php://input"), true);
+// === RECEBE DADOS DO PEDIDO ===
+$input = file_get_contents("php://input");
+$pedido = json_decode($input, true);
 
-if (!$input || empty($input['produtos'])) {
-    echo json_encode(["error" => "Pedido inválido."]);
+if (!$pedido || empty($pedido['produtos'])) {
+    http_response_code(400);
+    echo json_encode(["error" => "Pedido inválido ou vazio."]);
     exit;
 }
 
-// ---------------------------
-// Monta lista de produtos
-// ---------------------------
+// === MONTA ITENS ===
 $items = [];
-foreach ($input['produtos'] as $p) {
+foreach ($pedido['produtos'] as $p) {
     $nome = $p['nome'] ?? $p['name'] ?? 'Produto';
-    $qtd = intval($p['quantidade'] ?? 1);
-    $preco = floatval($p['preco'] ?? $p['price'] ?? 0);
-    $adicionais = 0;
+    $qtd = (float)($p['quantidade'] ?? $p['qty'] ?? $p['quantity'] ?? 1);
+    $preco = (float)($p['preco'] ?? $p['price'] ?? $p['basePrice'] ?? 0);
+    $somaAdicionais = 0;
 
-    if (!empty($p['adicionais'])) {
+    if (!empty($p['adicionais']) && is_array($p['adicionais'])) {
         foreach ($p['adicionais'] as $a) {
-            $adicionais += floatval($a['preco'] ?? $a['price'] ?? 0);
+            $somaAdicionais += (float)($a['preco'] ?? $a['price'] ?? 0);
         }
     }
 
+    $unit = $preco + $somaAdicionais;
     $items[] = [
         "title" => $nome,
         "quantity" => $qtd,
-        "currency_id" => "BRL",
-        "unit_price" => $preco + $adicionais
+        "unit_price" => round($unit, 2),
+        "currency_id" => "BRL"
     ];
 }
 
-$total = floatval($input['total'] ?? 0);
-$usuario_id = $input['usuario_id'] ?? null;
-$endereco = $input['endereco'] ?? '';
-$frete = floatval($input['frete'] ?? 0);
-$tipoEntrega = $input['tipoEntrega'] ?? 'entrega';
+// === FRETE (fixo se existir) ===
+if (!empty($pedido['frete']) && $pedido['frete'] > 0) {
+    $items[] = [
+        "title" => "Frete",
+        "quantity" => 1,
+        "unit_price" => (float)$pedido['frete'],
+        "currency_id" => "BRL"
+    ];
+}
 
-// ---------------------------
-// Cria preferência no MP
-// ---------------------------
-$dados_preferencia = [
+// === DADOS DO PAGAMENTO ===
+$pagamento = $pedido['pagamento'] ?? 'pix';
+$emailComprador = "cliente@teste.com";
+$external_ref = "PED_" . time();
+
+// === MONTA PREFERÊNCIA ===
+$data = [
     "items" => $items,
     "payer" => [
-        "name" => "Cliente",
-        "email" => "comprador_teste@example.com"
+        "email" => $emailComprador,
     ],
+    "external_reference" => $external_ref,
     "back_urls" => [
-        "success" => "https://projetosetim.com.br/2025/php1/pagamento_sucesso.php",
-        "failure" => "https://projetosetim.com.br/2025/php1/pagamento_falha.php",
-        "pending" => "https://projetosetim.com.br/2025/php1/pagamento_pendente.php"
+        "success" => $BACK_URL . "?status=success&pedido=" . $external_ref,
+        "failure" => $BACK_URL . "?status=failure&pedido=" . $external_ref,
+        "pending" => $BACK_URL . "?status=pending&pedido=" . $external_ref
     ],
     "auto_return" => "approved",
-    "binary_mode" => true,
-    "notification_url" => "https://projetosetim.com.br/2025/php1/API/mercado_pago/notificar.php"
+    "payment_methods" => [
+        "excluded_payment_types" => [],
+        "installments" => 12
+    ]
 ];
 
-$resposta = mp_criar_preferencia($access_token, $dados_preferencia);
+// === ENVIA PARA MERCADO PAGO ===
+$ch = curl_init();
+curl_setopt_array($ch, [
+    CURLOPT_URL => "https://api.mercadopago.com/checkout/preferences",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => [
+        "Content-Type: application/json",
+        "Authorization: Bearer " . $ACCESS_TOKEN
+    ],
+    CURLOPT_POST => true,
+    CURLOPT_POSTFIELDS => json_encode($data)
+]);
 
+$response = curl_exec($ch);
+$http = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$error = curl_error($ch);
+curl_close($ch);
 
-if (!empty($resposta['init_point'])) {
+// === TRATA RESPOSTA ===
+if ($error) {
+    http_response_code(500);
+    echo json_encode(["error" => "Erro cURL: $error"]);
+    exit;
+}
+
+$result = json_decode($response, true);
+
+if ($http >= 200 && $http < 300 && isset($result['init_point'])) {
     echo json_encode([
-        "init_point" => $resposta['init_point'],
-        "id" => $resposta['id']
+        "success" => true,
+        "init_point" => $result['init_point'],
+        "id" => $result['id'],
+        "pedido_id" => $external_ref
     ]);
 } else {
-    echo json_encode(["error" => $resposta]);
+    http_response_code($http);
+    echo json_encode([
+        "error" => "Falha ao criar preferência no Mercado Pago.",
+        "http" => $http,
+        "response" => $result
+    ]);
 }
 ?>

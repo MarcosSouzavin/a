@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (!pedido || !pedido.produtos || pedido.produtos.length === 0) {
     document.getElementById('checkoutResumo').innerHTML =
-      '<div class="empty">Seu carrinho está vazio.<br><a href="cliente.php">Voltar ao menu</a></div>';
+      '<div class="empty">Seu carrinho está vazio.<br><a href="javascript:history.back()" class="btn-voltar">← Voltar para o menu</a></div>';
     return;
   }
 
