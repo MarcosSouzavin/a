@@ -1,227 +1,184 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SquinaXV - Pedidos</title>
-    <link rel="icon" href="img/stg.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SquinaXV - Pedidos</title>
+  <link rel="icon" href="img/stg.ico" type="image/x-icon">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 
 <body>
 
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">
-                <img src="img/stg.jpeg" alt="Delícias Gourmet" class="logo-image">
-                SquinaXV
-            </h1>
-            <div class="menu-hamburguer">☰</div>
-            <nav class="nav">
-                <a href="login_index.php" class="nav-link active">Login</a>
-                <a href="#ofertas" class="nav-link">Ofertas</a>
-                <a href="#contato" class="nav-link">Contato</a>
-            </nav>
-        </div>
-    </header>
+  <header class="header">
+    <div class="container">
+      <h1 class="logo">
+        <img src="img/stg.jpeg" alt="Delícias Gourmet" class="logo-image">
+        SquinaXV
+      </h1>
+      <div class="menu-hamburguer">☰</div>
+      <nav class="nav">
+        <a href="login_index.php" class="nav-link active">Login</a>
+        <a href="#ofertas" class="nav-link">Ofertas</a>
+        <a href="#contato" class="nav-link">Contato</a>
+      </nav>
+    </div>
+  </header>
 
-    <div class="search-bar">
-        <div class="container">
-            <div class="search-container">
-                <i class="fas fa-search"></i>
-                <input type="text" id="searchInput" placeholder="Pesquisar Delícias...">
-            </div>
-        </div>
+  <div class="search-bar">
+    <div class="container">
+      <div class="search-container">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Pesquisar Delícias...">
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="menu-grid" id="menuContainer">
+      <!-- Produtos renderizados via JS -->
+    </div>
+  </main>
+
+  <!-- Botão flutuante do carrinho -->
+  <div class="cart-floating">
+    <button class="cart-button" onclick="toggleCart()">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-count">0</span>
+    </button>
+  </div>
+
+  <!-- Carrinho lateral -->
+  <aside class="cart-sidebar" id="cartSidebar" aria-hidden="true">
+    <div class="cart-header">
+      <h2>Seu Pedido</h2>
+      <button class="close-cart" onclick="toggleCart()" aria-label="Fechar carrinho">&times;</button>
     </div>
 
-    <main class="container">
-        <div class="menu-grid" id="menuContainer">
-            <!-- produtos serão renderizados aqui via index.js -->
-        </div>
-    </main>
+    <ul class="cart-items" id="cartItems"></ul>
 
-    <!-- Botão flutuante do carrinho -->
-    <div class="cart-floating">
-        <button class="cart-button" onclick="toggleCart()">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count">0</span>
-        </button>
+    <div class="cart-total">
+      Total a pagar: R$<span id="cartTotal">0.00</span>
     </div>
 
-    <!-- Carrinho lateral -->
-    <aside class="cart-sidebar" id="cartSidebar" aria-hidden="true">
-        <div class="cart-header">
-            <h2>Seu Pedido</h2>
-            <button class="close-cart" onclick="toggleCart()" aria-label="Fechar carrinho">&times;</button>
-        </div>
-
-        <ul class="cart-items" id="cartItems"></ul>
-
-        <div class="cart-total">
-            Total a pagar: R$<span id="cartTotal">0.00</span>
-        </div>
-
-        <!-- Formulário de endereço -->
-        <div class="frete-container">
-            <h3>Informe seu Endereço</h3>
-            <form id="enderecoForm">
-                <label for="endereco">Endereço Completo:</label>
-                <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade, estado" required>
-                <button type="submit">Confirmar Endereço</button>
-            </form>
-            <div id="enderecoResultado"></div>
-        </div>
-
-        <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
-    </aside>
-
-    <!-- Modal de opções de produto -->
-    <div id="productModal" class="modal hidden" aria-hidden="true">
-        <div class="modal-backdrop" onclick="closeProductModal()"></div>
-        <div class="modal-card" role="dialog" aria-modal="true">
-            <header class="modal-header">
-                <h3 id="modalTitle">Produto</h3>
-                <button class="modal-close" onclick="closeProductModal()" aria-label="Fechar">×</button>
-            </header>
-
-            <form id="modalForm" class="modal-body">
-                <div class="modal-row">
-                    <div class="modal-price">R$ <span id="modalPrice">0.00</span></div>
-                </div>
-
-                <div class="modal-row">
-                    <label class="modal-label">Tamanho</label>
-                    <div id="sizesContainer" class="options-list"></div>
-                </div>
-
-                <div class="modal-row">
-                    <label class="modal-label">Adicionais</label>
-                    <div id="adicionaisContainer" class="options-list"></div>
-                </div>
-
-                <div class="modal-row">
-                    <label class="modal-label">Quantidade</label>
-                    <input type="number" id="modalQty" min="1" value="1">
-                </div>
-
-                <div class="modal-actions">
-                    <button type="submit" class="btn primary">Adicionar ao pedido</button>
-                    <button type="button" class="btn link" onclick="closeProductModal()">Cancelar</button>
-                </div>
-            </form>
-        </div>
+    <div class="frete-container">
+      <h3>Informe seu Endereço</h3>
+      <form id="enderecoForm">
+        <label for="endereco">Endereço Completo:</label>
+        <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade, estado" required>
+        <button type="submit">Confirmar Endereço</button>
+      </form>
+      <div id="enderecoResultado"></div>
     </div>
 
-    <!-- Scripts -->
+    <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
+  </aside>
+
+  <!-- Modal de produto -->
+  <div id="productModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" onclick="closeProductModal()"></div>
+    <div class="modal-card" role="dialog" aria-modal="true">
+      <header class="modal-header">
+        <h3 id="modalTitle">Produto</h3>
+        <button class="modal-close" onclick="closeProductModal()" aria-label="Fechar">×</button>
+      </header>
+
+      <form id="modalForm" class="modal-body">
+        <div class="modal-row">
+          <div class="modal-price">R$ <span id="modalPrice">0.00</span></div>
+        </div>
+
+        <div class="modal-row">
+          <label class="modal-label">Tamanho</label>
+          <div id="sizesContainer" class="options-list"></div>
+        </div>
+
+        <div class="modal-row">
+          <label class="modal-label">Adicionais</label>
+          <div id="adicionaisContainer" class="options-list"></div>
+        </div>
+
+        <div class="modal-row">
+          <label class="modal-label">Quantidade</label>
+          <input type="number" id="modalQty" min="1" value="1">
+        </div>
+
+        <div class="modal-actions">
+          <button type="submit" class="btn primary">Adicionar ao pedido</button>
+          <button type="button" class="btn link" onclick="closeProductModal()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
   <script src="js/product-options.js"></script>
-<script src="js/index.js"></script>
+  <script src="js/index.js"></script>
 
-<script>
-    // Atualiza o saldo do usuário (se a função existir)
-    document.addEventListener('DOMContentLoaded', function () {
-        if (typeof atualizarSaldoUsuario === 'function') {
-            atualizarSaldoUsuario();
-        }
-    });
+  <script>
+  // ----------------------------
+  // FRETE (fixo, sem cálculo)
+  // ----------------------------
+  document.getElementById('enderecoForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const endereco = document.getElementById('endereco').value.trim();
+    if (!endereco) return alert("Informe um endereço válido.");
 
-    // Atualiza saldo ao voltar pra aba
-    window.addEventListener('focus', function () {
-        if (typeof atualizarSaldoUsuario === 'function') {
-            atualizarSaldoUsuario();
-        }
-    });
+    const frete = 5.00; // 🔥 frete fixo
+    document.getElementById('enderecoResultado').innerHTML = `
+      <p>Endereço: ${endereco}</p>
+      <p>Frete fixo: R$ ${frete.toFixed(2)}</p>
+    `;
 
-    // Envio de endereço e cálculo de frete
-    document.getElementById('enderecoForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-        const endereco = document.getElementById('endereco').value;
+    localStorage.setItem('endereco', endereco);
+    localStorage.setItem('frete', frete);
+    window.freteValor = frete;
+  });
 
-        fetch('API/endereco.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ endereco })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.erro) {
-                alert(data.erro);
-                return;
-            }
-
-            document.getElementById('enderecoResultado').innerHTML = `
-                <p>Endereço: ${data.endereco}</p>
-                <p>Valor do Frete: R$ ${data.frete.toFixed(2)}</p>
-            `;
-
-            localStorage.setItem('endereco', data.endereco);
-            localStorage.setItem('frete', data.frete);
-
-            window.freteValor = data.frete;
-
-            const bc = new BroadcastChannel('frete-update');
-            bc.postMessage({ frete: data.frete });
-            bc.close();
-
-            if (typeof atualizarTotalComSaldo === 'function') {
-                atualizarTotalComSaldo();
-            }
-        })
-        .catch(error => console.error('Erro:', error));
-    });
-
-    // 🔥 Função principal: salva o carrinho atual
-async function saveCart() {
-  try {
-    let cartItems = [];
-    if (typeof cart !== 'undefined' && Array.isArray(cart)) {
-      cartItems = cart;
-    } else {
-      const saved = localStorage.getItem('cartItems');
+  // ----------------------------
+  // SALVAR CARRINHO (padronizado)
+  // ----------------------------
+  async function saveCart() {
+    try {
+      let cartItems = [];
+      const saved = localStorage.getItem('cart');
       cartItems = saved ? JSON.parse(saved) : [];
-    }
 
-    if (!cartItems || cartItems.length === 0) {
-      alert('Seu carrinho está vazio!');
+      if (!cartItems.length) {
+        alert('Seu carrinho está vazio!');
+        return false;
+      }
+
+      const frete = parseFloat(localStorage.getItem('frete') || 0);
+      const endereco = localStorage.getItem('endereco') || '';
+
+      const total = cartItems.reduce((acc, item) => {
+        const base = parseFloat(item.preco || item.price || item.basePrice || 0);
+        const qtd = parseFloat(item.quantidade || item.qty || item.quantity || 1);
+        const extras = Array.isArray(item.adicionais)
+          ? item.adicionais.reduce((s, a) => s + parseFloat(a.preco || a.price || 0), 0)
+          : 0;
+        return acc + (base + extras) * qtd;
+      }, 0) + frete;
+
+      const pedido = { produtos: cartItems, frete, endereco, total };
+      localStorage.setItem('pedidoCheckout', JSON.stringify(pedido));
+      console.log('Pedido salvo:', pedido);
+      return true;
+    } catch (error) {
+      console.error('Erro ao salvar carrinho:', error);
+      alert('Não foi possível salvar o carrinho.');
       return false;
     }
-
-    const frete = Number(localStorage.getItem('frete') || 0);
-    const endereco = localStorage.getItem('endereco') || '';
-
-    const subtotal = cartItems.reduce((acc, item) => {
-      const precoBase = Number(item.preco ?? item.price ?? item.basePrice ?? 0);
-      const qtd = Number(item.quantidade ?? item.qty ?? item.quantity ?? 1);
-      const somaAdicionais = Array.isArray(item.adicionais)
-        ? item.adicionais.reduce((s, a) => s + Number(a.preco ?? a.price ?? 0), 0)
-        : 0;
-      return acc + (precoBase + somaAdicionais) * qtd;
-    }, 0);
-
-    const pedido = {
-      produtos: cartItems,
-      frete,
-      endereco,
-      total: subtotal + frete
-    };
-
-    localStorage.setItem('pedidoCheckout', JSON.stringify(pedido));
-    return true;
-  } catch (e) {
-    console.error('Erro ao salvar carrinho:', e);
-    alert('Não foi possível salvar o carrinho.');
-    return false;
   }
-}
 
-document.getElementById('checkoutButton').addEventListener('click', async (e) => {
+  document.getElementById('checkoutButton').addEventListener('click', async (e) => {
     e.preventDefault();
     const ok = await saveCart();
     if (ok) window.location.href = 'checkout.php';
-});
-</script>
-
+  });
+  </script>
 
 </body>
 </html>

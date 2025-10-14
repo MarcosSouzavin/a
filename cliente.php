@@ -157,9 +157,7 @@ document.getElementById('enderecoForm').addEventListener('submit', async functio
     }
 });
 
-// ----------------------------
-// SALVAR CARRINHO E CHECKOUT
-// ----------------------------
+
 async function saveCart() {
     try {
         let cartItems = [];

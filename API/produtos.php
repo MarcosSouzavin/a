@@ -1,5 +1,4 @@
 <?php
-// Caminho do arquivo JSON
 $jsonFile = __DIR__ . '/../sys/produtos.json';
 header('Content-Type: application/json; charset=utf-8');
 
@@ -15,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
-    // Aceita tanto array simples quanto objeto com campos
     if (is_array($data)) {
         // Se for array simples, salva como campo 'produtos'
         if (array_keys($data) === range(0, count($data) - 1)) {
