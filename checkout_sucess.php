@@ -17,6 +17,6 @@ a { display:inline-block; margin-top:20px; padding:10px 20px; background:#b3ab3a
 <body>
 <h1>Status do pagamento: <?= htmlspecialchars($status) ?></h1>
 <p>Referência do pedido: <?= htmlspecialchars($pedido) ?></p>
-<a href="javascript:history.back()" class="btn-voltar">Voltar para o menu</a>
+<a href="https://projetosetim.com.br/2025/php1/cliente.php">Voltar ao menu</a>
 </body>
 </html>

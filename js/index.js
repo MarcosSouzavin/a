@@ -1,9 +1,12 @@
-
+// === VARIÁVEIS GLOBAIS ===
 let cart = [];
 let menuItems = [];
+let cartKey = window.location.pathname.includes("cliente.php")
+  ? "cart_cliente"
+  : "cart_guest"; // visitante vs cliente
 window.freteValor = 0;
 
-
+// === FUNÇÕES UTILITÁRIAS ===
 function formatPrice(valor) {
   return Number(valor).toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
@@ -16,34 +19,27 @@ function makeUid() {
 }
 
 async function getCart() {
-  const data = localStorage.getItem("cart");
+  const data = localStorage.getItem(cartKey);
   const parsed = data ? JSON.parse(data) : [];
-  console.log("%cgetCart:", "color: #4caf50", parsed);
+  console.log("%cgetCart (" + cartKey + "):", "color: #4caf50", parsed);
   return Array.isArray(parsed) ? parsed : [];
 }
 
-
 async function saveCart(c) {
-  if (!Array.isArray(c) || c.length === 0) {
-    console.warn("%csaveCart abortado → carrinho vazio, não será salvo", "color: #ff9800");
-    return;
-  }
+  const json = JSON.stringify(c || []);
+  localStorage.setItem(cartKey, json);
+  console.log("%csaveCart (" + cartKey + "): " + c.length + " item(s)", "color: #2196f3");
 
   try {
-    const json = JSON.stringify(c);
-    localStorage.setItem("cart", json);
-    console.log(`%csaveCart: ${c.length} item(s) salvo(s)`, "color: #2196f3");
-
     await fetch("API/cart.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: json,
     });
   } catch (e) {
-    console.error("Erro ao salvar carrinho:", e);
+    console.error("Erro ao salvar no servidor:", e);
   }
 }
-
 
 function calcItemTotal(item) {
   const base = Number(item.basePrice || 0);
@@ -54,6 +50,7 @@ function calcItemTotal(item) {
   return (base + extras) * (item.quantity || 1);
 }
 
+// === ATUALIZA CARRINHO ===
 function updateCart() {
   const list = document.getElementById("cartItems");
   if (!list) return;
@@ -67,11 +64,14 @@ function updateCart() {
       const totalItem = calcItemTotal(item);
       li.className = "cart-line";
 
-      const adicionais = item.adicionais?.map(a => `+ ${a.name}`).join(", ") || "";
+      const adicionais = item.adicionais
+        ?.map((a) => `+ ${a.name}`)
+        .join(", ") || "";
 
       li.innerHTML = `
         <div class="cart-line-left">
-          <img src="${item.image || "img/default.png"}" style="width:70px;height:70px;border-radius:10px;margin-right:8px;object-fit:cover;">
+          <img src="${item.image || "img/default.png"}"
+               style="width:70px;height:70px;border-radius:10px;margin-right:8px;object-fit:cover;">
           <div>
             <strong>${item.name}</strong> ${item.size ? `(${item.size})` : ""}<br>
             ${adicionais ? `<small>${adicionais}</small><br>` : ""}
@@ -101,6 +101,7 @@ function updateCart() {
   if (totalEl) totalEl.textContent = formatPrice(total);
 }
 
+// === ADICIONAR AO CARRINHO ===
 window.addToCart = async function (payload) {
   const item = {
     uid: makeUid(),
@@ -135,6 +136,7 @@ window.addToCart = async function (payload) {
   toggleCart(true);
 };
 
+// === REMOVER / ALTERAR ===
 window.removeItem = async function (uid) {
   cart = cart.filter((i) => i.uid !== uid);
   await saveCart(cart);
@@ -161,13 +163,18 @@ window.toggleCart = function (forceOpen = false) {
   else sidebar.classList.toggle("active");
 };
 
+// === CARREGAR PRODUTOS ===
 async function fetchProdutos() {
   try {
     const r = await fetch("API/produtos.php?" + Date.now());
     const j = await r.json();
-    return j.produtos || [];
-  } catch {
-    console.error("Falha ao carregar produtos.");
+    // compatível com retorno simples ou com {produtos: []}
+    if (Array.isArray(j)) return j;
+    if (Array.isArray(j.produtos)) return j.produtos;
+    console.warn("Formato inesperado de produtos:", j);
+    return [];
+  } catch (err) {
+    console.error("Erro ao carregar produtos:", err);
     return [];
   }
 }
@@ -206,6 +213,7 @@ function renderMenu(items) {
   });
 }
 
+// === MODAL DE PRODUTOS ===
 let currentProduct = null;
 function openProductOptions(product) {
   currentProduct = product;
@@ -219,8 +227,9 @@ function openProductOptions(product) {
   modalTitle.textContent = product.name;
   modal.classList.remove("hidden");
 
+  // --- tamanhos ---
   sizesContainer.innerHTML = "";
-  const sizes = product.sizes?.length
+  const sizes = Array.isArray(product.sizes) && product.sizes.length
     ? product.sizes
     : [{ name: "Único", price: product.price || 0 }];
   sizes.forEach((s, i) => {
@@ -229,36 +238,54 @@ function openProductOptions(product) {
     `;
   });
 
+  // --- adicionais específicos ---
   adicionaisContainer.innerHTML = "";
-  if (Array.isArray(product.adicionais)) {
+  if (Array.isArray(product.adicionais) && product.adicionais.length) {
     product.adicionais.forEach((a) => {
       adicionaisContainer.innerHTML += `
         <label><input type="checkbox" name="adicional" data-id="${a.id}" data-price="${a.price}" data-name="${a.name}"> ${a.name} (+R$ ${formatPrice(a.price)})</label>
       `;
     });
+  } else {
+    adicionaisContainer.innerHTML = `<p class="muted">Nenhum adicional disponível.</p>`;
   }
 
+  // --- caixa de observação ---
+  const removeBox = document.createElement("input");
+  removeBox.type = "text";
+  removeBox.id = "removeInput";
+  removeBox.placeholder = "Ex: sem cebola, sem azeitona...";
+  removeBox.style =
+    "width:100%;padding:8px;margin-top:8px;border:1px solid #ccc;border-radius:8px;";
+  adicionaisContainer.appendChild(removeBox);
+
+  // --- atualizar preço ---
   function updatePrice() {
     const size = modal.querySelector('input[name="size"]:checked');
     const sizePrice = Number(size?.dataset.price || 0);
-    const adicionais = Array.from(modal.querySelectorAll('input[name="adicional"]:checked')).map(a => Number(a.dataset.price || 0));
-    const extras = adicionais.reduce((s, n) => s + n, 0);
+    const adicionaisSelecionados = Array.from(
+      modal.querySelectorAll('input[name="adicional"]:checked')
+    ).map((a) => Number(a.dataset.price || 0));
+    const extras = adicionaisSelecionados.reduce((s, n) => s + n, 0);
     modalPrice.textContent = formatPrice((sizePrice + extras) * Number(qty.value));
   }
-
   modal.addEventListener("change", updatePrice);
   qty.addEventListener("input", updatePrice);
   updatePrice();
 
+  // --- submit ---
   const form = document.getElementById("modalForm");
   form.onsubmit = (e) => {
     e.preventDefault();
     const size = modal.querySelector('input[name="size"]:checked');
-    const adicionais = Array.from(modal.querySelectorAll('input[name="adicional"]:checked')).map((a) => ({
+    const adicionaisSelecionados = Array.from(
+      modal.querySelectorAll('input[name="adicional"]:checked')
+    ).map((a) => ({
       id: a.dataset.id,
       name: a.dataset.name,
       price: Number(a.dataset.price),
     }));
+    const remover = document.getElementById("removeInput")?.value || "";
 
     window.addToCart({
       id: product.id,
@@ -266,8 +293,9 @@ function openProductOptions(product) {
       image: product.image,
       basePrice: Number(size?.dataset.price || 0),
       size: size?.value || "",
-      adicionais,
+      adicionais: adicionaisSelecionados,
       quantity: Number(qty.value),
+      remover,
     });
 
     modal.classList.add("hidden");
@@ -278,6 +306,7 @@ function closeProductModal() {
   document.getElementById("productModal").classList.add("hidden");
 }
 
+// === INICIALIZAÇÃO ===
 document.addEventListener("DOMContentLoaded", async () => {
   cart = await getCart();
   updateCart();
@@ -285,11 +314,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   menuItems = await fetchProdutos();
   renderMenu(menuItems);
 
-  document.getElementById("searchInput").addEventListener("input", (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = menuItems.filter((i) =>
-      i.name.toLowerCase().includes(term)
-    );
-    renderMenu(filtered);
-  });
+  // filtro de busca
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = menuItems.filter((i) =>
+        i.name.toLowerCase().includes(term)
+      );
+      renderMenu(filtered);
+    });
+  }
 });

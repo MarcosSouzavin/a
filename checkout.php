@@ -3,7 +3,6 @@ session_start();
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -96,56 +95,67 @@ textarea {
 <a href="javascript:history.back()" class="btn-voltar">← Voltar para o menu</a>
 
 <script>
-document.addEventListener('DOMContentLoaded', async () => {
-  const pedidoJSON = localStorage.getItem('pedidoCheckout');
-  const carrinhoJSON = localStorage.getItem('cartItems');
+document.addEventListener("DOMContentLoaded", async () => {
+  // 🔥 Define qual carrinho ler (cliente ou visitante)
+  const cartKey = <?php echo isset($_SESSION['usuario_id']) ? "'cart_cliente'" : "'cart_guest'"; ?>;
 
-  // usa o carrinho real se o pedido estiver vazio
-  let pedido = pedidoJSON ? JSON.parse(pedidoJSON) : null;
-  if (!pedido || !pedido.produtos || pedido.produtos.length === 0) {
-    if (carrinhoJSON) pedido = { produtos: JSON.parse(carrinhoJSON) };
+  const pedidoJSON = localStorage.getItem("pedidoCheckout");
+  const carrinhoJSON = localStorage.getItem(cartKey);
+
+  // 🔍 Prioriza o carrinho real salvo
+  let pedido = null;
+  if (carrinhoJSON) {
+    pedido = { produtos: JSON.parse(carrinhoJSON) };
+  } else if (pedidoJSON) {
+    pedido = JSON.parse(pedidoJSON);
   }
 
   if (!pedido || !pedido.produtos || pedido.produtos.length === 0) {
-    document.getElementById('checkoutResumo').innerHTML =
-      '<div class="empty">Seu carrinho está vazio.<br><a href="javascript:history.back()" class="btn-voltar">← Voltar para o menu</a></div>';
+    document.getElementById("checkoutResumo").innerHTML =
+      '<div class="empty">Seu carrinho está vazio.<br><a href="index.html">Voltar ao cardápio</a></div>';
     return;
   }
 
+  // --- monta lista de produtos ---
   let html = `<h2>Resumo do Pedido</h2><ul>`;
-  let subtotalProdutos = 0;
+  let subtotal = 0;
 
   pedido.produtos.forEach(p => {
-    const nome = p.nome || p.name || 'Produto';
-    const qtd = Number(p.quantidade ?? p.qty ?? p.quantity ?? 1);
-    const precoBase = Number(p.preco ?? p.price ?? p.basePrice ?? 0);
-    const tamanho = p.tamanho || p.size || '';
-    const imagem = p.imagem || p.image || 'img/default.png';
+    const nome = p.name || p.nome || "Produto";
+    const qtd = Number(p.quantity ?? p.quantidade ?? 1);
+    const precoBase = Number(p.basePrice || p.preco || p.price || 0);
+    const tamanho = p.size || p.tamanho || "";
+    const imagem = p.image || "img/default.png";
 
-    let somaAdicionais = 0;
-    let htmlAdicionais = '';
+    // ⚙️ Usa apenas adicionais selecionados (não todos)
+    const adicionaisSelecionados = Array.isArray(p.adicionais)
+      ? p.adicionais.filter(a => a && (a.price || a.preco))
+      : [];
 
-    if (Array.isArray(p.adicionais) && p.adicionais.length > 0) {
-      htmlAdicionais += `<ul class="adicionais-list">`;
-      p.adicionais.forEach(a => {
-        const nomeAd = a.nome || a.name || 'Adicional';
-        const precoAd = Number(a.preco ?? a.price ?? 0);
-        somaAdicionais += precoAd;
-        htmlAdicionais += `<li>+ ${nomeAd} — R$ ${precoAd.toFixed(2)}</li>`;
+    let somaExtras = 0;
+    let htmlExtras = "";
+
+    if (adicionaisSelecionados.length > 0) {
+      htmlExtras += `<ul class="adicionais-list">`;
+      adicionaisSelecionados.forEach(a => {
+        const nomeAd = a.name || a.nome || "Adicional";
+        const precoAd = Number(a.price || a.preco || 0);
+        somaExtras += precoAd;
+        htmlExtras += `<li>+ ${nomeAd} — R$ ${precoAd.toFixed(2)}</li>`;
       });
-      htmlAdicionais += `</ul>`;
+      htmlExtras += `</ul>`;
     }
 
-    const subtotalItem = (precoBase + somaAdicionais) * qtd;
-    subtotalProdutos += subtotalItem;
+    const subtotalItem = (precoBase + somaExtras) * qtd;
+    subtotal += subtotalItem;
 
     html += `
       <li>
         <div class="produto-info">
           <img src="${imagem}" alt="${nome}">
           <div class="produto-detalhes">
-            <strong>${nome}</strong> ${tamanho ? `(${tamanho})` : ''} x${qtd}
-            ${htmlAdicionais}
+            <strong>${nome}</strong> ${tamanho ? `(${tamanho})` : ""} x${qtd}
+            ${htmlExtras}
           </div>
         </div>
         <span>R$ ${subtotalItem.toFixed(2)}</span>
@@ -153,9 +163,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     `;
   });
 
-  // Frete fixo (pode ajustar o valor aqui)
-  let freteValor = 5.00; 
-  let enderecoSalvo = pedido.endereco || localStorage.getItem('endereco') || '';
+  // --- frete fixo ---
+  const freteValor = 5.00;
+  const enderecoSalvo = localStorage.getItem("endereco") || "";
 
   html += `
     </ul>
@@ -165,7 +175,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       <div class="radio-group">
         <input type="radio" id="entrega" name="tipoEntrega" value="entrega" checked>
         <label for="entrega">Entrega</label>
-
         <input type="radio" id="retirada" name="tipoEntrega" value="retirada">
         <label for="retirada">Retirada no local</label>
       </div>
@@ -173,8 +182,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     <div class="endereco">
       <h3>Endereço de Entrega</h3>
-      <input type="text" id="endereco" placeholder="Rua, número, bairro, cidade" value="${enderecoSalvo}" 
-      style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
+      <input type="text" id="endereco" placeholder="Rua, número, bairro, cidade" 
+             value="${enderecoSalvo}" 
+             style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
     </div>
 
     <div class="pagamento">
@@ -198,65 +208,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     <button class="btn-pagar" id="btnPagar">Confirmar e Pagar</button>
   `;
 
-  document.getElementById('checkoutResumo').innerHTML = html;
+  document.getElementById("checkoutResumo").innerHTML = html;
 
-  // ----------------------------
-  // Recalcula total
-  // ----------------------------
+  // --- recalcular total ---
   function recalcularTotal() {
     const tipo = document.querySelector('input[name="tipoEntrega"]:checked').value;
-    const freteAtual = (tipo === 'entrega') ? freteValor : 0;
-    document.getElementById('freteInfo').textContent = `Frete: R$ ${freteAtual.toFixed(2)}`;
-    const total = subtotalProdutos + freteAtual;
-    document.getElementById('valorTotal').textContent = total.toFixed(2);
+    const freteAtual = (tipo === "entrega") ? freteValor : 0;
+    document.getElementById("freteInfo").textContent = `Frete: R$ ${freteAtual.toFixed(2)}`;
+    const total = subtotal + freteAtual;
+    document.getElementById("valorTotal").textContent = total.toFixed(2);
     return total;
   }
 
   recalcularTotal();
 
   document.querySelectorAll('input[name="tipoEntrega"]').forEach(el => {
-    el.addEventListener('change', () => {
+    el.addEventListener("change", () => {
       const tipo = document.querySelector('input[name="tipoEntrega"]:checked').value;
-      document.getElementById('endereco').disabled = (tipo === 'retirada');
+      document.getElementById("endereco").disabled = (tipo === "retirada");
       recalcularTotal();
     });
   });
 
-  // ----------------------------
-  // Confirma e cria pagamento
-  // ----------------------------
-  document.getElementById('btnPagar').addEventListener('click', async () => {
+  // --- botão pagar ---
+  document.getElementById("btnPagar").addEventListener("click", async () => {
     const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked').value;
-    const endereco = document.getElementById('endereco').value;
-    const observacoes = document.getElementById('observacoes').value;
+    const pagamento = document.querySelector('input[name="pagamento"]:checked').value;
+    const endereco = document.getElementById("endereco").value;
+    const observacoes = document.getElementById("observacoes").value;
     const totalFinal = recalcularTotal();
 
     const pedidoFinal = {
       ...pedido,
       tipoEntrega,
+      pagamento,
       endereco,
       observacoes,
       total: totalFinal,
-      frete: (tipoEntrega === 'entrega') ? freteValor : 0,
+      frete: (tipoEntrega === "entrega") ? freteValor : 0,
       usuario_id: <?php echo json_encode($_SESSION['usuario_id'] ?? null); ?>
     };
 
     try {
-      const resp = await fetch('API/mercado_pago/preferencia.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const resp = await fetch("API/mercado_pago/preferencia.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(pedidoFinal)
       });
       const data = await resp.json();
       if (data.init_point) {
-        window.location.href = data.init_point; // vai pro Mercado Pago
+        window.location.href = data.init_point;
       } else {
-        alert('Erro ao criar pagamento.');
+        alert("Erro ao criar pagamento.");
         console.error(data);
       }
-    } catch (error) {
-      console.error('Erro:', error);
-      alert('Falha ao iniciar pagamento.');
+    } catch (err) {
+      console.error("Erro ao enviar pedido:", err);
+      alert("Falha ao iniciar pagamento.");
     }
   });
 });
