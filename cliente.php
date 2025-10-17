@@ -1,5 +1,21 @@
 <?php
 session_start();
+require_once 'conexao.php';
+if (!isset($_SESSION['usuario_id']) && isset($_COOKIE['remember_token'])) {
+    $token = $_COOKIE['remember_token'];
+    $stmt = $conn->prepare("SELECT id, nome FROM usuarios WHERE remember_token = ?");
+    $stmt->execute([$token]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user) {
+        $_SESSION['usuario_id'] = $user['id'];
+        $_SESSION['usuario'] = $user['nome'];
+    }
+}
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: login.php");
+    exit;
+}
 if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
     header("Location: login.php");
     exit();
