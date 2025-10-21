@@ -1,7 +1,6 @@
-// === VARIÁVEIS GLOBAIS ===
-let cart = [];
-let menuItems = [];
-let cartKey = "cart"; // chave unificada para todos
+window.cart = window.cart || [];
+window.menuItems = window.menuItems || [];
+window.cartKey = "cart"; // chave unificada para todos
 window.freteValor = 0;
 
 // === FUNÇÕES UTILITÁRIAS ===
@@ -399,7 +398,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     menuHamburguer.addEventListener('click', () => {
       nav.classList.toggle('active');
       menuHamburguer.classList.toggle('open');
-    });
+    }); 
 
     // Fechar menu ao clicar em um link
     nav.addEventListener('click', (e) => {
