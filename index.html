@@ -44,17 +44,17 @@
 
   <!-- Botão flutuante do carrinho -->
   <div class="cart-floating">
-    <button class="cart-button" onclick="toggleCart()">
+    <button class="cart-button">
       <i class="fas fa-shopping-cart"></i>
       <span class="cart-count">0</span>
     </button>
   </div>
 
   <!-- Carrinho lateral -->
-  <aside class="cart-sidebar" id="cartSidebar" aria-hidden="true">
+  <aside class="cart-sidebar">
     <div class="cart-header">
       <h2>Seu Pedido</h2>
-      <button class="close-cart" onclick="toggleCart()" aria-label="Fechar carrinho">&times;</button>
+      <button class="close-cart" aria-label="Fechar carrinho">&times;</button>
     </div>
 
     <ul class="cart-items" id="cartItems"></ul>
@@ -131,14 +131,14 @@
       const frete = 5.00;
       document.getElementById('enderecoResultado').innerHTML =
         `<p>Endereço: ${endereco}</p><p>Frete fixo: R$ ${frete.toFixed(2)}</p>`;
-      localStorage.setItem('guest_endereco', endereco);
-      localStorage.setItem('guest_frete', frete);
+      localStorage.setItem('endereco', endereco);
+      localStorage.setItem('frete', frete);
     });
 
     // 🔸 Função pra salvar o pedido visitante
     async function saveGuestCart() {
       try {
-        const cartData = localStorage.getItem('cart') || localStorage.getItem('guest_cart');
+        const cartData = localStorage.getItem('cart');
         const cartItems = cartData ? JSON.parse(cartData) : [];
 
         console.log("Itens do carrinho visitante:", cartItems);
@@ -148,8 +148,8 @@
           return false;
         }
 
-        const frete = Number(localStorage.getItem('guest_frete') || 5.00);
-        const endereco = localStorage.getItem('guest_endereco') || '';
+        const frete = Number(localStorage.getItem('frete') || 5.00);
+        const endereco = localStorage.getItem('endereco') || '';
 
         const total = cartItems.reduce((acc, item) => {
           const preco = Number(item.basePrice || item.price || 0);
@@ -161,7 +161,7 @@
         }, 0) + frete;
 
         const pedido = { produtos: cartItems, frete, endereco, total };
-        localStorage.setItem('guest_pedidoCheckout', JSON.stringify(pedido));
+        localStorage.setItem('pedidoCheckout', JSON.stringify(pedido));
 
         console.log("✅ Pedido visitante salvo:", pedido);
         return true;

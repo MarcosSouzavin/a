@@ -96,8 +96,8 @@ textarea {
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
-  // 🔥 Define qual carrinho ler (cliente ou visitante)
-  const cartKey = <?php echo isset($_SESSION['usuario_id']) ? "'cart_cliente'" : "'cart_guest'"; ?>;
+  // 🔥 Usa chave unificada
+  const cartKey = "cart";
 
   const pedidoJSON = localStorage.getItem("pedidoCheckout");
   const carrinhoJSON = localStorage.getItem(cartKey);

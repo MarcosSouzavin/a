@@ -67,17 +67,17 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
 
 <!-- Botão flutuante do carrinho -->
 <div class="cart-floating">
-    <button class="cart-button" onclick="toggleCart()">
+    <button class="cart-button">
         <i class="fas fa-shopping-cart"></i>
         <span class="cart-count">0</span>
     </button>
 </div>
 
 <!-- Carrinho lateral -->
-<aside class="cart-sidebar" id="cartSidebar" aria-hidden="true">
+<aside class="cart-sidebar">
     <div class="cart-header">
         <h2>Seu Pedido</h2>
-        <button class="close-cart" onclick="toggleCart()" aria-label="Fechar carrinho">&times;</button>
+        <button class="close-cart" aria-label="Fechar carrinho">&times;</button>
     </div>
 
     <ul class="cart-items" id="cartItems"></ul>
@@ -180,7 +180,7 @@ async function saveCart() {
         if (typeof cart !== 'undefined' && Array.isArray(cart)) {
             cartItems = cart;
         } else {
-            const saved = localStorage.getItem('cartItems');
+            const saved = localStorage.getItem('cart');
             cartItems = saved ? JSON.parse(saved) : [];
         }
 
