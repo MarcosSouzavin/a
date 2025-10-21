@@ -44,9 +44,10 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
       </h1>
       <div class="menu-hamburguer">☰</div>
       <nav class="nav">
-        <a href="login_index.php" class="nav-link active">Login</a>
-        <a href="#ofertas" class="nav-link">Ofertas</a>
-        <a href="#contato" class="nav-link">Contato</a>
+         <a href="#ofertas" class="nav-link">Ofertas</a>
+            <a href="#contacto" class="nav-link">Contato</a>
+            <a href="dados.php" class="nav-link">Meus Dados</a>
+            <a href="logout.php" class="nav-link active">Sair</a>
       </nav>
     </div>
   </header>
