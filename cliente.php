@@ -32,6 +32,45 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
     <link rel="icon" href="img/stg.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+<script>
+(() => {
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuHamburguer = document.querySelector(".menu-hamburguer");
+    const nav = document.querySelector(".nav");
+
+    if (!menuHamburguer || !nav) {
+      console.warn("⚠️ Menu hamburguer ou nav não encontrados");
+      return;
+    }
+
+    console.log("🍔 Menu mobile inicializado");
+
+    menuHamburguer.addEventListener("click", (e) => {
+      e.stopPropagation();
+      nav.classList.toggle("active");
+      menuHamburguer.classList.toggle("open");
+      console.log("🍔 Clique no menu:", nav.classList.contains("active") ? "aberto" : "fechado");
+    });
+
+    // Fecha menu ao clicar em link
+    nav.addEventListener("click", (e) => {
+      if (e.target.classList.contains("nav-link")) {
+        nav.classList.remove("active");
+        menuHamburguer.classList.remove("open");
+        console.log("🔹 Fechando menu após clique em link");
+      }
+    });
+
+    // Fecha ao clicar fora
+    document.addEventListener("click", (e) => {
+      if (!menuHamburguer.contains(e.target) && !nav.contains(e.target)) {
+        nav.classList.remove("active");
+        menuHamburguer.classList.remove("open");
+      }
+    });
+  });
+})();
+</script>
 
 <body>
 <header class="header">
@@ -144,32 +183,9 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
 <script src="js/index.js"></script>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const menuHamburguer = document.querySelector(".menu-hamburguer");
-  const nav = document.querySelector(".nav");
-
-  if (menuHamburguer && nav) {
-    menuHamburguer.addEventListener("click", (e) => {
-      e.stopPropagation();
-      nav.classList.toggle("active");
-      menuHamburguer.classList.toggle("open");
-    });
-
-    nav.addEventListener("click", (e) => {
-      if (e.target.classList.contains("nav-link")) {
-        nav.classList.remove("active");
-        menuHamburguer.classList.remove("open");
-      }
-    });
-
-    document.addEventListener("click", (e) => {
-      if (!nav.contains(e.target) && !menuHamburguer.contains(e.target)) {
-        nav.classList.remove("active");
-        menuHamburguer.classList.remove("open");
-      }
-    });
-  }
-});
+// ----------------------------
+// FRETE
+// ----------------------------
 document.getElementById('enderecoForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     const endereco = document.getElementById('endereco').value.trim();

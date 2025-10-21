@@ -988,6 +988,33 @@ body {
   to { transform: scale(2.5); opacity: 0; }
 }
 /* ===== CORREÇÃO MENU MOBILE SOBRE SEARCH ===== */
+@media (max-width: 768px) {
+  .search-bar {
+    position: relative;
+    z-index: 5; /* abaixo do menu */
+  }
+
+  .nav.active {
+    position: absolute;
+    z-index: 10; /* acima da barra de busca */
+    background: rgba(44, 62, 80, 0.98);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  }
+
+  .nav-link {
+    width: 100%;
+    padding: 14px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .nav-link:last-child {
+    border-bottom: none;
+  }
+}
 /* ===== FIX FINAL DO MENU MOBILE (VERSÃO GOLD) ===== */
 @media (max-width: 768px) {
   .header {
@@ -1057,3 +1084,4 @@ body {
     background: rgba(255, 255, 255, 0.15);
   }
 }
+
