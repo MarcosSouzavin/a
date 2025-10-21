@@ -1,82 +1,50 @@
 <?php
 session_start();
-require_once 'conexao.php'; // tua conexão
+
+require_once 'conexao.php'; // este deve criar $pdo (PDO conectado)
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
-    $senha = $_POST['senha'] ?? '';
+    $login = trim($_POST['email'] ?? $_POST['usuario'] ?? '');
+    $senha = trim($_POST['senha'] ?? '');
     $lembrar = isset($_POST['lembrar']);
 
-    $stmt = $conn->prepare("SELECT id, nome, senha FROM usuarios WHERE email = ?");
-    $stmt->execute([$email]);
-    $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+    // tenta por email ou usuario
+    $sql = "SELECT id, nome, usuario, email, senha FROM usuarios WHERE email = :login OR usuario = :login";
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindParam(':login', $login);
+    $stmt->execute();
 
-    if ($usuario && password_verify($senha, $usuario['senha'])) {
-        $_SESSION['usuario_id'] = $usuario['id'];
-        $_SESSION['usuario'] = $usuario['nome'];
+    if ($stmt->rowCount() > 0) {
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($lembrar) {
-            // token seguro único
-            $token = bin2hex(random_bytes(32));
-            setcookie(
-                "remember_token",
-                $token,
-                time() + (86400 * 30), // 30 dias
-                "/",
-                "https://projetosetim.com.br/2025/php1/", // teu domínio
-                true, // Secure
-                true  // HttpOnly
-            );
-            // salva no BD para validar depois
-            $stmt = $conn->prepare("UPDATE usuarios SET remember_token = ? WHERE id = ?");
-            $stmt->execute([$token, $usuario['id']]);
+        if (password_verify($senha, $user['senha'])) {
+            $_SESSION['usuario_id'] = $user['id'];
+            $_SESSION['usuario'] = $user['usuario'] ?? $user['nome'];
+            $_SESSION['email'] = $user['email'];
+
+            if ($lembrar) {
+                $token = bin2hex(random_bytes(32));
+                setcookie(
+                    "remember_token",
+                    $token,
+                    time() + (86400 * 30),
+                    "/",
+                    "projetosetim.com.br",
+                    true,
+                    true
+                );
+                $update = $pdo->prepare("UPDATE usuarios SET remember_token = ? WHERE id = ?");
+                $update->execute([$token, $user['id']]);
+            }
+
+            header("Location: cliente.php");
+            exit;
+        } else {
+            header('Location: login_index.php?error=' . urlencode("Senha incorreta!"));
+            exit;
         }
-
-        header("Location: cliente.php");
+    } else {
+        header('Location: login_index.php?error=' . urlencode("Usuário não encontrado!"));
         exit;
-    } else {
-        echo "Credenciais incorretas.";
     }
-}
-
-
-$host = 'localhost';
-$dbname = 'u557720587_2025_php01';
-$dbUser = 'u557720587_2025_php01';
-$dbPass = 'Mtec@php1';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $dbUser, $dbPass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    header("Location: users.php?error=" . urlencode("Erro na conexão com o banco de dados."));
-    exit();
-}
-
-$usuario = isset($_POST['usuario']) ? trim($_POST['usuario']) : '';
-$senha  = isset($_POST['senha']) ? trim($_POST['senha']) : '';
-
-$sql = "SELECT id, usuario, email, cpf, telefone, senha FROM usuarios WHERE usuario = :usuario";
-$stmt = $pdo->prepare($sql);
-$stmt->bindParam(':usuario', $usuario);
-$stmt->execute();
-
-if ($stmt->rowCount() > 0) {
-    $dadosUsuario = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if (password_verify($senha, $dadosUsuario['senha'])) {
-
-        $_SESSION['usuario_id'] = $dadosUsuario['id'];
-        $_SESSION['usuario'] = $dadosUsuario['usuario'];
-        $_SESSION['email']  = $dadosUsuario['email']; 
-
-        header("Location: cliente.php");
-        exit();
-    } else {
-        header('Location: login_index.php?error=' . urlencode("Senha incorreta!"));
-        exit();
-    }
-} else {
-    header('Location: login_index.php?error=' . urlencode("Usuário não encontrado!"));
-    exit();
 }
