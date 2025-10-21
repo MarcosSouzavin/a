@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lembrar = isset($_POST['lembrar']);
 
     // tenta por email ou usuario
-    $sql = "SELECT id, nome, usuario, email, senha FROM usuarios WHERE email = :login OR usuario = :login";
+   $sql = "SELECT id, usuario, email, senha FROM usuarios WHERE email = :login OR usuario = :login LIMIT 1";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':login', $login);
     $stmt->execute();
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (password_verify($senha, $user['senha'])) {
             $_SESSION['usuario_id'] = $user['id'];
-            $_SESSION['usuario'] = $user['usuario'] ?? $user['nome'];
+            $_SESSION['usuario'] = $user['usuario'];
             $_SESSION['email'] = $user['email'];
 
             if ($lembrar) {
