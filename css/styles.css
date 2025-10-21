@@ -988,31 +988,72 @@ body {
   to { transform: scale(2.5); opacity: 0; }
 }
 /* ===== CORREÇÃO MENU MOBILE SOBRE SEARCH ===== */
+/* ===== FIX FINAL DO MENU MOBILE (VERSÃO GOLD) ===== */
 @media (max-width: 768px) {
-  .search-bar {
+  .header {
     position: relative;
-    z-index: 5; /* abaixo do menu */
+    z-index: 20; /* garante que o menu fique por cima de tudo */
+  }
+
+  .menu-hamburguer {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    z-index: 10000;
+    transition: transform 0.3s ease;
+  }
+
+  .menu-hamburguer.open {
+    transform: rotate(90deg);
+  }
+
+  .nav {
+    display: none;
+    flex-direction: column;
+    background: rgba(44, 62, 80, 0.97);
+    position: absolute;
+    top: 65px;
+    right: 15px;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    min-width: 200px;
+    z-index: 9999;
+    animation: fadeInMenu 0.3s ease-out forwards;
   }
 
   .nav.active {
-    position: absolute;
-    z-index: 10; /* acima da barra de busca */
-    background: rgba(44, 62, 80, 0.98);
-    backdrop-filter: blur(8px);
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    display: flex;
+  }
+
+  @keyframes fadeInMenu {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .nav-link {
-    width: 100%;
     padding: 14px;
+    color: #fff;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    font-size: 1.1rem;
     text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
   .nav-link:last-child {
     border-bottom: none;
   }
-}
 
+  .nav-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}

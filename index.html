@@ -118,11 +118,38 @@
   </div>
 
   <!-- Scripts principais -->
+   <script src="js/index.js"></script>
   <script src="js/product-options.js"></script>
-  <script src="js/index.js"></script>
+  
 
   <!-- Script de checkout visitante -->
   <script>
+    document.addEventListener("DOMContentLoaded", () => {
+  const menuHamburguer = document.querySelector(".menu-hamburguer");
+  const nav = document.querySelector(".nav");
+
+  if (menuHamburguer && nav) {
+    menuHamburguer.addEventListener("click", (e) => {
+      e.stopPropagation();
+      nav.classList.toggle("active");
+      menuHamburguer.classList.toggle("open");
+    });
+
+    nav.addEventListener("click", (e) => {
+      if (e.target.classList.contains("nav-link")) {
+        nav.classList.remove("active");
+        menuHamburguer.classList.remove("open");
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!nav.contains(e.target) && !menuHamburguer.contains(e.target)) {
+        nav.classList.remove("active");
+        menuHamburguer.classList.remove("open");
+      }
+    });
+  }
+});
   document.addEventListener('DOMContentLoaded', () => {
     console.log("Checkout visitante pronto.");
 

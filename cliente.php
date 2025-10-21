@@ -144,9 +144,32 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
 <script src="js/index.js"></script>
 
 <script>
-// ----------------------------
-// FRETE
-// ----------------------------
+document.addEventListener("DOMContentLoaded", () => {
+  const menuHamburguer = document.querySelector(".menu-hamburguer");
+  const nav = document.querySelector(".nav");
+
+  if (menuHamburguer && nav) {
+    menuHamburguer.addEventListener("click", (e) => {
+      e.stopPropagation();
+      nav.classList.toggle("active");
+      menuHamburguer.classList.toggle("open");
+    });
+
+    nav.addEventListener("click", (e) => {
+      if (e.target.classList.contains("nav-link")) {
+        nav.classList.remove("active");
+        menuHamburguer.classList.remove("open");
+      }
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!nav.contains(e.target) && !menuHamburguer.contains(e.target)) {
+        nav.classList.remove("active");
+        menuHamburguer.classList.remove("open");
+      }
+    });
+  }
+});
 document.getElementById('enderecoForm').addEventListener('submit', async function (e) {
     e.preventDefault();
     const endereco = document.getElementById('endereco').value.trim();
