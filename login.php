@@ -1,14 +1,14 @@
 <?php
 session_start();
 
-require_once 'conexao.php'; // este deve criar $pdo (PDO conectado)
+require_once 'conexao.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $login = trim($_POST['email'] ?? $_POST['usuario'] ?? '');
     $senha = trim($_POST['senha'] ?? '');
     $lembrar = isset($_POST['lembrar']);
 
-    // tenta por email ou usuario
+
    $sql = "SELECT id, usuario, email, senha FROM usuarios WHERE email = :login OR usuario = :login LIMIT 1";
     $stmt = $pdo->prepare($sql);
     $stmt->bindParam(':login', $login);

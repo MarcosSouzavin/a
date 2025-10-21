@@ -141,9 +141,9 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
     </div>
 </div>
 
-<script src="js/product-options.js"></script>
-<script src="js/index.js"></script>
-<script src="js/ui_control.js"></script>
+   <script src="js/index.js?v=4.1.3"></script>
+  <script src="js/product-options.js?v=4.1.3"></script>
+  <script src="js/ui_control.js?v=4.1.3"></script>
 
 <script>
 // ----------------------------
