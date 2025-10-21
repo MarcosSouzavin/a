@@ -168,16 +168,20 @@ window.adjustQuantity = async function (uid, amount) {
 window.toggleCart = function (forceOpen = false) {
   console.log("toggleCart called with forceOpen:", forceOpen);
   const sidebar = document.querySelector(".cart-sidebar");
+  const backdrop = document.querySelector(".cart-backdrop");
   console.log("sidebar element:", sidebar);
   if (!sidebar) return;
   if (forceOpen === true) {
     sidebar.classList.add("active");
+    if (backdrop) backdrop.classList.add("active");
     console.log("Added active class");
   } else if (forceOpen === false) {
     sidebar.classList.remove("active");
+    if (backdrop) backdrop.classList.remove("active");
     console.log("Removed active class");
   } else {
     sidebar.classList.toggle("active");
+    if (backdrop) backdrop.classList.toggle("active");
     console.log("Toggled active class, now:", sidebar.classList.contains("active"));
   }
 };
@@ -371,7 +375,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.addEventListener('click', (e) => {
     const sidebar = document.querySelector('.cart-sidebar');
     const button = document.querySelector('.cart-button');
+    const backdrop = document.querySelector('.cart-backdrop');
     if (sidebar && sidebar.classList.contains('active') && !sidebar.contains(e.target) && !button.contains(e.target)) {
+      toggleCart(false);
+    }
+    // Fechar ao clicar no backdrop
+    if (backdrop && backdrop.classList.contains('active') && e.target === backdrop) {
       toggleCart(false);
     }
   });

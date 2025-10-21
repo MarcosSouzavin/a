@@ -368,6 +368,22 @@ body {
 }
 .cart-button:active { transform: translateY(1px); }
 
+/* Backdrop para mobile */
+.cart-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1399; /* below sidebar */
+  display: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.cart-backdrop.active {
+  display: block;
+}
+
 /* badge */
 .cart-count{
   position: absolute;
@@ -654,22 +670,7 @@ body {
   .menu-grid { padding: 12px 0; gap:10px; }
   .item-image { height: 160px; }
 }
-.menu-hamburguer {
-  cursor: pointer;
-  user-select: none;
-  z-index: 1100; /* acima do conteúdo */
-  background: transparent;
-  border: none;
-  font-size: 26px;
-  line-height: 1;
-  transition: transform 0.3s ease;
-}
-.menu-hamburguer.open {
-  transform: rotate(90deg);
-}
-.nav {
-  z-index: 1090;
-} /* garante que nav fique sob o hambúrguer se precisar */
+
 /* Animação simples para modal */   
 
 /* Estilo para o container do cálculo de frete */
@@ -871,3 +872,119 @@ body {
     font-weight: bold;
     color: #d9534f;
 }
+/* ===========================
+   🔥 ANIMAÇÕES TOP VENDRALY
+   =========================== */
+
+/* === Botão X com pulso e rotação === */
+.modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 42px;
+  height: 42px;
+  background: #fff;
+  border: 2px solid #b3ab3a;
+  border-radius: 50%;
+  color: #b3ab3a;
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #b3ab3a22;
+  transition: all 0.3s ease;
+  z-index: 10;
+  animation: modalClosePulse 2.5s infinite ease-in-out;
+}
+.modal-close:hover {
+  background: #b3ab3a;
+  color: #fff;
+  border-color: #b3ab3a;
+  transform: rotate(180deg) scale(1.1);
+  box-shadow: 0 6px 20px #b3ab3a55;
+}
+@keyframes modalClosePulse {
+  0%, 100% { box-shadow: 0 2px 8px #b3ab3a22; }
+  50% { box-shadow: 0 0 15px #b3ab3a55; }
+}
+
+/* === Modal entrando com elastic === */
+@keyframes modalIn {
+  0% {
+    transform: scale(0.85) translateY(40px);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.05) translateY(-6px);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes modalOut {
+  from { transform: scale(1) translateY(0); opacity: 1; }
+  to { transform: scale(0.8) translateY(40px); opacity: 0; }
+}
+
+/* aplica animação no modal-card */
+.modal-card {
+  animation: modalIn 0.45s cubic-bezier(0.22, 1.02, 0.36, 1);
+  will-change: transform, opacity;
+}
+
+/* === Carrinho deslizando com bounce === */
+.cart-sidebar {
+  transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+.cart-sidebar.active {
+  animation: cartBounceIn 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+}
+@keyframes cartBounceIn {
+  0% { transform: translateX(110%) scale(0.9); opacity: 0; }
+  60% { transform: translateX(-4%) scale(1.03); opacity: 1; }
+  100% { transform: translateX(0) scale(1); }
+}
+
+/* === Mobile: o carrinho vem de baixo com elastic === */
+@media (max-width: 768px) {
+  @keyframes cartSlideUp {
+    0% { transform: translateY(100%); opacity: 0; }
+    60% { transform: translateY(-6%); opacity: 1; }
+    100% { transform: translateY(0); }
+  }
+  .cart-sidebar.active {
+    animation: cartSlideUp 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+}
+
+/* === Botão flutuante com micro vibração e brilho === */
+.cart-button {
+  animation: floatPulse 3s infinite ease-in-out;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.cart-button:hover {
+  transform: scale(1.08) rotate(-8deg);
+  box-shadow: 0 10px 25px rgba(179,171,58,0.4);
+}
+@keyframes floatPulse {
+  0%, 100% { transform: translateY(0); box-shadow: 0 6px 18px rgba(0,0,0,0.12); }
+  50% { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(179,171,58,0.25); }
+}
+
+/* === Extra: quando clicar, uma onda suave === */
+.cart-button:active::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  animation: ripple 0.5s ease-out;
+}
+@keyframes ripple {
+  from { transform: scale(0); opacity: 1; }
+  to { transform: scale(2.5); opacity: 0; }
+}
+

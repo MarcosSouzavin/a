@@ -65,6 +65,9 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
     </div>
 </main>
 
+<!-- Backdrop para mobile -->
+<div class="cart-backdrop"></div>
+
 <!-- Botão flutuante do carrinho -->
 <div class="cart-floating">
     <button class="cart-button">
