@@ -616,15 +616,17 @@ body {
   .cart-floating { bottom: 18px; right: 18px; }
   .cart-button { width:56px; height:56px; }
 
-  /* sidebar vira painel full-screen empilhado do topo à base */
+  /* sidebar vira painel full-screen deslizando do bottom */
   .cart-sidebar {
     width: 100%;
     max-width: 100%;
     padding: 16px;
-    transform: translateX(100%); /* fechado */
+    transform: translateY(100%); /* fechado - desliza do bottom */
     background: linear-gradient(180deg, var(--gray), var(--gray));
+    border-radius: 20px 20px 0 0; /* cantos superiores arredondados */
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
   }
-  .cart-sidebar.active { transform: translateX(0); }
+  .cart-sidebar.active { transform: translateY(0); }
 
   /* reduzir espaços dentro do carrinho pra caber */
   .cart-items li { padding: 8px; gap: 8px; }
@@ -660,9 +662,14 @@ body {
   border: none;
   font-size: 26px;
   line-height: 1;
+  transition: transform 0.3s ease;
 }
-.menu-hamburguer.open { transform: rotate(0deg); } /* placeholder para efeitos */
-.nav { z-index: 1090; } /* garante que nav fique sob o hambúrguer se precisar */
+.menu-hamburguer.open {
+  transform: rotate(90deg);
+}
+.nav {
+  z-index: 1090;
+} /* garante que nav fique sob o hambúrguer se precisar */
 /* Animação simples para modal */   
 
 /* Estilo para o container do cálculo de frete */

@@ -382,4 +382,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       toggleCart(false);
     }
   });
+
+  // Menu hamburguer mobile
+  const menuHamburguer = document.querySelector('.menu-hamburguer');
+  const nav = document.querySelector('.nav');
+  if (menuHamburguer && nav) {
+    menuHamburguer.addEventListener('click', () => {
+      nav.classList.toggle('active');
+      menuHamburguer.classList.toggle('open');
+    });
+
+    // Fechar menu ao clicar em um link
+    nav.addEventListener('click', (e) => {
+      if (e.target.classList.contains('nav-link')) {
+        nav.classList.remove('active');
+        menuHamburguer.classList.remove('open');
+      }
+    });
+
+    // Fechar menu ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!menuHamburguer.contains(e.target) && !nav.contains(e.target)) {
+        nav.classList.remove('active');
+        menuHamburguer.classList.remove('open');
+      }
+    });
+  }
 });
