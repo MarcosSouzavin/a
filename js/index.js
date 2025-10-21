@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Cart button found:", cartButton);
     cartButton.addEventListener("click", (e) => {
       console.log("Cart button clicked");
-      toggleCart();
+      toggleCart(null); // Passar null para toggle
     });
   } else {
     console.log("Cart button not found");
