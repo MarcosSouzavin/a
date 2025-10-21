@@ -1,4 +1,4 @@
-// === FUNÇÕES UTILITÁRIAS ===
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("✨ UI Controller inicializado");
 

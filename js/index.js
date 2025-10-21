@@ -352,16 +352,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateCartCounter();
 
   // Event listener para o botão do carrinho
-  const cartButton = document.querySelector(".cart-button");
-  if (cartButton) {
-    console.log("Cart button found:", cartButton);
-    cartButton.addEventListener("click", (e) => {
-      console.log("Cart button clicked");
-      toggleCart(null); // Passar null para toggle
-    });
-  } else {
-    console.log("Cart button not found");
-  }
+
 
   // Event listener para fechar o carrinho
   const closeCartButton = document.querySelector(".close-cart");
@@ -370,18 +361,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Fechar carrinho ao clicar fora
-  document.addEventListener('click', (e) => {
-    const sidebar = document.querySelector('.cart-sidebar');
-    const button = document.querySelector('.cart-button');
-    const backdrop = document.querySelector('.cart-backdrop');
-    if (sidebar && sidebar.classList.contains('active') && !sidebar.contains(e.target) && !button.contains(e.target)) {
-      toggleCart(false);
-    }
-    // Fechar ao clicar no backdrop
-    if (backdrop && backdrop.classList.contains('active') && e.target === backdrop) {
-      toggleCart(false);
-    }
-  });
+ document.addEventListener('click', (e) => {
+  const sidebar = document.querySelector('.cart-sidebar');
+  const button = document.querySelector('.cart-button');
+  const modal = document.querySelector('#productModal');
+
+  // Ignora cliques que são dentro do carrinho, botão, backdrop ou modal
+  if (
+    sidebar?.contains(e.target) ||
+    button?.contains(e.target) ||
+    e.target.closest('.cart-backdrop') ||
+    modal?.classList.contains('active')
+  ) {
+    return;
+  }
+
+  // Se o carrinho estiver aberto e o clique for fora → fecha
+  if (sidebar && sidebar.classList.contains('active')) {
+    toggleCart(false);
+    console.log('🧱 Clique fora: fechando carrinho');
+  }
+});
+
 
   // Fechar carrinho ao pressionar ESC
   document.addEventListener('keydown', (e) => {
