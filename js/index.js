@@ -351,14 +351,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Inicializar contador do carrinho
   updateCartCounter();
 
-  // Event listener para o botão do carrinho
-
-
-  // Event listener para fechar o carrinho
-  const closeCartButton = document.querySelector(".close-cart");
-  if (closeCartButton) {
-    closeCartButton.addEventListener("click", () => toggleCart());
-  }
 
   // Fechar carrinho ao clicar fora
  document.addEventListener('click', (e) => {
@@ -366,7 +358,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const button = document.querySelector('.cart-button');
   const modal = document.querySelector('#productModal');
 
-  // Ignora cliques que são dentro do carrinho, botão, backdrop ou modal
+
   if (
     sidebar?.contains(e.target) ||
     button?.contains(e.target) ||
