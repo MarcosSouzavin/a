@@ -3,87 +3,6 @@ window.menuItems = window.menuItems || [];
 window.cartKey = "cart"; // chave unificada para todos
 window.freteValor = 0;
 
-// === FUNÇÕES UTILITÁRIAS ===
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("✨ UI Controller inicializado");
-
-  // ===== MENU MOBILE =====
-  const menuHamburguer = document.querySelector(".menu-hamburguer");
-  const nav = document.querySelector(".nav");
-
-  if (menuHamburguer && nav) {
-    menuHamburguer.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isActive = nav.classList.toggle("active");
-      menuHamburguer.classList.toggle("open", isActive);
-
-      // Fecha o carrinho se estiver aberto
-      const sidebar = document.querySelector(".cart-sidebar");
-      if (sidebar?.classList.contains("active")) {
-        sidebar.classList.remove("active");
-        document.querySelector(".cart-backdrop")?.classList.remove("active");
-      }
-    });
-
-    nav.addEventListener("click", (e) => {
-      if (e.target.classList.contains("nav-link")) {
-        nav.classList.remove("active");
-        menuHamburguer.classList.remove("open");
-      }
-    });
-  }
-
-  // ===== CARRINHO =====
-  const cartButton = document.querySelector(".cart-button");
-  const cartSidebar = document.querySelector(".cart-sidebar");
-  const backdrop = document.querySelector(".cart-backdrop");
-  const closeCartButton = document.querySelector(".close-cart");
-
-  function toggleCart(force) {
-    if (!cartSidebar) return;
-    const isOpen = force ?? !cartSidebar.classList.contains("active");
-
-    cartSidebar.classList.toggle("active", isOpen);
-    backdrop?.classList.toggle("active", isOpen);
-
-    // Fecha menu se aberto
-    nav?.classList.remove("active");
-    menuHamburguer?.classList.remove("open");
-  }
-
-  cartButton?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    toggleCart(true);
-  });
-
-  closeCartButton?.addEventListener("click", () => toggleCart(false));
-  backdrop?.addEventListener("click", () => toggleCart(false));
-
-  // Fecha tudo ao clicar fora
-  document.addEventListener("click", (e) => {
-    const insideCart = cartSidebar?.contains(e.target);
-    const insideMenu = nav?.contains(e.target);
-    const insideBtn = menuHamburguer?.contains(e.target) || cartButton?.contains(e.target);
-
-    if (!insideCart && !insideMenu && !insideBtn) {
-      cartSidebar?.classList.remove("active");
-      nav?.classList.remove("active");
-      backdrop?.classList.remove("active");
-      menuHamburguer?.classList.remove("open");
-    }
-  });
-
-  // Fecha com ESC
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      cartSidebar?.classList.remove("active");
-      nav?.classList.remove("active");
-      backdrop?.classList.remove("active");
-      menuHamburguer?.classList.remove("open");
-    }
-  });
-});
-
 function formatPrice(valor) {
   return Number(valor).toLocaleString("pt-BR", {
     minimumFractionDigits: 2,
@@ -483,14 +402,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Fechar menu ao clicar em um link
     nav.addEventListener('click', (e) => {
       if (e.target.classList.contains('nav-link')) {
-        nav.classList.remove('active');
-        menuHamburguer.classList.remove('open');
-      }
-    });
-
-    // Fechar menu ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!menuHamburguer.contains(e.target) && !nav.contains(e.target)) {
         nav.classList.remove('active');
         menuHamburguer.classList.remove('open');
       }

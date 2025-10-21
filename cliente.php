@@ -143,6 +143,7 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
 
 <script src="js/product-options.js"></script>
 <script src="js/index.js"></script>
+<script src="js/ui_control.js"></script>
 
 <script>
 // ----------------------------
