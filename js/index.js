@@ -2,6 +2,22 @@ window.cart = window.cart || [];
 window.menuItems = window.menuItems || [];
 window.cartKey = "cart"; // chave unificada para todos
 window.freteValor = 0;
+window.produtos = null; // Armazenará os produtos do JSON
+
+// Carrega os produtos do JSON
+async function loadProdutos() {
+    try {
+        const response = await fetch('sys/produtos.json');
+        const data = await response.json();
+        window.produtos = data.produtos;
+        console.log("Produtos carregados:", window.produtos);
+    } catch (error) {
+        console.error("Erro ao carregar produtos:", error);
+    }
+}
+
+// Carrega os produtos ao iniciar
+document.addEventListener('DOMContentLoaded', loadProdutos);
 
 function formatPrice(valor) {
   return Number(valor).toLocaleString("pt-BR", {
@@ -64,10 +80,17 @@ function updateCart() {
         ?.map((a) => `+ ${a.name}`)
         .join(", ") || "";
 
+      // 🔥 Busca informações completas do produto e sua imagem
+      const produtoCompleto = window.produtos?.find(p => p.id === item.id);
+      const imagemProduto = produtoCompleto?.image || item.image || "https://via.placeholder.com/150x150?text=Produto";
+      
       li.innerHTML = `
         <div class="cart-line-left">
-          <img src="${item.image || "img/default.png"}"
-               style="width:70px;height:70px;border-radius:10px;margin-right:8px;object-fit:cover;">
+          <img src="${imagemProduto}"
+               onerror="this.src='https://via.placeholder.com/150x150?text=Produto'"
+               alt="${item.name}"
+               loading="lazy"
+               style="width:70px;height:70px;border-radius:10px;margin-right:8px;object-fit:cover;background:#f5f5f5;">
           <div>
             <strong>${item.name}</strong> ${item.size ? `(${item.size})` : ""}<br>
             ${adicionais ? `<small>${adicionais}</small><br>` : ""}
@@ -96,9 +119,9 @@ function updateCart() {
   const totalEl = document.getElementById("cartTotal");
   if (totalEl) totalEl.textContent = formatPrice(total);
 
-  // Atualizar contador do carrinho flutuante
   updateCartCounter();
 }
+
 
 // === ATUALIZAR CONTADOR DO CARRINHO ===
 function updateCartCounter() {
@@ -111,9 +134,12 @@ function updateCartCounter() {
 
 // === ADICIONAR AO CARRINHO ===
 window.addToCart = async function (payload) {
+  // Busca o produto completo no array de produtos
+  const produtoOriginal = window.produtos?.find(p => p.id === payload.id);
+  
   const item = {
     uid: makeUid(),
-    productId: payload.id ?? null,
+    id: payload.id ?? null,
     name: payload.name,
     basePrice: Number(payload.basePrice || 0),
     size: payload.size || null,
@@ -123,7 +149,7 @@ window.addToCart = async function (payload) {
       name: x.name || "",
     })),
     quantity: Number(payload.quantity || 1),
-    image: payload.image || null,
+    image: (produtoOriginal?.image || payload.image || null),
   };
 
   const existing = cart.findIndex(
@@ -327,11 +353,14 @@ function closeProductModal() {
   document.getElementById("productModal").classList.add("hidden");
 }
 
-// === INICIALIZAÇÃO ===
-document.addEventListener("DOMContentLoaded", async () => {
-  cart = [];
+  document.addEventListener("DOMContentLoaded", async () => {
+    localStorage.removeItem(cartKey);
+    cart = [];
+    updateCart();
+  
+    menuItems = await fetchProdutos();
+    renderMenu(menuItems);
   await saveCart(cart);
-  updateCart();
 
   menuItems = await fetchProdutos();
   renderMenu(menuItems);
