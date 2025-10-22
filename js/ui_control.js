@@ -7,21 +7,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const nav = document.querySelector(".nav");
 
   if (menuHamburguer && nav) {
+    // Abre/fecha menu ao clicar no hamburguer
     menuHamburguer.addEventListener("click", (e) => {
       e.stopPropagation();
-      const isActive = nav.classList.toggle("active");
-      menuHamburguer.classList.toggle("open", isActive);
+      e.preventDefault();
+      nav.classList.toggle("active");
+      menuHamburguer.classList.toggle("open");
+    });
 
-      // Fecha o carrinho se estiver aberto
-      const sidebar = document.querySelector(".cart-sidebar");
-      if (sidebar?.classList.contains("active")) {
-        sidebar.classList.remove("active");
-        document.querySelector(".cart-backdrop")?.classList.remove("active");
+    // Fecha menu ao clicar em um link
+    nav.addEventListener("click", (e) => {
+      if (e.target.classList.contains("nav-link")) {
+        nav.classList.remove("active");
+        menuHamburguer.classList.remove("open");
       }
     });
 
-    nav.addEventListener("click", (e) => {
-      if (e.target.classList.contains("nav-link")) {
+    // Fecha menu ao clicar fora
+    document.addEventListener("click", (e) => {
+      if (!nav.contains(e.target) && !menuHamburguer.contains(e.target)) {
         nav.classList.remove("active");
         menuHamburguer.classList.remove("open");
       }
