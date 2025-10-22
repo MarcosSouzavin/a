@@ -32,9 +32,32 @@ let sucos = [];
 let adicionais = [];
 
 async function fetchProdutosJson() {
-    return fetch('API/produtos.php?' + Date.now())
-        .then(r => r.ok ? r.json() : { produtos: [], adicionais: [] })
-        .catch(() => ({ produtos: [], adicionais: [] }));
+    // Try API endpoint first; if it returns empty or fails, fall back to local sys/produtos.json
+    try {
+        const res = await fetch('API/produtos.php?' + Date.now());
+        if (res.ok) {
+            const data = await res.json();
+            // If data has produtos array or is non-empty, return it
+            if (data) {
+                if (Array.isArray(data) && data.length > 0) return { produtos: data, adicionais: [] };
+                if (data.produtos && Array.isArray(data.produtos) && data.produtos.length >= 0) return data;
+            }
+        }
+    } catch (e) {
+        console.log('fetchProdutosJson: API call failed', e);
+    }
+    // Fallback: try loading sys/produtos.json directly
+    try {
+        const res2 = await fetch('sys/produtos.json?' + Date.now());
+        if (res2.ok) {
+            const data2 = await res2.json();
+            if (Array.isArray(data2)) return { produtos: data2, adicionais: [] };
+            if (data2 && data2.produtos) return data2;
+        }
+    } catch (e) {
+        console.log('fetchProdutosJson: fallback fetch failed', e);
+    }
+    return { produtos: [], adicionais: [] };
 }
 
 function mapToSimpleDrinks(products) {
@@ -142,6 +165,56 @@ function montarAbaPagamento() {
 }
 
 let currentTab = 'produtos';
+let productSearchQuery = '';
+
+// global fallback handler so inline oninput can always call the filter
+window.__adminSearchInput = function(val) {
+    productSearchQuery = val;
+    console.log('admin search input (global):', val);
+    const c = document.getElementById('adminTabContent');
+    if (c) filterAdminItems(c, val);
+};
+
+function normalizeForSearch(str) {
+    if (!str) return '';
+    // remove accents/diacritics and lowercase for more robust matching
+    return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+}
+
+let adminSearchDelegationInstalled = false;
+
+function filterAdminItems(container) {
+    // prefer reading the actual search input text from the DOM (prodSearch or editSearch)
+    let rawQuery = productSearchQuery || '';
+    try {
+        const inputEl = container.querySelector('#prodSearch') || container.querySelector('#editSearch') || container.querySelector('input[type="search"]');
+        if (inputEl && typeof inputEl.value === 'string') rawQuery = inputEl.value;
+    } catch (e) {
+        // ignore
+    }
+    const q = normalizeForSearch(rawQuery || '');
+    const items = Array.from(container.querySelectorAll('.admin-item'));
+    let visible = 0;
+    items.forEach(item => {
+        // use the whole visible text of the item for matching (more robust across layouts)
+        const allText = normalizeForSearch(item.textContent || item.innerText || '');
+        const match = !q || allText.includes(q);
+        item.style.display = match ? '' : 'none';
+        if (match) visible++;
+    });
+    // show or hide no-results message
+    let noEl = container.querySelector('.no-results-msg');
+    if (!noEl) {
+        noEl = document.createElement('div');
+        noEl.className = 'no-results-msg';
+        noEl.innerHTML = '<em>Nenhum produto encontrado para a pesquisa.</em>';
+        noEl.style.display = 'none';
+        container.appendChild(noEl);
+    }
+    noEl.style.display = visible === 0 ? '' : 'none';
+    console.log('filterAdminItems', { query: rawQuery, totalItems: items.length, visible });
+    return visible;
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     if (!isLoggedIn()) {
@@ -211,12 +284,35 @@ function setupAdminTabs() {
             location.reload();
         };
     }
+
+    // install delegated input listener once to ensure filtering always triggers
+    if (!adminSearchDelegationInstalled) {
+        document.addEventListener('input', function(e) {
+            const target = e.target;
+            if (!target) return;
+            if (target.id === 'prodSearch' || target.id === 'editSearch') {
+                productSearchQuery = target.value || '';
+                const tabContent = document.getElementById('adminTabContent');
+                if (tabContent) filterAdminItems(tabContent);
+            }
+        });
+        adminSearchDelegationInstalled = true;
+    }
 }
 
 async function renderTab(tab) {
     const tabContent = document.getElementById('adminTabContent');
     if (tab === 'produtos') {
         tabContent.innerHTML = '<h2>Produtos Cadastrados</h2>';
+        tabContent.innerHTML += `
+            <label style="display:block;margin:10px 0;">Pesquisar: <input type="search" id="prodSearch" placeholder="Digite nome do produto" style="width:100%;padding:6px;" value="${productSearchQuery}"></label>
+        `;
+        const prodSearchEl = tabContent.querySelector('#prodSearch');
+            prodSearchEl.addEventListener('input', function() {
+                productSearchQuery = this.value;
+                console.log('admin search input:', productSearchQuery);
+            filterAdminItems(tabContent);
+        });
         if (!Array.isArray(menuItems) || menuItems.length === 0) {
             tabContent.innerHTML += '<em>Nenhum produto cadastrado.</em>';
             return;
@@ -243,6 +339,8 @@ async function renderTab(tab) {
                 </div>
             `;
         });
+        // apply DOM filter (keeps focus while typing)
+        filterAdminItems(tabContent);
     } else if (tab === 'adicionar') {
         tabContent.innerHTML = `
             <form id="addProductForm" class="admin-form">
@@ -296,6 +394,17 @@ async function renderTab(tab) {
             return;
         }
         // Alteração: Mostrar apenas pizzas (produtos regulares) para edição, excluindo bebidas e sucos
+        tabContent.innerHTML += `
+            <label style="display:block;margin:10px 0;">Pesquisar: <input type="search" id="editSearch" placeholder="Pesquisar produto para editar" style="width:100%;padding:6px;" value="${productSearchQuery}"></label>
+        `;
+        const editSearchEl = tabContent.querySelector('#editSearch');
+            editSearchEl.addEventListener('input', function() {
+                productSearchQuery = this.value;
+                console.log('admin edit search input:', productSearchQuery);
+            filterAdminItems(tabContent);
+        });
+
+        const qNorm2 = normalizeForSearch(productSearchQuery);
         const regularProducts = menuItems.filter(p => !String(p.id).startsWith('drink_') && !String(p.id).startsWith('suco_'));
         regularProducts.forEach((item, idx) => {
             let sizeLabels = '';
@@ -321,6 +430,8 @@ async function renderTab(tab) {
                 </div>
             `;
         });
+        // apply DOM filter (keeps focus while typing)
+        filterAdminItems(tabContent);
         // Adicionar listeners de edição/exclusão
         setTimeout(() => {
             document.querySelectorAll('.admin-item').forEach((div, idx) => {
