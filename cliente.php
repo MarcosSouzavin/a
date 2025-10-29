@@ -37,17 +37,19 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
 <body>
 
   <header class="header">
-    <div class="container">
+     <div class="container">
       <h1 class="logo">
         <img src="img/stg.jpeg" alt="Delícias Gourmet" class="logo-image">
         SquinaXV
       </h1>
       <div class="menu-hamburguer">☰</div>
       <nav class="nav">
-         <a href="#ofertas" class="nav-link">Ofertas</a>
-            <a href="#contacto" class="nav-link">Contato</a>
-            <a href="dados.php" class="nav-link">Meus Dados</a>
-            <a href="logout.php" class="nav-link active">Sair</a>
+        <div class="menu-tabs" id="menuTabs" style="margin-left:12px;">
+          <a href="login_index.php" class="nav-link active">Login</a>
+          <a href="#contato" class="nav-link">Contato</a>
+          <button class="tab active" data-filter="all">Todos</button>
+          <button class="tab" data-filter="drinks">Bebidas</button>
+        </div>
       </nav>
     </div>
   </header>

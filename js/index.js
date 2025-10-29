@@ -3,6 +3,7 @@ window.menuItems = window.menuItems || [];
 window.cartKey = "cart"; // chave unificada para todos
 window.freteValor = 0;
 window.produtos = null; // Armazenará os produtos do JSON
+let currentTab = 'all'; // 'all' or 'drinks'
 
 // Carrega os produtos do JSON
 async function loadProdutos() {
@@ -28,6 +29,29 @@ function formatPrice(valor) {
 
 function makeUid() {
   return "uid_" + Math.random().toString(36).substr(2, 9) + "_" + Date.now();
+}
+
+function isDrinkProduct(p) {
+  if (!p || p.id === undefined || p.id === null) return false;
+  const idStr = String(p.id).toLowerCase();
+  return idStr.startsWith('drink_') || idStr.startsWith('suco_');
+}
+
+function applyFilters() {
+  // aplica filtro por aba e pelo input de busca
+  const searchInput = document.getElementById('searchInput');
+  const term = (searchInput?.value || '').toLowerCase().trim();
+  let filtered = Array.isArray(menuItems) ? menuItems.slice() : [];
+
+  if (currentTab === 'drinks') {
+    filtered = filtered.filter(isDrinkProduct);
+  }
+
+  if (term) {
+    filtered = filtered.filter(i => (i.name || '').toLowerCase().includes(term));
+  }
+
+  renderMenu(filtered);
 }
 
 async function getCart() {
@@ -359,21 +383,29 @@ function closeProductModal() {
     updateCart();
   
     menuItems = await fetchProdutos();
-    renderMenu(menuItems);
-  await saveCart(cart);
+    await saveCart(cart);
+    // render inicial aplicando filtros/pesquisa (padrão = todos)
+    applyFilters();
 
-  menuItems = await fetchProdutos();
-  renderMenu(menuItems);
-
-  // filtro de busca
+  // filtro de busca + abas
   const searchInput = document.getElementById("searchInput");
   if (searchInput) {
-    searchInput.addEventListener("input", (e) => {
-      const term = e.target.value.toLowerCase();
-      const filtered = menuItems.filter((i) =>
-        i.name.toLowerCase().includes(term)
-      );
-      renderMenu(filtered);
+    searchInput.addEventListener("input", () => {
+      applyFilters();
+    });
+  }
+
+  // abas (Todos / Bebidas)
+  const menuTabs = document.getElementById('menuTabs');
+  if (menuTabs) {
+    menuTabs.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-filter]');
+      if (!btn) return;
+      const f = btn.dataset.filter || 'all';
+      currentTab = f;
+      // atualizar classes
+      Array.from(menuTabs.querySelectorAll('button')).forEach(b => b.classList.toggle('active', b === btn));
+      applyFilters();
     });
   }
 

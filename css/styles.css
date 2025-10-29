@@ -152,6 +152,31 @@ body {
     gap: 1.5rem;
 }
 
+/* Menu tabs (inline tabs next to nav links) */
+.menu-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.menu-tabs .tab {
+  background: transparent;
+  color: #fff;
+  border: none; /* match nav-link look */
+  padding: 0.6rem 1rem; /* same as .nav-link */
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 400; /* remove bold */
+  transition: background 0.18s, transform 0.12s;
+  text-decoration: none;
+  font-size: 1rem;
+}
+.menu-tabs .tab:hover {
+  background: rgba(255,255,255,0.15);
+}
+.menu-tabs .tab.active {
+  background: rgba(255,255,255,0.15);
+}
+
 .nav-link {
     color: #fff;
     text-decoration: none;
@@ -194,6 +219,28 @@ body {
         box-shadow: 0 4px 12px rgba(0,0,0,0.25);
         overflow: hidden;
     }
+
+    /* When nav collapses on mobile, show menu-tabs as column inside the nav */
+    .nav .menu-tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      padding: 8px 0 8px 0;
+      margin: 6px 0 10px 0;
+    }
+    .nav .menu-tabs .tab {
+      width: 100%;
+      text-align: left;
+      padding: 14px; /* match mobile .nav-link padding */
+      border: none;
+      background: transparent;
+      color: #fff;
+      border-radius: 0;
+    }
+    .nav .menu-tabs .tab.active { background: rgba(255,255,255,0.15); }
+
+/* ensure active tab isn't bold */
+.menu-tabs .tab.active { font-weight: 400; }
 
     .nav.active {
         display: flex;
