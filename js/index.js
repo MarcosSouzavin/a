@@ -154,9 +154,10 @@ window.addToCart = async function (payload) {
 
   const existing = cart.findIndex(
     (i) =>
-      i.productId === item.productId &&
+      // compare using the actual product id field ("id")
+      i.id === item.id &&
       i.size === item.size &&
-      JSON.stringify(i.adicionais) === JSON.stringify(item.adicionais)
+      JSON.stringify(i.adicionais || []) === JSON.stringify(item.adicionais || [])
   );
 
   if (existing >= 0) {
