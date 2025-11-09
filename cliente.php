@@ -45,6 +45,9 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
       <div class="menu-hamburguer">☰</div>
       <nav class="nav">
         <div class="menu-tabs" id="menuTabs" style="margin-left:12px;">
+          <button id="themeToggle" class="theme-toggle">
+            <i class="fas fa-moon"></i>
+          </button>
           <a href="login_index.php" class="nav-link active">Login</a>
           <a href="#contato" class="nav-link">Contato</a>
           <button class="tab active" data-filter="all">Todos</button>
@@ -237,6 +240,18 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
     });
   });
   </script>
+<!-- VLibras Widget -->
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
 
 </body>
 </html>

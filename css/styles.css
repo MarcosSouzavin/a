@@ -1130,5 +1130,260 @@ body {
   .nav-link:hover {
     background: rgba(255, 255, 255, 0.15);
   }
+}/* ---------- BOTÃO DE TEMA ---------- */
+.theme-toggle {
+  background: none;
+  border: none;
+  color: #222;
+  font-size: 1.4rem;
+  margin-left: 12px;
+  cursor: pointer;
+  transition: color 0.3s, transform 0.2s;
 }
+
+.theme-toggle:hover {
+  color: #ffb300;
+  transform: rotate(10deg);
+}
+
+/* ---------- TEMA ESCURO ---------- */
+body.dark-mode {
+  background-color: #0e0e0e;
+  color: #f1f1f1;
+}
+
+/* Header dourado permanece */
+body.dark-mode .header {
+  background-color: #b8a43b;
+  color: #000;
+}
+
+body.dark-mode .nav-link {
+  color: #222;
+}
+
+/* Barra de busca */
+body.dark-mode .search-container {
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+}
+body.dark-mode .search-container input {
+  background-color: transparent;
+  color: #eee;
+}
+body.dark-mode .search-container i {
+  color: #ccc;
+}
+
+/* Cards de produtos */
+body.dark-mode .menu-grid .menu-item,
+body.dark-mode .menu-grid .product-card {
+  background-color: #1a1a1a !important;
+  color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+body.dark-mode .menu-grid .menu-item h3,
+body.dark-mode .menu-grid .product-card h3 {
+  color: #fff;
+}
+body.dark-mode .menu-grid .menu-item p,
+body.dark-mode .menu-grid .product-card p {
+  color: #ddd;
+}
+body.dark-mode .menu-grid .menu-item button,
+body.dark-mode .menu-grid .product-card button {
+  background-color: #2d2d2d;
+  color: #fff;
+  border: 1px solid #3d3d3d;
+}
+body.dark-mode .menu-grid .menu-item button:hover,
+body.dark-mode .menu-grid .product-card button:hover {
+  background-color: #ffb300;
+  color: #000;
+}
+
+/* ---------- CARRINHO LATERAL ---------- */
+body.dark-mode .cart-sidebar {
+  background-color: #1a1a1a;
+  color: #fff;
+  border-left: 2px solid #2a2a2a;
+}
+
+body.dark-mode .cart-header {
+  background-color: #1e1e1e;
+  border-bottom: 1px solid #333;
+}
+
+body.dark-mode .cart-items li {
+  background-color: #222;
+  color: #fff;
+  border: 1px solid #333;
+  box-shadow: none;
+}
+
+body.dark-mode .cart-items img {
+  border-radius: 6px;
+}
+
+body.dark-mode .cart-items button {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #444;
+}
+body.dark-mode .cart-items button:hover {
+  background-color: #ffb300;
+  color: #000;
+}
+
+body.dark-mode .cart-total {
+  background-color: #121212;
+  color: #f5f5f5;
+  border-top: 1px solid #333;
+}
+
+/* ---------- FORMULÁRIO DE ENDEREÇO ---------- */
+body.dark-mode .frete-container {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 10px;
+  color: #fff;
+}
+
+body.dark-mode .frete-container h3 {
+  color: #fff;
+}
+
+body.dark-mode .frete-container label {
+  color: #ccc;
+}
+
+body.dark-mode .frete-container input {
+  background-color: #2a2a2a;
+  border: 1px solid #444;
+  color: #fff;
+}
+
+body.dark-mode .frete-container button[type="submit"],
+body.dark-mode #checkoutButton {
+  background-color: #b8a43b;
+  color: #000;
+  border: none;
+  transition: background 0.3s;
+}
+
+body.dark-mode .frete-container button[type="submit"]:hover,
+body.dark-mode #checkoutButton:hover {
+  background-color: #ffca28;
+}
+
+/* ---------- MODAL ---------- */
+body.dark-mode .modal-card {
+  background-color: #1b1b1b;
+  color: #fff;
+}
+body.dark-mode .modal-header {
+  border-bottom: 1px solid #333;
+}
+
+/* ---------- TÍTULOS E TEXTOS ---------- */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5 {
+  color: #fff;
+}
+
+/* Ícone ativo (sol) */
+body.dark-mode .theme-toggle {
+  color: #ffb300;
+}
+/* ---------- AJUSTE FINAL DO CARRINHO NO MODO ESCURO ---------- */
+
+/* Corrige o fundo geral da sidebar */
+body.dark-mode .cart-sidebar {
+  background: #121212 !important;
+  color: #fff;
+}
+
+/* Header do carrinho */
+body.dark-mode .cart-header {
+  background: #1c1c1c;
+  border-bottom: 1px solid #333;
+  color: #fff;
+}
+body.dark-mode .cart-header h2 {
+  color: #fff;
+}
+
+/* Cards dentro do carrinho */
+body.dark-mode .cart-items li {
+  background: #1e1e1e !important;
+  border: 1px solid #2d2d2d;
+  color: #fff;
+}
+body.dark-mode .cart-items h4,
+body.dark-mode .cart-items p {
+  color: #fff !important;
+}
+body.dark-mode .cart-items .remove-item {
+  color: #ff6666 !important;
+}
+
+/* Total */
+body.dark-mode .cart-total {
+  background: #000 !important;
+  color: #fff !important;
+  border-top: 1px solid #333;
+}
+
+/* Seção de endereço */
+body.dark-mode .frete-container {
+  background: #1a1a1a !important;
+  border: 1px solid #2a2a2a;
+  color: #fff;
+}
+
+body.dark-mode .frete-container h3 {
+  color: #fff;
+}
+
+body.dark-mode .frete-container label {
+  color: #ddd;
+}
+
+body.dark-mode .frete-container input {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  color: #fff;
+}
+body.dark-mode .frete-container input::placeholder {
+  color: #aaa;
+}
+
+/* Botões dourados */
+body.dark-mode .frete-container button,
+body.dark-mode #checkoutButton {
+  background: linear-gradient(180deg, #d6c44a 0%, #b39c2b 100%);
+  color: #000;
+  border: none;
+  font-weight: 600;
+}
+body.dark-mode .frete-container button:hover,
+body.dark-mode #checkoutButton:hover {
+  background: linear-gradient(180deg, #ffdb4d 0%, #d4b200 100%);
+}
+
+/* Quantidade (+ / -) */
+body.dark-mode .cart-items button {
+  background: #333;
+  color: #fff;
+  border: 1px solid #444;
+}
+body.dark-mode .cart-items button:hover {
+  background: #ffb300;
+  color: #000;
+}
+
 

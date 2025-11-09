@@ -462,3 +462,23 @@ function closeProductModal() {
     });
   }
 });
+ document.addEventListener("DOMContentLoaded", () => {
+    const toggleButton = document.getElementById("themeToggle");
+    const currentTheme = localStorage.getItem("theme") || "light";
+
+    // Aplica o tema salvo
+    if (currentTheme === "dark") {
+      document.body.classList.add("dark-mode");
+      toggleButton.innerHTML = '<i class="fas fa-sun"></i>';
+    }
+
+    // Alterna entre os modos
+    toggleButton.addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      const isDark = document.body.classList.contains("dark-mode");
+      toggleButton.innerHTML = isDark
+        ? '<i class="fas fa-sun"></i>'
+        : '<i class="fas fa-moon"></i>';
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+  });

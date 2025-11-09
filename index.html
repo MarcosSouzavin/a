@@ -22,6 +22,9 @@
       <div class="menu-hamburguer">☰</div>
       <nav class="nav">
         <div class="menu-tabs" id="menuTabs" style="margin-left:12px;">
+          <button id="themeToggle" class="theme-toggle">
+            <i class="fas fa-moon"></i>
+          </button>
           <a href="login_index.php" class="nav-link active">Login</a>
           <a href="#contato" class="nav-link">Contato</a>
           <button class="tab active" data-filter="all">Todos</button>
@@ -122,98 +125,111 @@
   </div>
 
   <!-- Scripts principais -->
-   <script src="js/index.js?v=4.1.3"></script>
+  <script src="js/index.js?v=4.1.3"></script>
   <script src="js/product-options.js?v=4.1.3"></script>
   <script src="js/ui_control.js?v=4.1.3"></script>
-  
+
 
   <!-- Script de checkout visitante -->
   <script>
-     document.addEventListener("DOMContentLoaded", () => {
-  const menuHamburguer = document.querySelector(".menu-hamburguer");
-  const nav = document.querySelector(".nav");
+    document.addEventListener("DOMContentLoaded", () => {
+      const menuHamburguer = document.querySelector(".menu-hamburguer");
+      const nav = document.querySelector(".nav");
 
-  if (menuHamburguer && nav) {
-    menuHamburguer.addEventListener("click", (e) => {
-      e.stopPropagation();
-      nav.classList.toggle("active");
-      menuHamburguer.classList.toggle("open");
-    });
+      if (menuHamburguer && nav) {
+        menuHamburguer.addEventListener("click", (e) => {
+          e.stopPropagation();
+          nav.classList.toggle("active");
+          menuHamburguer.classList.toggle("open");
+        });
 
-    nav.addEventListener("click", (e) => {
-      if (e.target.classList.contains("nav-link")) {
-        nav.classList.remove("active");
-        menuHamburguer.classList.remove("open");
+        nav.addEventListener("click", (e) => {
+          if (e.target.classList.contains("nav-link")) {
+            nav.classList.remove("active");
+            menuHamburguer.classList.remove("open");
+          }
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!nav.contains(e.target) && !menuHamburguer.contains(e.target)) {
+            nav.classList.remove("active");
+            menuHamburguer.classList.remove("open");
+          }
+        });
       }
     });
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log("Checkout visitante pronto.");
 
-    document.addEventListener("click", (e) => {
-      if (!nav.contains(e.target) && !menuHamburguer.contains(e.target)) {
-        nav.classList.remove("active");
-        menuHamburguer.classList.remove("open");
-      }
-    });
-  }
-});
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log("Checkout visitante pronto.");
+      // 🔸 Frete fixo (sem API)
+      document.getElementById('enderecoForm').addEventListener('submit', e => {
+        e.preventDefault();
+        const endereco = document.getElementById('endereco').value.trim();
+        if (!endereco) return alert('Digite um endereço válido.');
+        const frete = 5.00;
+        document.getElementById('enderecoResultado').innerHTML =
+          `<p>Endereço: ${endereco}</p><p>Frete fixo: R$ ${frete.toFixed(2)}</p>`;
+        localStorage.setItem('endereco', endereco);
+        localStorage.setItem('frete', frete);
+      });
 
-    // 🔸 Frete fixo (sem API)
-    document.getElementById('enderecoForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const endereco = document.getElementById('endereco').value.trim();
-      if (!endereco) return alert('Digite um endereço válido.');
-      const frete = 5.00;
-      document.getElementById('enderecoResultado').innerHTML =
-        `<p>Endereço: ${endereco}</p><p>Frete fixo: R$ ${frete.toFixed(2)}</p>`;
-      localStorage.setItem('endereco', endereco);
-      localStorage.setItem('frete', frete);
-    });
+      // 🔸 Função pra salvar o pedido visitante
+      async function saveGuestCart() {
+        try {
+          const cartData = localStorage.getItem('cart');
+          const cartItems = cartData ? JSON.parse(cartData) : [];
 
-    // 🔸 Função pra salvar o pedido visitante
-    async function saveGuestCart() {
-      try {
-        const cartData = localStorage.getItem('cart');
-        const cartItems = cartData ? JSON.parse(cartData) : [];
+          console.log("Itens do carrinho visitante:", cartItems);
 
-        console.log("Itens do carrinho visitante:", cartItems);
+          if (!cartItems.length) {
+            alert("Seu carrinho está vazio!");
+            return false;
+          }
 
-        if (!cartItems.length) {
-          alert("Seu carrinho está vazio!");
+          const frete = Number(localStorage.getItem('frete') || 5.00);
+          const endereco = localStorage.getItem('endereco') || '';
+
+          const total = cartItems.reduce((acc, item) => {
+            const preco = Number(item.basePrice || item.price || 0);
+            const qtd = Number(item.quantity || 1);
+            const somaAdicionais = Array.isArray(item.adicionais)
+              ? item.adicionais.reduce((s, a) => s + Number(a.price || 0), 0)
+              : 0;
+            return acc + (preco + somaAdicionais) * qtd;
+          }, 0) + frete;
+
+          const pedido = { produtos: cartItems, frete, endereco, total };
+          localStorage.setItem('pedidoCheckout', JSON.stringify(pedido));
+
+          console.log("✅ Pedido visitante salvo:", pedido);
+          return true;
+        } catch (err) {
+          console.error("Erro ao salvar pedido visitante:", err);
           return false;
         }
-
-        const frete = Number(localStorage.getItem('frete') || 5.00);
-        const endereco = localStorage.getItem('endereco') || '';
-
-        const total = cartItems.reduce((acc, item) => {
-          const preco = Number(item.basePrice || item.price || 0);
-          const qtd = Number(item.quantity || 1);
-          const somaAdicionais = Array.isArray(item.adicionais)
-            ? item.adicionais.reduce((s, a) => s + Number(a.price || 0), 0)
-            : 0;
-          return acc + (preco + somaAdicionais) * qtd;
-        }, 0) + frete;
-
-        const pedido = { produtos: cartItems, frete, endereco, total };
-        localStorage.setItem('pedidoCheckout', JSON.stringify(pedido));
-
-        console.log("✅ Pedido visitante salvo:", pedido);
-        return true;
-      } catch (err) {
-        console.error("Erro ao salvar pedido visitante:", err);
-        return false;
       }
-    }
 
-    // 🔸 Quando clicar em "Finalizar Compra"
-    document.getElementById('checkoutButton').addEventListener('click', async e => {
-      e.preventDefault();
-      const ok = await saveGuestCart();
-      if (ok) window.location.href = 'checkout.php';
+      // 🔸 Quando clicar em "Finalizar Compra"
+      document.getElementById('checkoutButton').addEventListener('click', async e => {
+        e.preventDefault();
+        const ok = await saveGuestCart();
+        if (ok) window.location.href = 'checkout.php';
+      });
     });
-  });
   </script>
+<!-- VLibras Widget -->
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
 
 </body>
+
 </html>
