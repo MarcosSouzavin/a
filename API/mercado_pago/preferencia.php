@@ -1,118 +1,97 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// === CONFIGURAÇÕES MERCADO PAGO ===
-$ACCESS_TOKEN = "TEST-43f69931-7659-4ce3-8ad9-9ca7d1f7d44c";
-$BACK_URL = "https://projetosetim.com.br/2025/php1/checkout_success.php";
+header("Content-Type: application/json; charset=UTF-8");
 
-// === RECEBE DADOS DO PEDIDO ===
+require __DIR__ . '/../../vendor/autoload.php'; // CONFIRMA esse caminho!
+MercadoPago\SDK::setAccessToken("TEST-8463743141229895-111115-6d5fe7e0fdfda24f28f043b78683fee6-2982510408");
+
+
+// Lê o JSON do carrinho vindo do front
 $input = file_get_contents("php://input");
-$pedido = json_decode($input, true);
+$data = json_decode($input, true);
 
-if (!$pedido || empty($pedido['produtos'])) {
-    http_response_code(400);
-    echo json_encode(["error" => "Pedido inválido ou vazio."]);
-    exit;
+if (!$data || empty($data["produtos"])) {
+  http_response_code(400);
+  echo json_encode(["error" => "Carrinho vazio ou inválido"]);
+  exit;
 }
 
-// === MONTA ITENS ===
+// Monta itens
 $items = [];
-foreach ($pedido['produtos'] as $p) {
-    $nome = $p['nome'] ?? $p['name'] ?? 'Produto';
-    $qtd = (float)($p['quantidade'] ?? $p['qty'] ?? $p['quantity'] ?? 1);
-    $preco = (float)($p['preco'] ?? $p['price'] ?? $p['basePrice'] ?? 0);
-    $somaAdicionais = 0;
+foreach ($data["produtos"] as $p) {
+  $nome = $p["name"] ?? $p["nome"] ?? "Produto";
+  $qtd = (int)($p["quantity"] ?? $p["quantidade"] ?? 1);
+  $precoBase = (float)($p["basePrice"] ?? $p["preco"] ?? $p["price"] ?? 0);
 
-    if (!empty($p['adicionais']) && is_array($p['adicionais'])) {
-        foreach ($p['adicionais'] as $a) {
-            $somaAdicionais += (float)($a['preco'] ?? $a['price'] ?? 0);
-        }
+  // Soma de adicionais selecionados
+  $somaExtras = 0.0;
+  if (!empty($p["adicionais"]) && is_array($p["adicionais"])) {
+    foreach ($p["adicionais"] as $a) {
+      $somaExtras += (float)($a["price"] ?? $a["preco"] ?? 0);
     }
+  }
 
-    $unit = $preco + $somaAdicionais;
-    $items[] = [
-        "title" => $nome,
-        "quantity" => $qtd,
-        "unit_price" => round($unit, 2),
-        "currency_id" => "BRL"
-    ];
+  $precoFinal = round($precoBase + $somaExtras, 2); // importante arredondar em centavos
+
+  $item = new MercadoPago\Item();
+  $item->title = $nome;
+  $item->quantity = $qtd;
+  $item->unit_price = $precoFinal;
+  $item->currency_id = "BRL";
+  $items[] = $item;
 }
 
-// === FRETE (fixo se existir) ===
-if (!empty($pedido['frete']) && $pedido['frete'] > 0) {
-    $items[] = [
-        "title" => "Frete",
-        "quantity" => 1,
-        "unit_price" => (float)$pedido['frete'],
-        "currency_id" => "BRL"
-    ];
+// Frete (se aplicável) — você já soma no total do front.
+// Se quiser discriminar o frete como item separado, descomente:
+/*
+$frete = (float)($data["frete"] ?? 0);
+if ($frete > 0) {
+  $itemFrete = new MercadoPago\Item();
+  $itemFrete->title = "Frete";
+  $itemFrete->quantity = 1;
+  $itemFrete->unit_price = round($frete, 2);
+  $itemFrete->currency_id = "BRL";
+  $items[] = $itemFrete;
 }
+*/
 
-// === DADOS DO PAGAMENTO ===
-$pagamento = $pedido['pagamento'] ?? 'pix';
-$emailComprador = "cliente@teste.com";
-$external_ref = "PED_" . time();
+$preference = new MercadoPago\Preference();
+$preference->items = $items;
 
-// === MONTA PREFERÊNCIA ===
-$data = [
-    "items" => $items,
-    "payer" => [
-        "email" => $emailComprador,
-    ],
-    "external_reference" => $external_ref,
-    "back_urls" => [
-        "success" => $BACK_URL . "?status=success&pedido=" . $external_ref,
-        "failure" => $BACK_URL . "?status=failure&pedido=" . $external_ref,
-        "pending" => $BACK_URL . "?status=pending&pedido=" . $external_ref
-    ],
-    "auto_return" => "approved",
-    "payment_methods" => [
-        "excluded_payment_types" => [],
-        "installments" => 12
-    ]
+// ID único do pedido (use o ID real do seu sistema, se já existir)
+$pedidoId = $data["order_id"] ?? uniqid("PEDIDO_");
+$preference->external_reference = $pedidoId;
+
+// URLs de retorno (pós-checkout)
+$preference->back_urls = [
+  "success" => base_url("sucesso.php"),
+  "failure" => base_url("falha.php"),
+  "pending" => base_url("pendente.php"),
+];
+$preference->auto_return = "approved";
+
+// Webhook para receber mudanças de status
+$preference->notification_url = base_url("API/mercado_pago/webhook.php");
+
+// Metadados úteis
+$preference->metadata = [
+  "usuario_id"  => $data["usuario_id"] ?? null,
+  "tipoEntrega" => $data["tipoEntrega"] ?? null,
+  "pagamento"   => $data["pagamento"] ?? null,
+  "endereco"    => $data["endereco"] ?? null,
+  "observacoes" => $data["observacoes"] ?? null,
+  "frete"       => $data["frete"] ?? 0,
+  "total"       => $data["total"] ?? 0
 ];
 
-// === ENVIA PARA MERCADO PAGO ===
-$ch = curl_init();
-curl_setopt_array($ch, [
-    CURLOPT_URL => "https://api.mercadopago.com/checkout/preferences",
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_HTTPHEADER => [
-        "Content-Type: application/json",
-        "Authorization: Bearer " . $ACCESS_TOKEN
-    ],
-    CURLOPT_POST => true,
-    CURLOPT_POSTFIELDS => json_encode($data)
+$preference->save();
+
+// Em sandbox, sempre use o sandbox_init_point (link de teste)
+echo json_encode([
+  "preference_id" => $preference->id,
+  "init_point"    => $preference->sandbox_init_point,
+  "pedido_id"     => $pedidoId
 ]);
-
-$response = curl_exec($ch);
-$http = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$error = curl_error($ch);
-curl_close($ch);
-
-// === TRATA RESPOSTA ===
-if ($error) {
-    http_response_code(500);
-    echo json_encode(["error" => "Erro cURL: $error"]);
-    exit;
-}
-
-$result = json_decode($response, true);
-
-if ($http >= 200 && $http < 300 && isset($result['init_point'])) {
-    echo json_encode([
-        "success" => true,
-        "init_point" => $result['init_point'],
-        "id" => $result['id'],
-        "pedido_id" => $external_ref
-    ]);
-} else {
-    http_response_code($http);
-    echo json_encode([
-        "error" => "Falha ao criar preferência no Mercado Pago.",
-        "http" => $http,
-        "response" => $result
-    ]);
-}
-?>
-    
