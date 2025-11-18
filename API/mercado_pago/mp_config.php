@@ -1,17 +1,47 @@
 <?php
+// mp_config.php
+declare(strict_types=1);
+
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
+
+// Caminho do autoload do Composer
 require __DIR__ . '/../../vendor/autoload.php';
 
-// 🔐 Coloque aqui seu Access Token de TESTE primeiro
-$MP_ACCESS_TOKEN = "TEST-APP_USR-8463743141229895-111115-6d5fe7e0fdfda24f28f043b78683fee6-2982510408";
+use MercadoPago\MercadoPagoConfig;
 
-// (opcional) URL base pública para o webhook e back_urls
-// Em desenvolvimento local, use um túnel tipo ngrok para expor: https://seu-subdominio.ngrok.app
-$BASE_URL = "http://localhost/a/";
+// 🔐 Coloca aqui **SEU ACCESS TOKEN DE TESTE (TEST-...)**
+const MP_ACCESS_TOKEN = 'TEST-6484797286702843-111721-ae840b1dfc7bea47361a674589b9fc6a-1902528413';
 
-MercadoPago\SDK::setAccessToken($MP_ACCESS_TOKEN);
+// 🌐 URL base do seu projeto
+// No seu caso tá em: http://localhost/a
+const MP_BASE_URL = 'http://localhost/a/API/mercado_pago';
 
-// Função util para montar URL absoluta
-function base_url($path) {
-  global $BASE_URL;
-  return rtrim($BASE_URL, "/") . "/" . ltrim($path, "/");
+// Configura o SDK
+MercadoPagoConfig::setAccessToken(MP_ACCESS_TOKEN);
+
+/**
+ * Monta URL absoluta a partir da base
+ */
+function mp_base_url(string $path = ''): string
+{
+    $base = rtrim(MP_BASE_URL, '/');
+    $path = ltrim($path, '/');
+
+    return $path ? "$base/$path" : $base;
+}
+
+/**
+ * Resposta JSON padronizada de erro
+ */
+function mp_json_error(string $message, int $httpCode = 400): void
+{
+    http_response_code($httpCode);
+    header('Content-Type: application/json; charset=UTF-8');
+    echo json_encode([
+        'ok'      => false,
+        'error'   => $message,
+        'time'    => date('Y-m-d H:i:s'),
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
 }

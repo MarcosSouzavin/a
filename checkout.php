@@ -8,7 +8,7 @@ session_start();
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checkout - SquinaXV</title>
 <link rel="icon" href="img/stg.ico" type="image/x-icon">
-<link rel="stylesheet" href="css/styles.css">
+
 <style>
 body {
   font-family: 'Segoe UI', sans-serif;
@@ -88,6 +88,7 @@ textarea {
 
 <body>
 
+<!-- 🔥 IMPORTANTE: Este elemento é OBRIGATÓRIO -->
 <div class="checkout-container" id="checkoutResumo">
   <h1>Carregando pedido...</h1>
 </div>
@@ -96,191 +97,161 @@ textarea {
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
-  // 🔥 Usa chave unificada
-  const cartKey = "cart";
 
-  const pedidoJSON = localStorage.getItem("pedidoCheckout");
-  const carrinhoJSON = localStorage.getItem(cartKey);
+    const cartKey = "cart";
 
-  // 🔍 Prioriza o carrinho real salvo
-  let pedido = null;
-  if (carrinhoJSON) {
-    pedido = { produtos: JSON.parse(carrinhoJSON) };
-  } else if (pedidoJSON) {
-    pedido = JSON.parse(pedidoJSON);
-  }
-
-  if (!pedido || !pedido.produtos || pedido.produtos.length === 0) {
-    document.getElementById("checkoutResumo").innerHTML =
-      '<div class="empty">Seu carrinho está vazio.<br><a href="index.html">Voltar ao cardápio</a></div>';
-    return;
-  }
-
-  // --- monta lista de produtos ---
-  let html = `<h2>Resumo do Pedido</h2><ul>`;
-  let subtotal = 0;
-
-  pedido.produtos.forEach(p => {
-    const nome = p.name || p.nome || "Produto";
-    const qtd = Number(p.quantity ?? p.quantidade ?? 1);
-    const precoBase = Number(p.basePrice || p.preco || p.price || 0);
-    const tamanho = p.size || p.tamanho || "";
-    const imagem = p.image || "img/default.png";
-
-    // ⚙️ Usa apenas adicionais selecionados (não todos)
-    const adicionaisSelecionados = Array.isArray(p.adicionais)
-      ? p.adicionais.filter(a => a && (a.price || a.preco))
-      : [];
-
-    let somaExtras = 0;
-    let htmlExtras = "";
-
-    if (adicionaisSelecionados.length > 0) {
-      htmlExtras += `<ul class="adicionais-list">`;
-      adicionaisSelecionados.forEach(a => {
-        const nomeAd = a.name || a.nome || "Adicional";
-        const precoAd = Number(a.price || a.preco || 0);
-        somaExtras += precoAd;
-        htmlExtras += `<li>+ ${nomeAd} — R$ ${precoAd.toFixed(2)}</li>`;
-      });
-      htmlExtras += `</ul>`;
+    // Carrega carrinho salvo
+    let carrinho = [];
+    try {
+        const data = localStorage.getItem(cartKey);
+        if (data) carrinho = JSON.parse(data);
+    } catch (e) {
+        carrinho = [];
     }
 
-    const subtotalItem = (precoBase + somaExtras) * qtd;
-    subtotal += subtotalItem;
+    // Se carrinho estiver vazio
+    if (!Array.isArray(carrinho) || carrinho.length === 0) {
+        document.getElementById("checkoutResumo").innerHTML =
+            '<div class="empty">Seu carrinho está vazio.<br><a href="index.html">Voltar ao cardápio</a></div>';
+        return;
+    }
+
+    let subtotal = 0;
+    let html = `<h2>Resumo do Pedido</h2><ul>`;
+
+    carrinho.forEach(item => {
+        const nome = item.name ?? item.nome ?? "Produto";
+        const qtd = Number(item.quantity ?? item.quantidade ?? 1);
+        const precoBase = Number(item.basePrice ?? item.preco ?? item.price ?? 0);
+        const imagem = item.image ?? "img/default.png";
+
+        let somaExtras = 0;
+        let htmlExtras = "";
+
+        if (Array.isArray(item.adicionais)) {
+            htmlExtras += `<ul class="adicionais-list">`;
+            item.adicionais.forEach(add => {
+                const precoAd = Number(add.price ?? add.preco ?? 0);
+                somaExtras += precoAd;
+                htmlExtras += `<li>+ ${add.name ?? add.nome} — R$ ${precoAd.toFixed(2)}</li>`;
+            });
+            htmlExtras += `</ul>`;
+        }
+
+        const subtotalItem = (precoBase + somaExtras) * qtd;
+        subtotal += subtotalItem;
+
+        html += `
+            <li>
+                <div class="produto-info">
+                    <img src="${imagem}">
+                    <div class="produto-detalhes">
+                        <strong>${nome}</strong> x${qtd}
+                        ${htmlExtras}
+                    </div>
+                </div>
+                <span>R$ ${subtotalItem.toFixed(2)}</span>
+            </li>
+        `;
+    });
+
+    const freteValor = 5.00;
 
     html += `
-      <li>
-        <div class="produto-info">
-          <img src="${imagem}" alt="${nome}">
-          <div class="produto-detalhes">
-            <strong>${nome}</strong> ${tamanho ? `(${tamanho})` : ""} x${qtd}
-            ${htmlExtras}
-          </div>
+        </ul>
+
+        <h3>Entrega ou Retirada</h3>
+        <div class="radio-group">
+            <input type="radio" name="tipoEntrega" id="entrega" value="entrega" checked>
+            <label for="entrega">Entrega</label>
+
+            <input type="radio" name="tipoEntrega" id="retirada" value="retirada">
+            <label for="retirada">Retirada no local</label>
         </div>
-        <span>R$ ${subtotalItem.toFixed(2)}</span>
-      </li>
+
+        <h3>Endereço de Entrega</h3>
+        <input type="text" id="endereco" placeholder="Rua, número, bairro..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
+
+        <h3>Confira o pedido!</h3>
+        <div class="radio-group">
+            <input type="radio" name="pagamento" id="pix" value="pix" checked><label for="pix">Proseguir</label>
+        </div>
+
+        <h3>Observações</h3>
+        <textarea id="observacoes" style="width:100%;height:80px;"></textarea>
+
+        <p class="frete" id="freteInfo">Frete: R$ ${freteValor.toFixed(2)}</p>
+        <p class="total"><strong>Total: R$ <span id="valorTotal">0.00</span></strong></p>
+
+        <button id="btnPagar" class="btn-pagar">Confirmar e Pagar</button>
     `;
-  });
 
-  // --- frete fixo ---
-  const freteValor = 5.00;
-  const enderecoSalvo = localStorage.getItem("endereco") || "";
+    document.getElementById("checkoutResumo").innerHTML = html;
 
-  html += `
-    </ul>
+    // FUNÇÃO PARA CALCULAR TOTAL
+    function recalcularTotal() {
+        const tipo = document.querySelector("input[name='tipoEntrega']:checked").value;
+        const frete = (tipo === "entrega") ? freteValor : 0;
+        document.getElementById("freteInfo").textContent = `Frete: R$ ${frete.toFixed(2)}`;
+        const total = subtotal + frete;
+        document.getElementById("valorTotal").textContent = total.toFixed(2);
+        return frete;
+    }
 
-    <div class="retirada">
-      <h3>Entrega ou Retirada</h3>
-      <div class="radio-group">
-        <input type="radio" id="entrega" name="tipoEntrega" value="entrega" checked>
-        <label for="entrega">Entrega</label>
-        <input type="radio" id="retirada" name="tipoEntrega" value="retirada">
-        <label for="retirada">Retirada no local</label>
-      </div>
-    </div>
+    recalcularTotal();
 
-    <div class="endereco">
-      <h3>Endereço de Entrega</h3>
-      <input type="text" id="endereco" placeholder="Rua, número, bairro, cidade" 
-             value="${enderecoSalvo}" 
-             style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
-    </div>
-
-    <div class="pagamento">
-      <h3>Forma de Pagamento</h3>
-      <div class="radio-group">
-        <input type="radio" id="pix" name="pagamento" value="pix" checked><label for="pix">PIX</label>
-        <input type="radio" id="credito" name="pagamento" value="credito"><label for="credito">Crédito</label>
-        <input type="radio" id="debito" name="pagamento" value="debito"><label for="debito">Débito</label>
-        <input type="radio" id="dinheiro" name="pagamento" value="dinheiro"><label for="dinheiro">Dinheiro</label>
-      </div>
-    </div>
-
-    <div class="observacoes">
-      <h3>Observações</h3>
-      <textarea id="observacoes" placeholder="Ex: sem cebola, entregar no portão..."></textarea>
-    </div>
-
-    <p class="frete" id="freteInfo">Frete: R$ ${freteValor.toFixed(2)}</p>
-    <p class="total"><strong>Total: R$ <span id="valorTotal">0.00</span></strong></p>
-
-    <button class="btn-pagar" id="btnPagar">Confirmar e Pagar</button>
-  `;
-
-  document.getElementById("checkoutResumo").innerHTML = html;
-
-  // --- recalcular total ---
-  function recalcularTotal() {
-    const tipo = document.querySelector('input[name="tipoEntrega"]:checked').value;
-    const freteAtual = (tipo === "entrega") ? freteValor : 0;
-    document.getElementById("freteInfo").textContent = `Frete: R$ ${freteAtual.toFixed(2)}`;
-    const total = subtotal + freteAtual;
-    document.getElementById("valorTotal").textContent = total.toFixed(2);
-    return total;
-  }
-
-  recalcularTotal();
-
-  document.querySelectorAll('input[name="tipoEntrega"]').forEach(el => {
-    el.addEventListener("change", () => {
-      const tipo = document.querySelector('input[name="tipoEntrega"]:checked').value;
-      document.getElementById("endereco").disabled = (tipo === "retirada");
-      recalcularTotal();
+    document.querySelectorAll("input[name='tipoEntrega']").forEach(r => {
+        r.addEventListener("change", () => {
+            document.getElementById("endereco").disabled = (r.value === "retirada");
+            recalcularTotal();
+        });
     });
-  });
 
-  // --- botão pagar ---
-  document.getElementById("btnPagar").addEventListener("click", async () => {
-    const tipoEntrega = document.querySelector('input[name="tipoEntrega"]:checked').value;
-    const pagamento = document.querySelector('input[name="pagamento"]:checked').value;
-    const endereco = document.getElementById("endereco").value;
-    const observacoes = document.getElementById("observacoes").value;
-    const totalFinal = recalcularTotal();
+    // BOTÃO PAGAR
+   document.getElementById("btnPagar").addEventListener("click", async () => {
+
+    const freteCalc = recalcularTotal();
+    const totalCalc = subtotal + freteCalc;
 
     const pedidoFinal = {
-      ...pedido,
-      tipoEntrega,
-      pagamento,
-      endereco,
-      observacoes,
-      total: totalFinal,
-      frete: (tipoEntrega === "entrega") ? freteValor : 0,
-      usuario_id: <?php echo json_encode($_SESSION['usuario_id'] ?? null); ?>
+        produtos: carrinho,
+        tipoEntrega: document.querySelector("input[name='tipoEntrega']:checked").value,
+        pagamento: document.querySelector("input[name='pagamento']:checked").value,
+        endereco: document.getElementById("endereco").value,
+        observacoes: document.getElementById("observacoes").value,
+        frete: freteCalc,
+        total: totalCalc,
+        usuario_id: <?php echo json_encode($_SESSION['usuario_id'] ?? null); ?>
     };
 
+    console.log("📦 Enviando pedido:", pedidoFinal);
+
     try {
-      const resp = await fetch("API/mercado_pago/preferencia.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pedidoFinal)
-      });
-      const data = await resp.json();
-      if (data.init_point) {
-        window.location.href = data.init_point;
-      } else {
-        alert("Erro ao criar pagamento.");
-        console.error(data);
-      }
+        const resp = await fetch("API/mercado_pago/preferencia.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(pedidoFinal)
+        });
+
+        const data = await resp.json();
+        console.log("🔵 Resposta MP:", data);
+
+        if (data.init_point) {
+            window.location.href = data.init_point;
+        } else {
+            alert("Erro ao iniciar pagamento.");
+            console.error(data);
+        }
+
     } catch (err) {
-      console.error("Erro ao enviar pedido:", err);
-      alert("Falha ao iniciar pagamento.");
+        console.error("Erro ao enviar:", err);
+        alert("Falha ao iniciar pagamento.");
     }
-  });
+});
+
 });
 </script>
-<!-- VLibras Widget -->
-<div vw class="enabled">
-  <div vw-access-button class="active"></div>
-  <div vw-plugin-wrapper>
-    <div class="vw-plugin-top-wrapper"></div>
-  </div>
-</div>
 
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-<script>
-  new window.VLibras.Widget('https://vlibras.gov.br/app');
-</script>
 
 </body>
 </html>

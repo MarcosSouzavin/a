@@ -1,97 +1,122 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+declare(strict_types=1);
 
-header("Content-Type: application/json; charset=UTF-8");
+use MercadoPago\Client\Preference\PreferenceClient;
+use MercadoPago\Exceptions\MPApiException;
+use MercadoPago\MercadoPagoConfig;
 
-require __DIR__ . '/../../vendor/autoload.php'; // CONFIRMA esse caminho!
-MercadoPago\SDK::setAccessToken("TEST-8463743141229895-111115-6d5fe7e0fdfda24f28f043b78683fee6-2982510408");
+require __DIR__ . "/mp_config.php"; // carrega token + funções
 
+header('Content-Type: application/json; charset=UTF-8');
 
-// Lê o JSON do carrinho vindo do front
-$input = file_get_contents("php://input");
-$data = json_decode($input, true);
+try {
+    // Lê JSON enviado pelo front
+    $body = json_decode(file_get_contents("php://input"), true);
 
-if (!$data || empty($data["produtos"])) {
-  http_response_code(400);
-  echo json_encode(["error" => "Carrinho vazio ou inválido"]);
-  exit;
-}
-
-// Monta itens
-$items = [];
-foreach ($data["produtos"] as $p) {
-  $nome = $p["name"] ?? $p["nome"] ?? "Produto";
-  $qtd = (int)($p["quantity"] ?? $p["quantidade"] ?? 1);
-  $precoBase = (float)($p["basePrice"] ?? $p["preco"] ?? $p["price"] ?? 0);
-
-  // Soma de adicionais selecionados
-  $somaExtras = 0.0;
-  if (!empty($p["adicionais"]) && is_array($p["adicionais"])) {
-    foreach ($p["adicionais"] as $a) {
-      $somaExtras += (float)($a["price"] ?? $a["preco"] ?? 0);
+    if (!$body || !isset($body['produtos'])) {
+        mp_json_error("Dados inválidos recebidos. Nenhum produto encontrado.", 400);
     }
-  }
 
-  $precoFinal = round($precoBase + $somaExtras, 2); // importante arredondar em centavos
+    // ===== Montar items da preferência =====
+    $items = [];
+    foreach ($body['produtos'] as $p) {
+        $nome  = $p['name'] ?? $p['nome'] ?? 'Produto';
+        $qtd   = (int)($p['quantity'] ?? $p['quantidade'] ?? 1);
+        $preco = (float)($p['basePrice'] ?? $p['preco'] ?? $p['price'] ?? 0);
 
-  $item = new MercadoPago\Item();
-  $item->title = $nome;
-  $item->quantity = $qtd;
-  $item->unit_price = $precoFinal;
-  $item->currency_id = "BRL";
-  $items[] = $item;
+        // adicionais (somatório)
+        if (!empty($p['adicionais']) && is_array($p['adicionais'])) {
+            foreach ($p['adicionais'] as $ad) {
+                $preco += (float)($ad['price'] ?? $ad['preco'] ?? 0);
+            }
+        }
+
+        if ($qtd <= 0) continue;
+
+        $items[] = [
+            "title" => $nome,
+            "quantity" => $qtd,
+            "unit_price" => $preco,
+            "currency_id" => "BRL"
+        ];
+    }
+
+    if (empty($items)) {
+        mp_json_error("Nenhum item válido encontrado no carrinho.", 400);
+    }
+
+    // ===== Frete =====
+    $frete = isset($body["frete"]) ? (float)$body["frete"] : 0;
+    if ($frete > 0) {
+        $items[] = [
+            "title" => "Frete",
+            "quantity" => 1,
+            "unit_price" => $frete,
+            "currency_id" => "BRL"
+        ];
+    }
+
+    // ===== Observações =====
+    $descricao = "Pedido via SquinaXV";
+    if (!empty($body["observacoes"])) {
+        $descricao .= " | Obs: " . $body["observacoes"];
+    }
+
+    // ===== URLs de retorno =====
+    $back_urls = [
+        "success" => mp_base_url("sucesso.php"),
+        "failure" => mp_base_url("falha.php"),
+        "pending" => mp_base_url("pendente.php"),
+    ];
+
+    // ===== Criar preferência =====
+    $client = new PreferenceClient();
+
+
+if (!empty($body["pagamento"])) {
+    if ($body["pagamento"] === "pix") {
+        $payment_methods = [
+            "default_payment_method_id" => "pix",
+            "excluded_payment_types" => []
+        ];
+    } elseif ($body["pagamento"] === "debito") {
+        $payment_methods = [
+            "default_payment_method_id" => "debit_card",
+            "excluded_payment_types" => []
+        ];
+    } elseif ($body["pagamento"] === "credito") {
+        $payment_methods = [
+            "default_payment_method_id" => "credit_card",
+            "excluded_payment_types" => []
+        ];
+    }
 }
 
-// Frete (se aplicável) — você já soma no total do front.
-// Se quiser discriminar o frete como item separado, descomente:
-/*
-$frete = (float)($data["frete"] ?? 0);
-if ($frete > 0) {
-  $itemFrete = new MercadoPago\Item();
-  $itemFrete->title = "Frete";
-  $itemFrete->quantity = 1;
-  $itemFrete->unit_price = round($frete, 2);
-  $itemFrete->currency_id = "BRL";
-  $items[] = $itemFrete;
-}
-*/
-
-$preference = new MercadoPago\Preference();
-$preference->items = $items;
-
-// ID único do pedido (use o ID real do seu sistema, se já existir)
-$pedidoId = $data["order_id"] ?? uniqid("PEDIDO_");
-$preference->external_reference = $pedidoId;
-
-// URLs de retorno (pós-checkout)
-$preference->back_urls = [
-  "success" => base_url("sucesso.php"),
-  "failure" => base_url("falha.php"),
-  "pending" => base_url("pendente.php"),
-];
-$preference->auto_return = "approved";
-
-// Webhook para receber mudanças de status
-$preference->notification_url = base_url("API/mercado_pago/webhook.php");
-
-// Metadados úteis
-$preference->metadata = [
-  "usuario_id"  => $data["usuario_id"] ?? null,
-  "tipoEntrega" => $data["tipoEntrega"] ?? null,
-  "pagamento"   => $data["pagamento"] ?? null,
-  "endereco"    => $data["endereco"] ?? null,
-  "observacoes" => $data["observacoes"] ?? null,
-  "frete"       => $data["frete"] ?? 0,
-  "total"       => $data["total"] ?? 0
-];
-
-$preference->save();
-
-// Em sandbox, sempre use o sandbox_init_point (link de teste)
-echo json_encode([
-  "preference_id" => $preference->id,
-  "init_point"    => $preference->sandbox_init_point,
-  "pedido_id"     => $pedidoId
+$preference = $client->create([
+    "items" => $items,
+    "metadata" => [
+        "usuario_id" => $body["usuario_id"] ?? null,
+        "entrega"    => $body["tipoEntrega"] ?? "entrega",
+        "pagamento"  => $body["pagamento"] ?? "pix"
+    ],
+    // Remover qualquer configuração de método padrão
+    // O Mercado Pago decide automaticamente
+    "back_urls" => $back_urls
 ]);
+
+
+    // ===== Retorno para o JS =====
+    echo json_encode([
+        "ok" => true,
+        "init_point" => $preference->init_point,
+        "id" => $preference->id
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+
+} catch (MPApiException $e) {
+    // Erro da API do MP → mostrar resposta real
+    mp_json_error("API MERCADO PAGO: " . json_encode($e->getApiResponse()->getContent(), JSON_UNESCAPED_UNICODE), 500);
+} catch (Exception $e) {
+    // Erro genérico
+    mp_json_error("Erro interno: " . $e->getMessage(), 500);
+}

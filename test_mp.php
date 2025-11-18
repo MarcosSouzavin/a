@@ -1,35 +1,53 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 require __DIR__ . '/vendor/autoload.php';
 
-// Importa as classes corretamente
-use MercadoPago\SDK;
-use MercadoPago\Preference;
-use MercadoPago\Item;
+use MercadoPago\MercadoPagoConfig;
+use MercadoPago\Client\Preference\PreferenceClient;
 
-// Testa o SDK
-SDK::setAccessToken("TEST-8463743141229895-111115-6d5fe7e0fdfda24f28f043b78683fee6-2982510408"); // coloca teu token de teste aqui
+MercadoPagoConfig::setAccessToken("TEST-6484797286702843-111721-ae840b1dfc7bea47361a674589b9fc6a-1902528413");
 
-echo "<h3>✅ Mercado Pago SDK carregado com sucesso!</h3>";
+// Forçar mostrar erros reais
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Cria uma preferência de teste (só pra validar)
-$item = new Item();
-$item->title = "Pizza de teste";
-$item->quantity = 1;
-$item->unit_price = 10.00;
+$client = new PreferenceClient();
 
-$preference = new Preference();
-$preference->items = [$item];
-$preference->save();
+try {
 
-echo "<pre>";
-print_r([
-  "preference_id" => $preference->id ?? null,
-  "sandbox_init_point" => $preference->sandbox_init_point ?? null
-]);
-echo "</pre>";
+    $preference = $client->create([
+        "items" => [
+            [
+                "title" => "Pizza Teste",
+                "quantity" => 1,
+                "unit_price" => 49.90,
+                "currency_id" => "BRL"
+            ]
+        ]
+    ]);
 
+    echo "<h2>Preferência criada!</h2>";
+    echo "<pre>";
+    print_r($preference);
+    echo "</pre>";
 
-?>
+} catch (\MercadoPago\Exceptions\MPApiException $e) {
+
+    echo "<h2 style='color:red'>❌ ERRO DETALHADO DA API:</h2>";
+
+    echo "<pre>";
+    echo "STATUS CODE:\n";
+    print_r($e->getApiResponse()->getStatusCode());
+
+    echo "\n\nJSON COMPLETO:\n";
+    print_r($e->getApiResponse()->getContent());
+
+    echo "</pre>";
+
+} catch (Throwable $e) {
+
+    echo "<h2 style='color:red'>❌ ERRO PHP:</h2>";
+    echo "<pre>";
+    echo $e->getMessage();
+    echo "</pre>";
+
+}

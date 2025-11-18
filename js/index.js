@@ -273,7 +273,7 @@ function renderMenu(items) {
         <h3>${p.name}</h3>
         <p>${p.description || ""}</p>
         <div class="item-footer">
-          <div class="item-price">A partir de R$ ${formatPrice(basePrice)}</div>
+          <div class="item-price">${formatPrice(basePrice)}</div>
           <button class="add-to-cart">Escolher</button>
         </div>
       </div>
