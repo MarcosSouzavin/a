@@ -77,10 +77,17 @@ try {
 
 
 if (!empty($body["pagamento"])) {
+    $payment_methods = [];
+
+if (!empty($body["pagamento"])) {
     if ($body["pagamento"] === "pix") {
         $payment_methods = [
             "default_payment_method_id" => "pix",
-            "excluded_payment_types" => []
+            "excluded_payment_types" => [
+                "credit_card",
+                "debit_card",
+                "ticket"
+            ]
         ];
     } elseif ($body["pagamento"] === "debito") {
         $payment_methods = [
@@ -93,6 +100,23 @@ if (!empty($body["pagamento"])) {
             "excluded_payment_types" => []
         ];
     }
+}
+
+$preference = $client->create([
+    "items" => $items,
+    "metadata" => [
+        "usuario_id" => $body["usuario_id"] ?? null,
+        "entrega"    => $body["tipoEntrega"] ?? "entrega",
+        "pagamento"  => $body["pagamento"] ?? "pix"
+    ],
+
+    "back_urls" => $back_urls,
+    "auto_return" => "approved",
+    "notification_url" => mp_base_url("API/mercado_pago/webhook.php"),
+
+    "payment_methods" => $payment_methods
+]);
+
 }
 
 $preference = $client->create([
