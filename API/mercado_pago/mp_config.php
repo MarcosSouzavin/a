@@ -12,7 +12,7 @@ use MercadoPago\MercadoPagoConfig;
 
 const MP_ACCESS_TOKEN = 'APP_USR-6484797286702843-111721-bbfdf572557f662f756cc887c3b2e200-1902528413';
 
-const MP_BASE_URL = 'https://projetosetim.com.br/2025/php1/API/mercado_pago';
+const MP_BASE_URL = 'https://projetosetim.com.br/2025/php1';
 
 // Configura o SDK
 MercadoPagoConfig::setAccessToken(MP_ACCESS_TOKEN);
