@@ -11,11 +11,11 @@ require __DIR__ . '/../../vendor/autoload.php';
 use MercadoPago\MercadoPagoConfig;
 
 // 🔐 Coloca aqui **SEU ACCESS TOKEN DE TESTE (TEST-...)**
-const MP_ACCESS_TOKEN = 'TEST-6484797286702843-111721-ae840b1dfc7bea47361a674589b9fc6a-1902528413';
+const MP_ACCESS_TOKEN = 'APP_USR-6484797286702843-111721-bbfdf572557f662f756cc887c3b2e200-1902528413';
 
 // 🌐 URL base do seu projeto
 // No seu caso tá em: http://localhost/a
-const MP_BASE_URL = 'http://localhost/a/API/mercado_pago';
+const MP_BASE_URL = 'https://projetosetim.com.br/2025/php1/API/mercado_pago';
 
 // Configura o SDK
 MercadoPagoConfig::setAccessToken(MP_ACCESS_TOKEN);

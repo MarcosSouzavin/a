@@ -64,10 +64,11 @@ try {
 
     // ===== URLs de retorno =====
     $back_urls = [
-        "success" => mp_base_url("sucesso.php"),
-        "failure" => mp_base_url("falha.php"),
-        "pending" => mp_base_url("pendente.php"),
+    "success" => MP_BASE_URL . "/sucesso.php",
+    "failure" => MP_BASE_URL . "/falha.php",
+    "pending" => MP_BASE_URL . "/pendente.php"
     ];
+
 
     // ===== Criar preferência =====
     $client = new PreferenceClient();

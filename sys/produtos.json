@@ -1519,6 +1519,26 @@
             ]
         },
         {
+            "id": 31,
+            "name": "teste",
+            "image": "http:\/\/www.euax.com.br\/c\/teste-de-maturidade-de-ti\/",
+            "descricao": "teste para o tcc",
+            "sizes": [
+                {
+                    "name": "Pequena",
+                    "price": 2
+                },
+                {
+                    "name": "Média",
+                    "price": 3
+                },
+                {
+                    "name": "Grande",
+                    "price": 4
+                }
+            ]
+        },
+        {
             "id": "drink_1",
             "name": "Coca Cola Lata",
             "image": "https:\/\/texting.com.br\/\/assets\/uploads\/2025\/04\/capitalist-2025-04-03t064304-402.png",
