@@ -1,5 +1,5 @@
 <?php
-// recebe ?id_preferencia=xxx
+
 $pref = $_GET["id"] ?? null;
 
 if (!$pref) {

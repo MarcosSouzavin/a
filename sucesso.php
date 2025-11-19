@@ -1,37 +1,57 @@
 <?php
-// Página exibida quando o pagamento é aprovado
-// O Mercado Pago envia via GET alguns dados importantes:
-// - payment_id
-// - external_reference
-// - status
-// - merchant_order_id
-
-$payment_id = $_GET['payment_id'] ?? null;
-$status = $_GET['status'] ?? null;
-$order_id = $_GET['merchant_order_id'] ?? null;
-
+// Recupera dados enviados pelo Mercado Pago
+$paymentId = $_GET['payment_id'] ?? '---';
+$status = $_GET['status'] ?? 'approved';
+$preferenceId = $_GET['preference_id'] ?? '---';
+$external = $_GET['external_reference'] ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="UTF-8">
-<title>Pedido aprovado - SquinaXV</title>
-<style>
-body { background:#f6f6f6; font-family:sans-serif; text-align:center; padding-top:80px; }
-.card { background:white; width:350px; margin:auto; padding:25px; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-h1 { color:#2ecc71; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Aprovado</title>
+    <style>
+        body {
+            background: #f5f7ff;
+            font-family: Arial, sans-serif;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh;
+        }
+        .box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 0 20px rgba(0,0,0,.1);
+            text-align: center;
+        }
+        h1 { color: #2ecc71; }
+        p { color: #333; }
+        .btn {
+            background: #2ecc71;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 
-<div class="card">
-    <h1>Pagamento Aprovado! 🎉</h1>
-    <p>Obrigado por comprar conosco.</p>
+<div class="box">
+    <h1>✔ Pagamento Aprovado!</h1>
+    <p>Obrigado por seu pedido 😊</p>
+    <p><b>ID do Pagamento:</b> <?= htmlspecialchars($paymentId) ?></p>
+    <p><b>ID da Preferência:</b> <?= htmlspecialchars($preferenceId) ?></p>
 
-    <p><strong>ID do Pagamento:</strong> <?= htmlspecialchars($payment_id) ?></p>
-    <p><strong>Status:</strong> <?= htmlspecialchars($status) ?></p>
-
-    <a href="index.html">Voltar ao cardápio</a>
+    <a href="/acompanhar.php?pid=<?= urlencode($paymentId) ?>" class="btn">
+        Acompanhar Pedido
+    </a>
 </div>
 
 </body>

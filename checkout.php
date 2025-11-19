@@ -155,6 +155,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
     });
 
+    const pagamento = document.querySelector('input[name="pagamento"]:checked').value;
+
+const resp = await fetch("API/mercado_pago/preferencia.php", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(pedidoFinal)
+});
+
+const data = await resp.json();
+
+if (!data.ok) {
+  alert("Erro ao criar pagamento");
+  console.error(data);
+  return;
+}
+
+// Se for PIX → manda pra tela de aguardo PIX usando o preference_id
+if (pagamento === "pix") {
+  window.location.href = "API/mercado_pago/aguardando_pix.php?id=" + encodeURIComponent(data.id);
+} else {
+  // Cartão / débito / boleto → redireciona pro Checkout Pro normal
+  window.location.href = data.init_point;
+}
+
+
     const freteValor = 5.00;
 
     html += `
