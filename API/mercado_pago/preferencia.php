@@ -70,6 +70,8 @@ try {
     ];
 
 
+
+
     // ===== Criar preferência =====
     $client = new PreferenceClient();
 
@@ -100,9 +102,9 @@ $preference = $client->create([
         "entrega"    => $body["tipoEntrega"] ?? "entrega",
         "pagamento"  => $body["pagamento"] ?? "pix"
     ],
-    // Remover qualquer configuração de método padrão
-    // O Mercado Pago decide automaticamente
-    "back_urls" => $back_urls
+   
+    "back_urls" => $back_urls,
+    "notification_url" => mp_base_url("API/mercado_pago/webhook.php")
 ]);
 
 
