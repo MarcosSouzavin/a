@@ -6,7 +6,7 @@ $input = file_get_contents("php://input");
 $data = json_decode($input, true);
 
 // Log básico opcional
-file_put_contents(__DIR__ . "/webhook_log.txt", date("Y-m-d H:i:s") . " - " . $input . "\n\n", FILE_APPEND);
+file_put_contents(__DIR__ . "/mp_webhook_log.txt", date("Y-m-d H:i:s") . " - " . $input . "\n\n", FILE_APPEND);
 
 // Se não veio nada, encerra
 if (!$data || !isset($data["data"]["id"])) {
@@ -15,7 +15,7 @@ if (!$data || !isset($data["data"]["id"])) {
 }
 
 $payment_id = $data["data"]["id"]; // ID do pagamento
-$token = "SEU_ACCESS_TOKEN_PRODUCAO_AQUI"; // 🔥 use o token de produção
+$token = "APP_USR-6484797286702843-111721-bbfdf572557f662f756cc887c3b2e200-1902528413"; // 🔥 use o token de produção
 
 // === CONSULTA O PAGAMENTO NA API DO MERCADO PAGO ===
 $ch = curl_init("https://api.mercadopago.com/v1/payments/$payment_id");
