@@ -64,9 +64,9 @@ try {
 
     // ===== URLs de retorno =====
     $back_urls = [
-    "success" => MP_BASE_URL . "/sucesso.php",
-    "failure" => MP_BASE_URL . "/falha.php",
-    "pending" => MP_BASE_URL . "/pendente.php"
+    "success" => MP_BASE_URL . "/API/mercado_pago/sucesso.php",
+    "failure" => MP_BASE_URL . "/API/mercado_pago/falha.php",
+    "pending" => MP_BASE_URL . "/API/mercado_pago/pendente.php"
     ];
 
 
