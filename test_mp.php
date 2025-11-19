@@ -4,7 +4,7 @@ require __DIR__ . '/vendor/autoload.php';
 use MercadoPago\MercadoPagoConfig;
 use MercadoPago\Client\Preference\PreferenceClient;
 
-MercadoPagoConfig::setAccessToken("TEST-6484797286702843-111721-ae840b1dfc7bea47361a674589b9fc6a-1902528413");
+MercadoPagoConfig::setAccessToken("APP_USR-6484797286702843-111721-bbfdf572557f662f756cc887c3b2e200-1902528413");
 
 // Forçar mostrar erros reais
 error_reporting(E_ALL);
