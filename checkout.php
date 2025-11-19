@@ -109,7 +109,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         carrinho = [];
     }
 
-    // Se carrinho estiver vazio
     if (!Array.isArray(carrinho) || carrinho.length === 0) {
         document.getElementById("checkoutResumo").innerHTML =
             '<div class="empty">Seu carrinho está vazio.<br><a href="index.html">Voltar ao cardápio</a></div>';
@@ -155,31 +154,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         `;
     });
 
-    const pagamento = document.querySelector('input[name="pagamento"]:checked').value;
-
-const resp = await fetch("API/mercado_pago/preferencia.php", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(pedidoFinal)
-});
-
-const data = await resp.json();
-
-if (!data.ok) {
-  alert("Erro ao criar pagamento");
-  console.error(data);
-  return;
-}
-
-// Se for PIX → manda pra tela de aguardo PIX usando o preference_id
-if (pagamento === "pix") {
-  window.location.href = "API/mercado_pago/aguardando_pix.php?id=" + encodeURIComponent(data.id);
-} else {
-  // Cartão / débito / boleto → redireciona pro Checkout Pro normal
-  window.location.href = data.init_point;
-}
-
-
     const freteValor = 5.00;
 
     html += `
@@ -197,9 +171,11 @@ if (pagamento === "pix") {
         <h3>Endereço de Entrega</h3>
         <input type="text" id="endereco" placeholder="Rua, número, bairro..." style="width:100%;padding:10px;border-radius:8px;border:1px solid #ccc;">
 
-        <h3>Confira o pedido!</h3>
+        <h3>Pagamento</h3>
         <div class="radio-group">
-            <input type="radio" name="pagamento" id="pix" value="pix" checked><label for="pix">Proseguir</label>
+            <input type="radio" name="pagamento" id="pix" value="pix" checked><label for="pix">PIX</label>
+            <input type="radio" name="pagamento" id="credito" value="credito"><label for="credito">Crédito</label>
+            <input type="radio" name="pagamento" id="debito" value="debito"><label for="debito">Débito</label>
         </div>
 
         <h3>Observações</h3>
@@ -233,49 +209,54 @@ if (pagamento === "pix") {
     });
 
     // BOTÃO PAGAR
-   document.getElementById("btnPagar").addEventListener("click", async () => {
+    document.getElementById("btnPagar").addEventListener("click", async () => {
 
-    const freteCalc = recalcularTotal();
-    const totalCalc = subtotal + freteCalc;
+        const freteCalc = recalcularTotal();
+        const pagamento = document.querySelector("input[name='pagamento']:checked").value;
 
-    const pedidoFinal = {
-        produtos: carrinho,
-        tipoEntrega: document.querySelector("input[name='tipoEntrega']:checked").value,
-        pagamento: document.querySelector("input[name='pagamento']:checked").value,
-        endereco: document.getElementById("endereco").value,
-        observacoes: document.getElementById("observacoes").value,
-        frete: freteCalc,
-        total: totalCalc,
-        usuario_id: <?php echo json_encode($_SESSION['usuario_id'] ?? null); ?>
-    };
+        const pedidoFinal = {
+            produtos: carrinho,
+            tipoEntrega: document.querySelector("input[name='tipoEntrega']:checked").value,
+            pagamento: pagamento,
+            endereco: document.getElementById("endereco").value,
+            observacoes: document.getElementById("observacoes").value,
+            frete: freteCalc,
+            total: subtotal + freteCalc,
+            usuario_id: <?php echo json_encode($_SESSION['usuario_id'] ?? null); ?>
+        };
 
-    console.log("📦 Enviando pedido:", pedidoFinal);
+        console.log("📦 Enviando pedido:", pedidoFinal);
 
-    try {
-        const resp = await fetch("API/mercado_pago/preferencia.php", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(pedidoFinal)
-        });
+        try {
+            const resp = await fetch("API/mercado_pago/preferencia.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(pedidoFinal)
+            });
 
-        const data = await resp.json();
-        console.log("🔵 Resposta MP:", data);
+            const data = await resp.json();
+            console.log("🔵 Resposta MP:", data);
 
-        if (data.init_point) {
-            window.location.href = data.init_point;
-        } else {
-            alert("Erro ao iniciar pagamento.");
-            console.error(data);
+            if (!data.ok) {
+                alert("Erro ao criar pagamento.");
+                return;
+            }
+
+            if (pagamento === "pix") {
+                window.location.href = "API/mercado_pago/aguardando_pix.php?id=" + encodeURIComponent(data.id);
+            } else {
+                window.location.href = data.init_point;
+            }
+
+        } catch (err) {
+            console.error("Erro ao enviar:", err);
+            alert("Falha ao iniciar pagamento.");
         }
-
-    } catch (err) {
-        console.error("Erro ao enviar:", err);
-        alert("Falha ao iniciar pagamento.");
-    }
-});
+    });
 
 });
 </script>
+
 
 
 </body>
