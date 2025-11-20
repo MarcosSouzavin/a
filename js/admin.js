@@ -1,7 +1,7 @@
 const ADMIN_PASSWORD = 'g';
 
 function isLoggedIn() {
-    return sessionStorage.getItem('admin_logged') === '2';
+    return sessionStorage.getItem('admin_logged') === '1';
 }
 
 function showLogin() {
