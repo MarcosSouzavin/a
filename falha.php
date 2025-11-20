@@ -43,7 +43,7 @@ $preferenceId = $_GET['preference_id'] ?? '---';
     <p>Tivemos um problema ao processar o pagamento.</p>
     <p><b>ID da Preferência:</b> <?= htmlspecialchars($preferenceId) ?></p>
 
-    <a href="/checkout.php" class="btn">Tentar Novamente</a>
+    <a href="javascript:history.back()" class="btn">Voltar</a>
 </div>
 
 </body>

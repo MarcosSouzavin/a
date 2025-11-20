@@ -241,13 +241,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 alert("Erro ao criar pagamento.");
                 return;
             }
-
-            if (pagamento === "pix") {
-                window.location.href = "API/mercado_pago/aguardando_pix.php?id=" + encodeURIComponent(data.id);
-            } else {
-                window.location.href = data.init_point;
-            }
-
+            window.location.href = data.init_point;
         } catch (err) {
             console.error("Erro ao enviar:", err);
             alert("Falha ao iniciar pagamento.");
