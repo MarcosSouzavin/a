@@ -1,29 +1,29 @@
 <?php
 require __DIR__ . "/../../conexao.php";
 
-// Sempre retornar 200 ao Mercado Pago
+// Mercado Pago exige SEMPRE 200 OK sem texto
 http_response_code(200);
 
-// Captura o JSON enviado
+// Captura o JSON enviado pelo Mercado Pago
 $raw = file_get_contents("php://input");
 $data = json_decode($raw, true);
 
-// Log (não interfere na resposta)
+// Log (não interfere no 200)
 file_put_contents(__DIR__ . "/mp_webhook_log.txt",
     "[" . date("Y-m-d H:i:s") . "] RAW: " . $raw . "\n", FILE_APPEND
 );
 
-// Se não vier ID, não faz nada (mas não dá erro no MP)
+// Se não vier ID, ignora (não pode dar erro)
 if (!isset($data["data"]["id"])) {
-    return; // silencioso, sem echo
+    return;
 }
 
 $payment_id = $data["data"]["id"];
 
-// Token
+// Token de produção
 $token = "APP_USR-6484797286702843-111721-bbfdf572557f662f756cc887c3b2e200-1902528413";
 
-// Consulta o pagamento
+// Consulta a API do Mercado Pago
 $ch = curl_init("https://api.mercadopago.com/v1/payments/$payment_id");
 curl_setopt($ch, CURLOPT_HTTPHEADER, ["Authorization: Bearer $token"]);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -33,15 +33,15 @@ curl_close($ch);
 
 $payment = json_decode($response, true);
 
-// Se deu erro na consulta ou não é pagamento real → não quebra webhook
+// Se não tiver status, ignora (acontece nos testes do painel)
 if (!isset($payment["status"])) {
-    return; // silencioso
+    return;
 }
 
 $status = $payment["status"];
 $preference_id = $payment["order"]["id"] ?? null;
 
-// Mensagem padrão
+// Mensagem para o acompanhamento
 $msg = match ($status) {
     "approved"   => "Pagamento aprovado!",
     "pending"    => "Pagamento pendente.",
@@ -50,16 +50,50 @@ $msg = match ($status) {
     default      => "Status: $status"
 };
 
-// Salva no banco
-$stmt = $conn->prepare("
-    INSERT INTO pedidos_status (payment_id, status, mensagem)
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE
-        status = VALUES(status),
-        mensagem = VALUES(mensagem),
-        atualizado_em = CURRENT_TIMESTAMP
-");
-$stmt->bind_param("sss", $payment_id, $status, $msg);
-$stmt->execute();
+// === SALVAR NO BANCO COM PDO ===
 
-// Fim → Mercado Pago recebe 200 OK sem corpo
+// Verificar se já existe
+$check = $conn->prepare("SELECT id FROM pedidos_status WHERE payment_id = ?");
+$check->execute([$payment_id]);
+
+if ($check->rowCount() > 0) {
+    // Atualiza
+    $update = $conn->prepare("
+        UPDATE pedidos_status 
+        SET status = ?, mensagem = ?, atualizado_em = NOW()
+        WHERE payment_id = ?
+    ");
+    $update->execute([$status, $msg, $payment_id]);
+
+} else {
+    // Insere
+    $insert = $conn->prepare("
+        INSERT INTO pedidos_status (payment_id, status, mensagem)
+        VALUES (?, ?, ?)
+    ");
+    $insert->execute([$payment_id, $status, $msg]);
+}
+
+// Opcional: salvar preference_id também, se quiser:
+if ($preference_id) {
+    $check2 = $conn->prepare("SELECT id FROM pedidos_status WHERE payment_id = ?");
+    $check2->execute([$preference_id]);
+
+    if ($check2->rowCount() > 0) {
+        $update2 = $conn->prepare("
+            UPDATE pedidos_status 
+            SET atualizado_em = NOW()
+            WHERE payment_id = ?
+        ");
+        $update2->execute([$preference_id]);
+    } else {
+        $insert2 = $conn->prepare("
+            INSERT INTO pedidos_status (payment_id, status, mensagem)
+            VALUES (?, ?, ?)
+        ");
+        $insert2->execute([$preference_id, $status, $msg]);
+    }
+}
+
+// Final silencioso → Mercado Pago recebe 200 OK
+return;
