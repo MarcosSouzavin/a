@@ -1,23 +1,30 @@
 <?php
-require __DIR__ . "/../conexao.php"; // ajuste o caminho conforme seu sistema
+require __DIR__ . "/../../conexao.php"; // AJUSTE O CAMINHO CERTO AQUI
 
-// Recebe o corpo bruto
-$input = file_get_contents("php://input");
-$data = json_decode($input, true);
+http_response_code(200);
+header("Content-Type: text/plain; charset=utf-8");
 
-// Log básico opcional
-file_put_contents(__DIR__ . "/mp_webhook_log.txt", date("Y-m-d H:i:s") . " - " . $input . "\n\n", FILE_APPEND);
+// Captura o corpo bruto enviado pelo Mercado Pago
+$raw = file_get_contents("php://input");
+$data = json_decode($raw, true);
 
-// Se não veio nada, encerra
+// Log para debug
+file_put_contents(__DIR__ . "/mp_webhook_log.txt",
+    "[" . date("Y-m-d H:i:s") . "] RAW: " . $raw . "\n", FILE_APPEND
+);
+
+// Se não vier nada, encerra
 if (!$data || !isset($data["data"]["id"])) {
-    http_response_code(200);
-    exit("Webhook recebido, mas sem data.id");
+    echo "Sem data.id";
+    exit;
 }
 
-$payment_id = $data["data"]["id"]; // ID do pagamento
-$token = "APP_USR-6484797286702843-111721-bbfdf572557f662f756cc887c3b2e200-1902528413"; // 🔥 use o token de produção
+$payment_id = $data["data"]["id"];
 
-// === CONSULTA O PAGAMENTO NA API DO MERCADO PAGO ===
+// TOKEN DE PRODUÇÃO
+$token = "APP_USR-6484797286702843-111721-bbfdf572557f662f756cc887c3b2e200-1902528413";
+
+// Consulta o pagamento na API do Mercado Pago
 $ch = curl_init("https://api.mercadopago.com/v1/payments/$payment_id");
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "Authorization: Bearer $token"
@@ -29,26 +36,24 @@ curl_close($ch);
 
 $payment = json_decode($response, true);
 
-// Erro inesperado
+// Se der erro
 if (!isset($payment["status"])) {
-    http_response_code(200);
-    exit("Pagamento não encontrado na API");
+    echo "Pagamento não encontrado";
+    exit;
 }
 
-$status = $payment["status"];        // approved / pending / rejected
+$status = $payment["status"];
 $preference_id = $payment["order"]["id"] ?? null;
-$method = $payment["payment_method"]["type"] ?? null;
 
-// === Mensagens automáticas (exibidas no acompanhamento) ===
 $msg = match ($status) {
-    "approved" => "Pagamento aprovado! Seu pedido está sendo preparado.",
-    "pending"  => "Pagamento ainda não confirmado. Aguardando compensação.",
+    "approved" => "Pagamento aprovado!",
+    "pending" => "Pagamento pendente.",
     "in_process" => "Pagamento em análise.",
-    "rejected" => "Pagamento recusado. Você pode tentar novamente.",
+    "rejected" => "Pagamento recusado.",
     default => "Status atualizado: $status"
 };
 
-// === SALVA OU ATUALIZA A TABELA pedidos_status ===
+// Salva na tabela pedidos_status
 $stmt = $conn->prepare("
     INSERT INTO pedidos_status (payment_id, status, mensagem)
     VALUES (?, ?, ?)
@@ -60,16 +65,4 @@ $stmt = $conn->prepare("
 $stmt->bind_param("sss", $payment_id, $status, $msg);
 $stmt->execute();
 
-// Opcional: salvar também o preference_id em tabela separada
-if ($preference_id) {
-    $stmt2 = $conn->prepare("
-        INSERT INTO pedidos_status (payment_id, status, mensagem)
-        VALUES (?, ?, ?)
-        ON DUPLICATE KEY UPDATE atualizado_em = CURRENT_TIMESTAMP
-    ");
-    $stmt2->bind_param("sss", $preference_id, $status, $msg);
-    $stmt2->execute();
-}
-
-http_response_code(200);
 echo "OK";
