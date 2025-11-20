@@ -1,7 +1,7 @@
 const ADMIN_PASSWORD = 'g';
 
 function isLoggedIn() {
-    return sessionStorage.getItem('admin_logged') === '1';
+    return sessionStorage.getItem('admin_logged') === '2';
 }
 
 function showLogin() {
@@ -308,9 +308,9 @@ async function renderTab(tab) {
             <label style="display:block;margin:10px 0;">Pesquisar: <input type="search" id="prodSearch" placeholder="Digite nome do produto" style="width:100%;padding:6px;" value="${productSearchQuery}"></label>
         `;
         const prodSearchEl = tabContent.querySelector('#prodSearch');
-            prodSearchEl.addEventListener('input', function() {
-                productSearchQuery = this.value;
-                console.log('admin search input:', productSearchQuery);
+        prodSearchEl.addEventListener('input', function() {
+            productSearchQuery = this.value;
+            console.log('admin search input:', productSearchQuery);
             filterAdminItems(tabContent);
         });
         if (!Array.isArray(menuItems) || menuItems.length === 0) {
@@ -398,13 +398,12 @@ async function renderTab(tab) {
             <label style="display:block;margin:10px 0;">Pesquisar: <input type="search" id="editSearch" placeholder="Pesquisar produto para editar" style="width:100%;padding:6px;" value="${productSearchQuery}"></label>
         `;
         const editSearchEl = tabContent.querySelector('#editSearch');
-            editSearchEl.addEventListener('input', function() {
-                productSearchQuery = this.value;
-                console.log('admin edit search input:', productSearchQuery);
+        editSearchEl.addEventListener('input', function() {
+            productSearchQuery = this.value;
+            console.log('admin edit search input:', productSearchQuery);
             filterAdminItems(tabContent);
         });
 
-        const qNorm2 = normalizeForSearch(productSearchQuery);
         const regularProducts = menuItems.filter(p => !String(p.id).startsWith('drink_') && !String(p.id).startsWith('suco_'));
         regularProducts.forEach((item, idx) => {
             let sizeLabels = '';
@@ -420,8 +419,19 @@ async function renderTab(tab) {
                 <div class="admin-item" data-idx="${idx}">
                     <h3>${item.name}</h3>
                     <img src="${item.image}" alt="${item.name}" style="max-width:80px;max-height:80px;">
-                    <label>Imagem: <input type="text" value="${item.image}" class="img-input"></label>
-                    <label>Descrição: <textarea class="desc-input" rows="2" style="width:100%;resize:vertical;">${item.descricao ? item.descricao : ''}</textarea></label>
+
+                    <label>Nome: 
+                        <input type="text" value="${item.name}" class="name-input">
+                    </label>
+
+                    <label>Imagem: 
+                        <input type="text" value="${item.image}" class="img-input">
+                    </label>
+
+                    <label>Descrição: 
+                        <textarea class="desc-input" rows="2" style="width:100%;resize:vertical;">${item.descricao ? item.descricao : ''}</textarea>
+                    </label>
+
                     ${sizeLabels}
                     ${adicionaisCheckboxes}
                     <button class="save-btn">Salvar</button>
@@ -435,6 +445,7 @@ async function renderTab(tab) {
         // Adicionar listeners de edição/exclusão
         setTimeout(() => {
             document.querySelectorAll('.admin-item').forEach((div, idx) => {
+                const nameInput = div.querySelector('.name-input');
                 const imgInput = div.querySelector('.img-input');
                 const descInput = div.querySelector('.desc-input');
                 const priceInputs = div.querySelectorAll('.price-input');
@@ -449,17 +460,27 @@ async function renderTab(tab) {
                         alert('Produto não encontrado para salvar.');
                         return;
                     }
-                    menuItems[menuIdx].image = imgInput.value;
+                    menuItems[menuIdx].name = nameInput.value.trim();
+                    menuItems[menuIdx].image = imgInput.value.trim();
                     menuItems[menuIdx].descricao = descInput.value;
                     priceInputs.forEach(input => {
                         const sizeIdx = input.dataset.size;
                         menuItems[menuIdx].sizes[sizeIdx].price = Number(input.value);
                     });
                     const adicionalCheckboxes = div.querySelectorAll('.adicional-checkbox');
-                    const selectedAdicionais = Array.from(adicionalCheckboxes).filter(cb => cb.checked).map(cb => adicionais.find(a => a.name === cb.dataset.adname));
+                    const selectedAdicionais = Array.from(adicionalCheckboxes)
+                        .filter(cb => cb.checked)
+                        .map(cb => adicionais.find(a => a.name === cb.dataset.adname));
                     menuItems[menuIdx].adicionais = selectedAdicionais;
                     await saveMenu();
-                    addAdminLog('Editar produto', { id: menuItems[menuIdx].id, image: imgInput.value, descricao: descInput.value, prices: Array.from(priceInputs).map(i=>i.value), adicionais: selectedAdicionais.map(a => a.name) });
+                    addAdminLog('Editar produto', { 
+                        id: menuItems[menuIdx].id, 
+                        name: menuItems[menuIdx].name,
+                        image: imgInput.value, 
+                        descricao: descInput.value, 
+                        prices: Array.from(priceInputs).map(i => i.value), 
+                        adicionais: selectedAdicionais.map(a => a.name) 
+                    });
                     editMsg.innerHTML = '<span style="color:green;">Produto salvo!</span>';
                     renderTab('editar');
                 };
