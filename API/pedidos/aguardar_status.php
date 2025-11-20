@@ -2,7 +2,7 @@
 // API/pedidos/atualizar_status.php
 header('Content-Type: application/json; charset=UTF-8');
 
-require __DIR__ . "/../db.php"; // volta 1 nível (API/) e carrega a conexão
+require __DIR__ . "/../../conexap.php"; // volta 1 nível (API/) e carrega a conexão
 
 $raw = file_get_contents("php://input");
 $data = json_decode($raw, true);

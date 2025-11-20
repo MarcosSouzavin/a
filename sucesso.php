@@ -49,7 +49,7 @@ $external = $_GET['external_reference'] ?? null;
     <p><b>ID do Pagamento:</b> <?= htmlspecialchars($paymentId) ?></p>
     <p><b>ID da Preferência:</b> <?= htmlspecialchars($preferenceId) ?></p>
 
-    <a href="/acompanhar.php?pid=<?= urlencode($paymentId) ?>" class="btn">
+    <a href="/API/pedidos?= urlencode($paymentId) ?>" class="btn">
         Acompanhar Pedido
     </a>
 </div>
