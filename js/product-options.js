@@ -1,4 +1,3 @@
-
 (function () {
     const modal = document.getElementById('productModal');
     const modalTitle = document.getElementById('modalTitle');
@@ -8,6 +7,9 @@
     const modalForm = document.getElementById('modalForm');
     const modalQty = document.getElementById('modalQty');
 
+    const modalDescription = document.getElementById('modalDescription');
+    const modalIngredients = document.getElementById('modalIngredients');
+
     let currentProduct = null;
 
     function formatPrice(v) {
@@ -16,118 +18,188 @@
 
     function updateModalPrice() {
         if (!currentProduct) return;
-        // size price
+
         const sizeRadio = modalForm.querySelector('input[name="size"]:checked');
         const sizePrice = Number(sizeRadio?.dataset?.price || 0);
-        // adicionais
-        const adicionaisChecked = Array.from(modalForm.querySelectorAll('input[name="adicional"]:checked'))
-            .map(cb => Number(cb.dataset.price || 0));
+
+        const adicionaisChecked = Array.from(
+            modalForm.querySelectorAll('input[name="adicional"]:checked')
+        ).map(cb => Number(cb.dataset.price || 0));
+
         const extras = adicionaisChecked.reduce((s, n) => s + n, 0);
         const qty = Number(modalQty.value || 1);
         const total = (sizePrice + extras) * qty;
+
         modalPrice.textContent = formatPrice(total);
     }
 
+    // =====================================================
+    //     ABRIR O MODAL COM O PRODUTO
+    // =====================================================
     window.openProductOptions = function (product) {
-        // product: { id, name, price (optional), sizes: [{name,price}] or ['P','M'], adicionais: [{id,name,price}, ...] }
         currentProduct = product || {};
+
         modalTitle.textContent = product.name || 'Produto';
+
+        // Descrição removida (não usa mais)
+        modalDescription.textContent = "";
+
+        // =====================================================
+        //      DESCRIÇÃO = INGREDIENTES (como lista)
+        // =====================================================
+        let ingr = product.descricao || ""; // <<<<< AQUI DO JEITO QUE VOCÊ MANDOU
+
+        if (!ingr || ingr.trim() === "" || ingr.length < 2) {
+            modalIngredients.innerHTML = `
+                <div style="opacity:0.6;font-size:14px;margin-bottom:10px;">
+                    (Sem descrição)
+                </div>
+            `;
+        } else {
+            const lista = ingr
+                .split(',')
+                .map(i => `<li>${i.trim()}</li>`)
+                .join('');
+
+            modalIngredients.innerHTML = `
+                <strong>Ingredientes:</strong>
+                <ul class="ing-list">${lista}</ul>
+            `;
+        }
+
         modalQty.value = 1;
 
-        // montar tamanhos (radio)
+        // =====================================================
+        //              MONTAR TAMANHOS
+        // =====================================================
         sizesContainer.innerHTML = '';
-        const rawSizes = product.sizes && product.sizes.length ? product.sizes : (product.price ? [{ name: 'Único', price: product.price }] : [{ name: 'Único', price: 0 }]);
+        const rawSizes = product.sizes && product.sizes.length
+            ? product.sizes
+            : (product.price ? [{ name: 'Único', price: product.price }] : [{ name: 'Único', price: 0 }]);
+
         rawSizes.forEach((s, i) => {
-            // aceitar tanto string quanto objeto {name,price}
-            const name = (typeof s === 'string') ? s : (s.name ?? 'Tamanho');
-            const price = (typeof s === 'string') ? (Number(product.price || 0)) : Number(s.price || 0);
-            const id = `size_${i}`;
+            const name = typeof s === 'string' ? s : (s.name ?? 'Tamanho');
+            const price = typeof s === 'string' ? Number(product.price || 0) : Number(s.price || 0);
+
             const label = document.createElement('label');
             label.className = 'option-item';
-            label.innerHTML = `<input type="radio" name="size" value="${i}" data-price="${price}" ${i === 0 ? 'checked' : ''}> ${name} ${Number(price) ? `– R$ ${formatPrice(price)}` : ''}`;
+            label.innerHTML = `
+                <input type="radio" name="size" value="${i}" data-price="${price}" ${i === 0 ? 'checked' : ''}>
+                ${name} ${price ? `– R$ ${formatPrice(price)}` : ''}
+            `;
             sizesContainer.appendChild(label);
         });
 
-        // montar adicionais (checkbox)
+        // =====================================================
+        //              MONTAR ADICIONAIS
+        // =====================================================
         adicionaisContainer.innerHTML = '';
         const extras = product.adicionais && product.adicionais.length ? product.adicionais : [];
         const drinks = product.refrigerantes && product.refrigerantes.length ? product.refrigerantes : [];
+
         if (extras.length === 0 && drinks.length === 0) {
             adicionaisContainer.innerHTML = '<div class="muted">Nenhum adicional disponível</div>';
         } else {
-            extras.forEach((a) => {
+
+            // Adicionais normais
+            extras.forEach(a => {
                 const price = Number(a.price || 0);
                 const label = document.createElement('label');
                 label.className = 'option-item';
+
                 const aid = a.id ?? a.name;
-                label.innerHTML = `<input type="checkbox" name="adicional" value="${aid}" data-price="${price}" data-name="${(a.name||'') }"> ${a.name} ${price ? `(+R$ ${formatPrice(price)})` : ''}`;
+
+                label.innerHTML = `
+                    <input type="checkbox" name="adicional" value="${aid}" data-price="${price}" data-name="${a.name}">
+                    ${a.name} ${price ? `(+R$ ${formatPrice(price)})` : ''}
+                `;
                 adicionaisContainer.appendChild(label);
             });
+
+            // Drinks (adicionados como itens separados no carrinho)
             if (drinks.length > 0) {
                 const drinksTitle = document.createElement('div');
                 drinksTitle.className = 'muted';
                 drinksTitle.style.marginTop = '10px';
                 drinksTitle.textContent = 'Refrigerantes:';
                 adicionaisContainer.appendChild(drinksTitle);
+
                 drinks.forEach((d, idx) => {
                     const price = Number(d.price || 0);
+
+                    let imgHtml = d.image
+                        ? `<img src="${d.image}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;">`
+                        : '';
+
                     const label = document.createElement('label');
                     label.className = 'option-item';
                     label.style.display = 'flex';
                     label.style.alignItems = 'center';
-                    let imgHtml = '';
-                    if (d.image) {
-                        imgHtml = `<img src="${d.image}" alt="${d.name}" style="width:32px;height:32px;object-fit:cover;margin-right:8px;border-radius:4px;">`;
-                    }
-                    label.innerHTML = `${imgHtml}<input type="checkbox" name="adicional" value="drink_${idx}" data-price="${price}" data-name="${(d.name||'') }"> ${d.name} ${price ? `(+R$ ${formatPrice(price)})` : ''}`;
+
+                    label.innerHTML = `
+                        ${imgHtml}
+                        <input type="checkbox" name="adicional" value="drink_${idx}" data-price="${price}" data-name="${d.name}">
+                        ${d.name} ${price ? `(+R$ ${formatPrice(price)})` : ''}
+                    `;
+
                     adicionaisContainer.appendChild(label);
                 });
             }
         }
 
-        // atualizar preço inicial
         modal.classList.remove('hidden');
         modal.setAttribute('aria-hidden', 'false');
-        // small delay to ensure inputs present
+
         setTimeout(updateModalPrice, 20);
     };
 
+    // =====================================================
+    //        FECHAR O MODAL
+    // =====================================================
     window.closeProductModal = function () {
         modal.classList.add('hidden');
         modal.setAttribute('aria-hidden', 'true');
         currentProduct = null;
     };
 
-    // atualizar preço quando muda seleção
+    // Eventos
     sizesContainer.addEventListener('change', updateModalPrice);
     adicionaisContainer.addEventListener('change', updateModalPrice);
     modalQty.addEventListener('input', updateModalPrice);
 
+    // =====================================================
+    //         ADICIONAR AO CARRINHO
+    // =====================================================
     modalForm.addEventListener('submit', function (e) {
         e.preventDefault();
         if (!currentProduct) return;
 
-        const sizeIndex = modalForm.querySelector('input[name="size"]:checked')?.value;
         const sizeRadio = modalForm.querySelector('input[name="size"]:checked');
-        const sizeObj = (sizeRadio) ? { index: Number(sizeIndex), price: Number(sizeRadio.dataset.price || 0) } : { price: Number(currentProduct.price || 0) };
+        const sizeObj = {
+            index: Number(sizeRadio?.value || 0),
+            price: Number(sizeRadio?.dataset?.price || 0)
+        };
+
         const sizeLabel = (() => {
             const s = currentProduct.sizes && currentProduct.sizes[sizeObj.index];
-            return (typeof s === 'string') ? s : (s && s.name) || (sizeObj.index !== undefined ? `Tamanho ${sizeObj.index}` : null);
+            return typeof s === 'string' ? s : (s?.name || 'Único');
         })();
 
-        const adicionaisChecked = Array.from(modalForm.querySelectorAll('input[name="adicional"]:checked'))
-            .map(cb => ({
-                id: cb.value,
-                price: Number(cb.dataset.price || 0),
-                name: cb.dataset.name || '',
-                isDrink: cb.value.startsWith('drink_'),
-                image: cb.closest('label')?.querySelector('img')?.src || ''
-            }));
+        const adicionaisChecked = Array.from(
+            modalForm.querySelectorAll('input[name="adicional"]:checked')
+        ).map(cb => ({
+            id: cb.value,
+            price: Number(cb.dataset.price || 0),
+            name: cb.dataset.name || '',
+            isDrink: cb.value.startsWith('drink_'),
+            image: cb.closest('label')?.querySelector('img')?.src || ''
+        }));
 
         const qty = Number(modalQty.value) || 1;
 
-        // Se houver refrigerantes selecionados, adiciona cada um como item próprio no carrinho
+        // Se tem drinks → virar itens separados
         if (adicionaisChecked.some(a => a.isDrink)) {
+
             adicionaisChecked.forEach(a => {
                 if (a.isDrink) {
                     const drinkPayload = {
@@ -139,49 +211,51 @@
                         quantity: 1,
                         image: a.image
                     };
-                    if (typeof window.addToCart === 'function') {
-                        window.addToCart(drinkPayload);
-                    } else {
-                        document.dispatchEvent(new CustomEvent('productAdd', { detail: drinkPayload }));
-                    }
+
+                    window.addToCart
+                        ? addToCart(drinkPayload)
+                        : document.dispatchEvent(new CustomEvent('productAdd', { detail: drinkPayload }));
                 }
             });
-            // Remove os drinks dos adicionais do produto principal
+
             const onlyAdicionais = adicionaisChecked.filter(a => !a.isDrink);
+
             const payload = {
                 id: currentProduct.id,
                 name: currentProduct.name,
-                basePrice: Number(sizeObj.price || 0),
+                basePrice: sizeObj.price,
                 size: sizeLabel,
                 adicionais: onlyAdicionais,
                 quantity: qty
             };
-            if (typeof window.addToCart === 'function') {
-                window.addToCart(payload);
-            } else {
-                document.dispatchEvent(new CustomEvent('productAdd', { detail: payload }));
-            }
+
+            window.addToCart
+                ? addToCart(payload)
+                : document.dispatchEvent(new CustomEvent('productAdd', { detail: payload }));
+
         } else {
+
             const payload = {
                 id: currentProduct.id,
                 name: currentProduct.name,
-                basePrice: Number(sizeObj.price || 0),
+                basePrice: sizeObj.price,
                 size: sizeLabel,
                 adicionais: adicionaisChecked,
                 quantity: qty
             };
-            if (typeof window.addToCart === 'function') {
-                window.addToCart(payload);
-            } else {
-                document.dispatchEvent(new CustomEvent('productAdd', { detail: payload }));
-            }
+
+            window.addToCart
+                ? addToCart(payload)
+                : document.dispatchEvent(new CustomEvent('productAdd', { detail: payload }));
         }
 
         closeProductModal();
     });
 
-    // fechar com ESC
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) closeProductModal();
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeProductModal();
+        }
     });
+
 })();

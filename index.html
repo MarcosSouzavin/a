@@ -16,9 +16,9 @@
   <div id="daltonismo-overlay"></div>
   <div id="acess-widget-button">
     ⚙️
-</div>
+  </div>
 
-<div id="acess-panel">
+  <div id="acess-panel">
     <h3>Acessibilidade</h3>
 
     <button onclick="fonteMenor()">A-</button>
@@ -30,7 +30,7 @@
     <button id="btnDys">Disléxico</button>
     <button id="btnDaltonismo">Daltonismo</button>
     <hr>
-</div>
+  </div>
 
   <header class="header">
     <div class="container">
@@ -116,6 +116,10 @@
       </header>
 
       <form id="modalForm" class="modal-body">
+        <p id="modalDescription" class="modal-description"></p>
+
+        <div id="modalIngredients" class="modal-ingredients"></div>
+
         <div class="modal-row">
           <div class="modal-price">R$ <span id="modalPrice">0.00</span></div>
         </div>
@@ -145,7 +149,7 @@
 
   <!-- Scripts principais -->
   <script src="js/index.js?v=4.1.3"></script>
-  <script src="js/product-options.js?v=4.1.3"></script>
+<script src="js/product-options.js?v=4.1.5"></script>
   <script src="js/ui_control.js?v=4.1.3"></script>
 
 
@@ -236,97 +240,97 @@
       });
     });
   </script>
-<!-- VLibras Widget -->
-<div vw class="enabled">
-  <div vw-access-button class="active"></div>
-  <div vw-plugin-wrapper>
-    <div class="vw-plugin-top-wrapper"></div>
+  <!-- VLibras Widget -->
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
   </div>
-</div>
 
- </script>
-<!-- VLibras Widget -->
-<div vw class="enabled">
-  <div vw-access-button class="active"></div>
-  <div vw-plugin-wrapper>
-    <div class="vw-plugin-top-wrapper"></div>
+  </script>
+  <!-- VLibras Widget -->
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
   </div>
-</div>
-<div id="reading-mask"></div>
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-<script>
-  new window.VLibras.Widget('https://vlibras.gov.br/app');
-</script>
-<script>
-// Abrir painel
-const btnWidget = document.getElementById("acess-widget-button");
-const painel = document.getElementById("acess-panel");
+  <div id="reading-mask"></div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+  <script>
+    // Abrir painel
+    const btnWidget = document.getElementById("acess-widget-button");
+    const painel = document.getElementById("acess-panel");
 
-btnWidget.addEventListener("click", () => {
-    painel.classList.toggle("open");
-});
+    btnWidget.addEventListener("click", () => {
+      painel.classList.toggle("open");
+    });
 
-// Fonte
-let tamanhoBase = 100;
-function aplicarFonte() {
-  document.documentElement.style.fontSize = tamanhoBase + "%";
-  localStorage.setItem("tamanhoFonte", tamanhoBase);
-}
-function fonteMenor() { if (tamanhoBase > 70) { tamanhoBase -= 10; aplicarFonte(); } }
-function fonteNormal() { tamanhoBase = 100; aplicarFonte(); }
-function fonteMaior() { if (tamanhoBase < 160) { tamanhoBase += 10; aplicarFonte(); } }
+    // Fonte
+    let tamanhoBase = 100;
+    function aplicarFonte() {
+      document.documentElement.style.fontSize = tamanhoBase + "%";
+      localStorage.setItem("tamanhoFonte", tamanhoBase);
+    }
+    function fonteMenor() { if (tamanhoBase > 70) { tamanhoBase -= 10; aplicarFonte(); } }
+    function fonteNormal() { tamanhoBase = 100; aplicarFonte(); }
+    function fonteMaior() { if (tamanhoBase < 160) { tamanhoBase += 10; aplicarFonte(); } }
 
-// Contraste
-function alternarContraste() {
-  document.body.classList.toggle("alto-contraste");
-  localStorage.setItem("altoContraste", document.body.classList.contains("alto-contraste") ? "1" : "0");
-}
+    // Contraste
+    function alternarContraste() {
+      document.body.classList.toggle("alto-contraste");
+      localStorage.setItem("altoContraste", document.body.classList.contains("alto-contraste") ? "1" : "0");
+    }
 
-// Dyslexic
-document.getElementById("btnDys").onclick = () => {
-    document.body.classList.toggle("opendyslexic");
-    localStorage.setItem("opendyslexic", document.body.classList.contains("opendyslexic") ? "1" : "0");
-};
+    // Dyslexic
+    document.getElementById("btnDys").onclick = () => {
+      document.body.classList.toggle("opendyslexic");
+      localStorage.setItem("opendyslexic", document.body.classList.contains("opendyslexic") ? "1" : "0");
+    };
 
-// Daltonismo
-document.getElementById("btnDaltonismo").onclick = () => {
-    document.body.classList.toggle("daltonismo");
-    localStorage.setItem("daltonismo", document.body.classList.contains("daltonismo") ? "1" : "0");
-};
+    // Daltonismo
+    document.getElementById("btnDaltonismo").onclick = () => {
+      document.body.classList.toggle("daltonismo");
+      localStorage.setItem("daltonismo", document.body.classList.contains("daltonismo") ? "1" : "0");
+    };
 
-// Máscara leitura
-document.getElementById("btnMascara").onclick = () => {
-    document.body.classList.toggle("mascara-leitura");
-    localStorage.setItem("mascaraLeitura", document.body.classList.contains("mascara-leitura") ? "1" : "0");
-};
-document.addEventListener("mousemove", function(e) {
-  const mask = document.getElementById("reading-mask");
-  if (!mask || !document.body.classList.contains("mascara-leitura")) return;
-  mask.style.top = e.clientY - 60 + "px";
-});
+    // Máscara leitura
+    document.getElementById("btnMascara").onclick = () => {
+      document.body.classList.toggle("mascara-leitura");
+      localStorage.setItem("mascaraLeitura", document.body.classList.contains("mascara-leitura") ? "1" : "0");
+    };
+    document.addEventListener("mousemove", function (e) {
+      const mask = document.getElementById("reading-mask");
+      if (!mask || !document.body.classList.contains("mascara-leitura")) return;
+      mask.style.top = e.clientY - 60 + "px";
+    });
 
-// Cursor
-document.getElementById("btnCursor").onclick = () => {
-    document.body.classList.toggle("cursor-grande");
-    localStorage.setItem("cursorGrande", document.body.classList.contains("cursor-grande") ? "1" : "0");
-};
+    // Cursor
+    document.getElementById("btnCursor").onclick = () => {
+      document.body.classList.toggle("cursor-grande");
+      localStorage.setItem("cursorGrande", document.body.classList.contains("cursor-grande") ? "1" : "0");
+    };
 
-// Modo leitura
-document.getElementById("btnLeitura").onclick = () => {
-    document.body.classList.toggle("modo-leitura");
-    localStorage.setItem("modoLeitura", document.body.classList.contains("modo-leitura") ? "1" : "0");
-};
+    // Modo leitura
+    document.getElementById("btnLeitura").onclick = () => {
+      document.body.classList.toggle("modo-leitura");
+      localStorage.setItem("modoLeitura", document.body.classList.contains("modo-leitura") ? "1" : "0");
+    };
 
-// Carregar preferências
-(function() {
-  let fs = localStorage.getItem("tamanhoFonte"); 
-  if (fs) { tamanhoBase = parseInt(fs); aplicarFonte(); }
+    // Carregar preferências
+    (function () {
+      let fs = localStorage.getItem("tamanhoFonte");
+      if (fs) { tamanhoBase = parseInt(fs); aplicarFonte(); }
 
-  if (localStorage.getItem("altoContraste")==="1") document.body.classList.add("alto-contraste");
-  if (localStorage.getItem("opendyslexic")==="1") document.body.classList.add("opendyslexic");
-  if (localStorage.getItem("daltonismo")==="1") document.body.classList.add("daltonismo");
-})();
-</script>
+      if (localStorage.getItem("altoContraste") === "1") document.body.classList.add("alto-contraste");
+      if (localStorage.getItem("opendyslexic") === "1") document.body.classList.add("opendyslexic");
+      if (localStorage.getItem("daltonismo") === "1") document.body.classList.add("daltonismo");
+    })();
+  </script>
 </body>
 
 </html>

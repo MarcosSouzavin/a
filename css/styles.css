@@ -1513,5 +1513,28 @@ body.dark-mode .cart-items button:hover {
   background: #ffb300;
   color: #000;
 }
+.modal-ingredients {
+    margin: 10px 0 15px;
+    padding: 12px;
+    background: #f7f7f7;
+    border-left: 4px solid #ffa200;
+    border-radius: 6px;
+}
+
+.modal-ingredients strong {
+    font-size: 15px;
+    color: #333;
+}
+
+.ing-list {
+    margin-top: 6px;
+    padding-left: 18px;
+}
+
+.ing-list li {
+    font-size: 14px;
+    color: #444;
+    margin-bottom: 3px;
+}
 
 
