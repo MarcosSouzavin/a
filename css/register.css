@@ -1,6 +1,125 @@
 /* css/estilo.css */
 @import url('https://fonts.googleapis.com/css2?family=Brittany&display=swap');
+    /* BOTÃO FLUTUANTE */
+#acess-widget-button {
+    position: fixed;
+    right: 20px;
+    top: 57%;              /* fica alinhado no meio da tela, igual ao VLibras */
+    transform: translateY(-50%);
+    width: 55px;
+    height: 55px;
+    background: #0040ff;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #0005;
+    z-index: 99999;
+    transition: 0.3s;
+}
 
+
+#acess-widget-button:hover {
+    transform: scale(1.1);
+}
+
+/* PAINEL LATERAL */
+#acess-panel {
+    position: fixed;
+    top: 60%; /* altura desejada */
+    right: 20px;
+    transform: translate(120%, -50%);  /* 120% = totalmente escondido */
+    width: 240px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px #0005;
+    z-index: 99998;
+    transition: transform 0.3s ease;
+    font-family: Arial;
+}
+
+#acess-panel.open {
+    transform: translate(0, -50%); /* aparece suavemente */
+}
+
+
+
+#acess-panel h3 {
+    margin-top: 0;
+    font-size: 18px;
+    text-align: center;
+}
+
+#acess-panel button {
+    width: 100%;
+    padding: 7px;
+    margin: 4px 0;
+    border: none;
+    background: #f0f0f0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#acess-panel button:hover {
+    background: #e0e0e0;
+}
+
+/* Modo contraste */
+body.alto-contraste {
+    background: #000 !important;
+    color: #fff !important;
+}
+
+/* Fonte disléxica */
+body.opendyslexic {
+    font-family: 'OpenDyslexic', Arial, sans-serif !important;
+    letter-spacing: 0.5px;
+    word-spacing: 2px;
+}
+
+/* Daltonismo */
+body.daltonismo {
+    filter: grayscale(100%) contrast(1.1);
+}
+
+/* Cursor grande */
+body.cursor-grande {
+    cursor: url('img/cursor-grande.png'), auto !important;
+}
+
+/* Modo leitura */
+body.modo-leitura header,
+body.modo-leitura footer,
+body.modo-leitura .banner,
+body.modo-leitura aside {
+    display: none !important;
+}
+
+/* Máscara leitura */
+#reading-mask {
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 120px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 99997;
+    display: none;
+    background: rgba(0, 0, 0, 0.6);
+    box-shadow:
+      0 -9999px 0 9999px rgba(0,0,0,0.6),
+      0 9999px 0 9999px rgba(0,0,0,0.6);
+}
+
+body.mascara-leitura #reading-mask {
+    display: block;
+}
 body {
     font-family: Arial, sans-serif;
     display: flex;
