@@ -30,7 +30,7 @@ if (isset($_SESSION['erro'])) {
             <p>Sabor, Qualidade e Família<br>O melhor da região</p>
         </div>
         
-        <form action="register.php" method="post">
+       <form action="register.php" method="post" onsubmit="return validarSenha()">
             <div class="input-group">
                 <input type="text" name="usuario" placeholder="Usuário" required>
             </div>
@@ -47,7 +47,11 @@ if (isset($_SESSION['erro'])) {
             </div>
             <div class="input-group password-container">
                 <input type="password" name="senha" placeholder="Senha" id="senha" required>
-                <span class="toggle-password" onclick="togglePassword()">👁️</span>
+                <div class="input-group password-container">
+    <input type="password" name="senha" placeholder="Senha" id="senha" required>
+    <span class="toggle-password" onclick="togglePassword()">👁️</span>
+</div>
+<span id="senha-erro" style="font-size:13px; display:block; margin-top:5px;"></span>
             </div>
 
             <div class="links-group">
@@ -76,6 +80,28 @@ if (isset($_SESSION['erro'])) {
 <script>
   new window.VLibras.Widget('https://vlibras.gov.br/app');
 </script>
+<script>
+function validarSenha() {
+    const senha = document.getElementById("senha").value;
+    const requisitoMsg = document.getElementById("senha-erro");
 
+    const regra = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{6,}$/;
+
+    if (!regra.test(senha)) {
+        requisitoMsg.style.color = "red";
+        requisitoMsg.textContent = 
+            "A senha deve ter mínimo 6 caracteres, contendo LETRA MAIÚSCULA, minúscula, número e caractere especial.";
+        return false;
+    }
+
+    requisitoMsg.textContent = "";
+    return true;
+}
+
+function togglePassword() {
+    const campo = document.getElementById("senha");
+    campo.type = campo.type === "password" ? "text" : "password";
+}
+</script>
 </body>
 </html>
