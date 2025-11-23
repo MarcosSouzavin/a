@@ -45,12 +45,12 @@ if (isset($_SESSION['erro'])) {
             <div class="input-group">
                 <input type="text" name="telefone" placeholder="Telefone" required maxlength="15" id="telefone">
             </div>
-                <div class="input-group password-container">
+          <div class="input-group password-container">
     <input type="password" name="senha" placeholder="Senha" id="senha" required>
     <span class="toggle-password" onclick="togglePassword()">👁️</span>
 </div>
 <span id="senha-erro" style="font-size:13px; display:block; margin-top:5px;"></span>
-            </div>
+
 
             <div class="links-group">
                 <a href="login_index.php">Já tem uma conta? Faça login</a>
