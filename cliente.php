@@ -139,11 +139,12 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
       </header>
 
       <form id="modalForm" class="modal-body">
-        <div class="modal-row">
-          <p id="modalDescription" class="modal-description"></p>
+        <p id="modalDescription" class="modal-description"></p>
 
         <div id="modalIngredients" class="modal-ingredients"></div>
-
+        
+        <div class="modal-row">
+          
           <div class="modal-price">R$ <span id="modalPrice">0.00</span></div>
         </div>
 
