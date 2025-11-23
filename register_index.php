@@ -45,8 +45,6 @@ if (isset($_SESSION['erro'])) {
             <div class="input-group">
                 <input type="text" name="telefone" placeholder="Telefone" required maxlength="15" id="telefone">
             </div>
-            <div class="input-group password-container">
-                <input type="password" name="senha" placeholder="Senha" id="senha" required>
                 <div class="input-group password-container">
     <input type="password" name="senha" placeholder="Senha" id="senha" required>
     <span class="toggle-password" onclick="togglePassword()">👁️</span>
