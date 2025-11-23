@@ -36,7 +36,7 @@ if (!isset($_SESSION['usuario']) || !isset($_SESSION['usuario_id'])) {
 
 
 <body>
-<!-- WIDGET ACESSIBILIDADE VENDRALY -->
+ <div id="daltonismo-overlay"></div>
 <div id="acess-widget-button">
     ⚙️
 </div>

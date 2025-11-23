@@ -179,10 +179,19 @@ body.opendyslexic {
     word-spacing: 2px;
 }
 
-/* Daltonismo */
-body.daltonismo {
-    filter: grayscale(100%) contrast(1.1);
+#daltonismo-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    backdrop-filter: grayscale(100%) contrast(1.1);
+    z-index: 9999;
+    display: none;
 }
+
+body.daltonismo #daltonismo-overlay {
+    display: block;
+}
+
 
 /* Cursor grande */
 body.cursor-grande {
