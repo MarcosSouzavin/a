@@ -1,14 +1,22 @@
 :root {
-    --primary: #b3ab3a;
-    --primary-dark: #8d8628;
+    --primary: #c4b945;
+    --primary-dark: #998f25;
     --danger: #e74c3c;
-    --muted: #6b7280;
-    --gray: #f0f0f0;
-    --card-bg: var(--gray);
-    --shadow: rgba(0,0,0,0.12);
+    --muted: #9ca3af;
+    --gray: #1a1a1a;
+    --card-bg: #222;
+    --shadow: rgba(0,0,0,0.6);
+    --text-light: #f2f2f2;
 }
 
-/* Estilo para abas do painel admin */
+/* ---------- GLOBAL ---------- */
+body {
+    background: #000;
+    color: var(--text-light);
+    font-family: Arial, sans-serif;
+}
+
+/* ---------- TABS ---------- */
 .admin-tabs {
     display: flex;
     justify-content: center;
@@ -16,7 +24,7 @@
     margin: 32px 0 24px 0;
 }
 .tab-btn {
-    background: #f8f9fa;
+    background: #111;
     border: 1px solid var(--primary);
     color: var(--primary);
     padding: 10px 32px;
@@ -24,337 +32,296 @@
     font-size: 1.1rem;
     cursor: pointer;
     transition: background 0.2s, color 0.2s;
-    outline: none;
 }
 .tab-btn.active {
     background: var(--primary);
-    color: #fff;
+    color: #000;
     font-weight: bold;
-    box-shadow: 0 2px 8px rgba(179, 171, 58, 0.2);
+    box-shadow: 0 2px 8px var(--shadow);
 }
 .tab-btn:not(.active):hover {
-    background: #f7e88a;
+    background: #2a2a2a;
     color: var(--primary-dark);
 }
 
+/* ---------- CONTEÚDO ---------- */
 #adminTabContent {
     max-width: 700px;
     margin: 0 auto;
-    background: var(--gray);
+    background: #111;
     border-radius: 0 0 10px 10px;
-    box-shadow: 0 4px 24px #0002;
+    box-shadow: 0 4px 24px #000;
     padding: 32px 24px 24px 24px;
     min-height: 300px;
+    color: var(--text-light);
 }
 
-/* Cards de produto na aba Produtos */
+/* ---------- ITENS / PRODUTOS ---------- */
 .admin-item {
-    background: var(--gray);
-    border: 1px solid #e1e1e1;
+    background: #1c1c1c;
+    border: 1px solid #333;
     border-radius: 8px;
     padding: 18px 16px;
     margin-bottom: 18px;
-    box-shadow: 0 1px 4px #0001;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    box-shadow: 0 1px 6px #000;
 }
 .admin-item img {
-    max-width: 100px;
+    max-width: 120px;
     border-radius: 6px;
     margin-bottom: 8px;
-    box-shadow: 0 2px 8px #0001;
+    box-shadow: 0 2px 8px #000;
 }
 .admin-item h3 {
-    margin: 0 0 8px 0;
     color: var(--primary);
-}
-.admin-item label {
-    display: block;
-    margin: 6px 0;
-    color: #444;
 }
 .admin-item input[type="text"],
 .admin-item input[type="number"],
 .admin-item textarea {
     width: 100%;
-    padding: 8px 10px;
-    margin-top: 4px;
-    border: 1px solid #bbb;
-    border-radius: 4px;
-    font-size: 1rem;
-    background: #fff;
-}
-.admin-item button.save-btn {
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-right: 8px;
-    transition: background 0.2s;
-}
-.admin-item button.save-btn:hover {
-    background: var(--primary-dark);
-}
-.admin-item button.delete-btn {
-    background: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.admin-item button.delete-btn:hover {
-    background: #b52a37;
-}
-.editMsg {
-    margin-top: 8px;
-    font-size: 0.98rem;
+    padding: 10px;
+    border: 1px solid #555;
+    border-radius: 5px;
+    background: #000;
+    color: var(--text-light);
+    margin-top: 6px;
 }
 
+/* ---------- BOTÕES CRUD ---------- */
+.save-btn {
+    background: var(--primary);
+    color: #000;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.save-btn:hover {
+    background: var(--primary-dark);
+}
+.delete-btn {
+    background: #b52a37;
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+.delete-btn:hover {
+    background: #92232e;
+}
+
+/* ---------- BOTÃO ADICIONAR ---------- */
+.add-btn,
+button.add-btn {
+    background: var(--primary);
+    color: #000;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 1.05rem;
+    cursor: pointer;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+    transition: background 0.25s, transform 0.15s;
+}
+.add-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+.add-btn:active {
+    transform: translateY(1px);
+}
+
+/* "+" redondo (se usar) */
+.add-icon-btn {
+    background: #111;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.add-icon-btn:hover {
+    background: var(--primary);
+    color: #000;
+}
+
+/* ---------- ADICIONAIS (LISTA DE CHECKBOX) ---------- */
+
+.adicionais-wrapper {
+    margin-top: 16px;
+    padding: 14px 14px 12px;
+    background: #151515;
+    border-radius: 8px;
+    border: 1px solid #333;
+}
+
+.adicionais-wrapper .adicionais-titulo {
+    display: block;
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+/* container que agrupa os checkboxes */
+.adicionais-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+/* cada adicional como "pílula" */
+.adicionais-opcoes label,
+.adicional-pill {
+    background: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 999px;
+    padding: 5px 10px 5px 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-light);
+    cursor: pointer;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    transition: background 0.2s, border-color 0.2s, transform 0.1s;
+}
+
+.adicionais-opcoes label:hover,
+.adicional-pill:hover {
+    background: #2a2a2a;
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.adicionais-opcoes input[type="checkbox"] {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+/* Ajuste dos botões embaixo dos adicionais (Salvar / Excluir) */
+.adicionais-botoes {
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+}
+
+/* ---------- LOGIN ADMIN ---------- */
+.admin-login-bg {
+    min-height: 100vh;
+    background: url('../img/gui.jpeg') left center no-repeat fixed;
+    background-size: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.admin-login-box {
+    background: #111;
+    padding: 40px 32px;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px #000;
+    min-width: 320px;
+    color: var(--text-light);
+}
+.admin-login-box input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    background: #000;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: var(--text-light);
+    margin-bottom: 16px;
+}
+.admin-login-box button {
+    background: var(--primary);
+    color: #000;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+.admin-login-msg {
+    color: #e74c3c;
+    margin-top: 8px;
+}
+
+/* ---------- LOGOUT ---------- */
+.admin-logout-btn {
+    background: #b52a37;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.admin-logout-btn:hover {
+    background: #92232e;
+}
+
+/* ---------- LOGS ---------- */
+.logs-list {
+    background: #111;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 12px #000;
+}
+.log-entry {
+    border-bottom: 1px solid #333;
+    padding: 12px 0;
+}
+.log-time {
+    color: #bbb;
+}
+.log-action {
+    color: var(--primary);
+}
+.log-details {
+    background: #0a0a0a;
+    border-radius: 4px;
+    padding: 10px;
+    white-space: pre-wrap;
+}
+
+/* ---------- FORM ADMIN ---------- */
+.admin-form {
+    background: #111;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 2px 8px #000;
+}
+.admin-form input[type="text"],
+.admin-form input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    background: #000;
+    border: 1px solid #555;
+    border-radius: 4px;
+    color: var(--text-light);
+    margin-top: 6px;
+}
+.admin-form button {
+    background: var(--primary);
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 4px;
+    margin-top: 12px;
+    cursor: pointer;
+}
+
+/* ---------- RESPONSIVO ---------- */
 @media (max-width: 800px) {
     #adminTabContent {
-        padding: 16px 6px;
+        padding: 18px;
     }
     .admin-tabs {
         gap: 6px;
     }
     .tab-btn {
-        padding: 8px 10px;
+        padding: 8px 12px;
         font-size: 1rem;
     }
-    .admin-item img {
-        max-width: 70px;
-    }
-}
-
-/* Imagem de fundo apenas na tela de login admin */
-.admin-login-bg {
-    min-height: 100vh;
-    background: url('../img/gui.jpeg') no-repeat center center fixed;
-    background-size: cover;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Sobreposição para legibilidade do conteúdo */
-#adminContainer, .admin-sections, .logs-list {
-    background: rgba(255,255,255,0.92);
-    border-radius: 10px;
-    box-shadow: 0 4px 24px #0002;
-}
-/* Login admin estilizado */
-.admin-login-box {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 24px #0002;
-    padding: 40px 32px 32px 32px;
-    min-width: 320px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.admin-login-box h2 {
-    margin-bottom: 24px;
-    color: #007bff;
-}
-.admin-login-box input[type="password"] {
-    width: 100%;
-    padding: 12px 10px;
-    border: 1px solid #bbb;
-    border-radius: 4px;
-    font-size: 1.1rem;
-    margin-bottom: 18px;
-}
-.admin-login-box button {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 4px;
-    font-size: 1.1rem;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: background 0.2s;
-}
-.admin-login-box button:hover {
-    background: #0056b3;
-}
-.admin-login-msg {
-    color: #c0392b;
-    margin-top: 10px;
-    font-size: 1rem;
-    min-height: 22px;
-}
-
-.admin-logout-btn {
-    background: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-.admin-logout-btn:hover {
-    background: #b52a37;
-}
-
-/* Logs admin estilizados */
-.logs-list {
-    max-width: 700px;
-    margin: 32px auto;
-    background: var(--gray);
-    border-radius: 8px;
-    box-shadow: 0 2px 8px #0001;
-    padding: 24px 20px 16px 20px;
-}
-.log-entry {
-    border-bottom: 1px solid #eee;
-    padding: 12px 0 8px 0;
-}
-.log-entry:last-child {
-    border-bottom: none;
-}
-.log-time {
-    color: #888;
-    font-size: 0.95rem;
-    margin-bottom: 2px;
-}
-.log-action {
-    color: #007bff;
-    font-weight: bold;
-    margin-bottom: 2px;
-}
-.log-details {
-    background: #f8f9fa;
-    border-radius: 4px;
-    padding: 8px 10px;
-    font-size: 0.98rem;
-    color: #222;
-    margin: 0;
-    white-space: pre-wrap;
-}
-.admin-sections {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    max-width: 700px;
-    margin: 0 auto;
-}
-
-.admin-form {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px #0001;
-    padding: 24px 20px 16px 20px;
-    margin-bottom: 0;
-}
-
-.admin-form h2 {
-    margin-top: 0;
-    color: #2c3e50;
-}
-
-.admin-form label {
-    display: block;
-    margin-bottom: 12px;
-    color: #444;
-}
-
-.admin-form input[type="text"],
-.admin-form input[type="number"] {
-    width: 100%;
-    padding: 8px 10px;
-    margin-top: 4px;
-    border: 1px solid #bbb;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.admin-form button {
-    background: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 8px;
-    transition: background 0.2s;
-}
-.admin-form button:hover {
-    background: #0056b3;
-}
-
-.admin-item {
-    background: var(--gray);
-    border: 1px solid #e1e1e1;
-    border-radius: 6px;
-    padding: 16px 12px;
-    margin-bottom: 16px;
-    box-shadow: 0 1px 4px #0001;
-}
-.admin-item img {
-    max-width: 120px;
-    border-radius: 4px;
-    margin-bottom: 8px;
-}
-.admin-item button {
-    background: #dc3545;
-    color: #fff;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 4px;
-    margin-left: 8px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: background 0.2s;
-}
-.admin-item button:hover {
-    background: #b52a37;
-}
-.admin-item {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.admin-item h3 {
-    margin: 0 0 10px;
-}
-
-.admin-item label {
-    display: block;
-    margin: 5px 0;
-}
-
-.admin-item input[type="text"],
-.admin-item input[type="number"] {
-    width: calc(100% - 22px);
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.admin-item button {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.admin-item button:hover {
-    background-color: #218838;
 }

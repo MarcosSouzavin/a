@@ -410,11 +410,23 @@ async function renderTab(tab) {
             item.sizes.forEach((size, sidx) => {
                 sizeLabels += `<label>${size.name}: <input type="number" value="${size.price}" class="price-input" data-size="${sidx}"></label>`;
             });
-            let adicionaisCheckboxes = '<div>Adicionais:</div>';
-            adicionais.forEach((ad, adidx) => {
-                const checked = item.adicionais && item.adicionais.some(a => a.name === ad.name) ? 'checked' : '';
-                adicionaisCheckboxes += `<label><input type="checkbox" class="adicional-checkbox" data-adname="${ad.name}" ${checked}> ${ad.name} (R$ ${ad.price.toFixed(2)})</label>`;
-            });
+            let adicionaisCheckboxes = `
+    <div class="adicionais-titulo">Adicionais:</div>
+    <div class="adicionais-opcoes">
+`;
+
+adicionais.forEach((ad, adidx) => {
+    const checked = item.adicionais && item.adicionais.some(a => a.name === ad.name) ? 'checked' : '';
+    adicionaisCheckboxes += `
+        <label class="adicional-pill">
+            <input type="checkbox" data-adname="${ad.name}" ${checked}>
+            ${ad.name} (R$ ${ad.price.toFixed(2)})
+        </label>
+    `;
+});
+
+adicionaisCheckboxes += `</div>`;
+
             tabContent.innerHTML += `
                 <div class="admin-item" data-idx="${idx}">
                     <h3>${item.name}</h3>
