@@ -92,17 +92,6 @@
       Total a pagar: R$<span id="cartTotal">0.00</span>
     </div>
 
-    <!-- Endereço -->
-    <div class="frete-container">
-      <h3>Informe seu Endereço</h3>
-      <form id="enderecoForm">
-        <label for="endereco">Endereço Completo:</label>
-        <input type="text" id="endereco" name="endereco" placeholder="Rua, número, bairro, cidade, estado" required>
-        <button type="submit">Confirmar Endereço</button>
-      </form>
-      <div id="enderecoResultado"></div>
-    </div>
-
     <button id="checkoutButton" class="checkout-button">Finalizar Compra</button>
   </aside>
 
@@ -184,17 +173,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       console.log("Checkout visitante pronto.");
 
-      // 🔸 Frete fixo (sem API)
-      document.getElementById('enderecoForm').addEventListener('submit', e => {
-        e.preventDefault();
-        const endereco = document.getElementById('endereco').value.trim();
-        if (!endereco) return alert('Digite um endereço válido.');
-        const frete = 5.00;
-        document.getElementById('enderecoResultado').innerHTML =
-          `<p>Endereço: ${endereco}</p><p>Frete fixo: R$ ${frete.toFixed(2)}</p>`;
-        localStorage.setItem('endereco', endereco);
-        localStorage.setItem('frete', frete);
-      });
 
       // 🔸 Função pra salvar o pedido visitante
       async function saveGuestCart() {
@@ -210,7 +188,6 @@
           }
 
           const frete = Number(localStorage.getItem('frete') || 5.00);
-          const endereco = localStorage.getItem('endereco') || '';
 
           const total = cartItems.reduce((acc, item) => {
             const preco = Number(item.basePrice || item.price || 0);
@@ -221,7 +198,7 @@
             return acc + (preco + somaAdicionais) * qtd;
           }, 0) + frete;
 
-          const pedido = { produtos: cartItems, frete, endereco, total };
+          const pedido = { produtos: cartItems, frete, total };
           localStorage.setItem('pedidoCheckout', JSON.stringify(pedido));
 
           console.log("✅ Pedido visitante salvo:", pedido);
